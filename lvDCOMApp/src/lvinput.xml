@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lvinput>
+   <extint path="c:/LabVIEW Modules old/Common/External Interface/External Interface.llb/External Interface - Set Value.vi" />
+   <item name="beamlogger"> <!-- name will match a "port" of EPICS asyn driver -->
+    <vi path="c:/development/instrumentcontrol/icp/labview modules/beam logger/beam logger.vi">
+      <control id="0" name="TS1Beam"> <!-- id will match "addr" parameter of EPICS asyn "port" -->
+        <read method="GCV" target="TS1 Beam Current" />
+        <set method="SCV" extint="true" target="TS1 Beam Current" />
+      </control>
+      <control id="1" name="TS2Beam"> <!-- id will match "addr" parameter of EPICS asyn "port" -->
+        <read method="GCV" target="TS2 Beam Current" />
+        <set method="SCV" extint="false" target="TS2 Beam Current" />
+      </control>
+      <control id="2" name="array"> <!-- id will match "addr" parameter of EPICS asyn "port" -->
+        <read method="GCV" target="testarray" />
+        <set method="SCV" extint="false" target="testarray" />
+      </control>
+      <control id="3" name="Time"> <!-- id will match "addr" parameter of EPICS asyn "port" -->
+        <read method="GCV" target="Last Update Time" />
+        <set method="SCV" extint="false" target="Last Update Time" />
+      </control>
+    </vi>
+  </item>
+</lvinput>
