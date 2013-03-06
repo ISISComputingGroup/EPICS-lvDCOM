@@ -30,3 +30,6 @@ EPICS_BASE=C:/development/EPICS/base/3.14.12.2
 # Set RULES here if you want to take build rules from somewhere
 # other than EPICS_BASE:
 #RULES=/path/to/epics/support/module/rules/x-y
+
+ASYN=$(SUPPORT)/asyn/4-18
+include $(TOP)/../../ISIS_CONFIG.$(EPICS_HOST_ARCH)

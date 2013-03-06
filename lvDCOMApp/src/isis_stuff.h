@@ -21,15 +21,16 @@
 #include <fstream>
 #include <iostream>
 
+#include <epicsMutex.h>
+#include <epicsThread.h>
+
 //#import "progid:isisicp.Idae" named_guids
 //#import "isisicp.tlb" named_guids
 //#import "Seci.tlb" named_guids
 #import "LabVIEW.tlb" named_guids
 
-#include <Poco/Util/AbstractConfiguration.h>
-#include <Poco/Util/XMLConfiguration.h>
-#include <Poco/Format.h>
-#include <Poco/RWLock.h>
+// TinyXPath
+#include <xpath_static.h>  
 
 struct ViRef
 {
@@ -49,8 +50,8 @@ public:
 private:
 	typedef std::map<std::wstring, ViRef> vi_map_t;
 	vi_map_t m_vimap;
-	Poco::RWLock m_lock;
-	Poco::Util::AbstractConfiguration *m_cfg;
+	epicsMutex m_lock;
+	TiXmlDocument* m_doc;
 	CComBSTR m_extint;
 	std::string m_host;
 	CComPtr<LabVIEW::_Application> m_lv;

@@ -39,11 +39,11 @@
 //#include "Poco/DOM/Text.h"
 //#include "Poco/SAX/InputSource.h"
 
-#include <Poco/Util/AbstractConfiguration.h>
-#include <Poco/Util/XMLConfiguration.h>
+//#include <Poco/Util/AbstractConfiguration.h>
+//#include <Poco/Util/XMLConfiguration.h>
 //#include <Poco/AutoPtr.h>
 
-#include <Poco/Path.h>
+//#include <Poco/Path.h>
 
 #include "isis_stuff.h"
 #include "variant_utils.h"
@@ -51,23 +51,22 @@
 	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
 std::string ISISSTUFF::doPath(const std::string& xpath)
 {
-	if (m_cfg == NULL)
+	if (m_doc == NULL)
 	{
 		throw std::runtime_error("m_cfg is NULL");
 	}
-	try
+	TIXML_STRING S_res = TinyXPath::S_xpath_string (m_doc -> RootElement (), xpath.c_str());
+	for(int i=0; i<S_res.size(); ++i)
 	{
-		m_cfg->getString(xpath);
-		Poco::Path p(m_cfg->getString(xpath));
-		return p.toString();
+	    if (S_res[i] == '/')
+		{
+			S_res[i] = '\\';
+		}
 	}
-	catch(const std::exception& ex)
-	{
-		throw std::runtime_error("Cannot load config xpath " + xpath + ": " + ex.what());
-	}
+	return std::string(S_res.c_str());
 }
 
-ISISSTUFF::ISISSTUFF(const char *portName, const char *configFile, const char* host) : m_cfg(NULL), m_pidentity(NULL)
+ISISSTUFF::ISISSTUFF(const char *portName, const char *configFile, const char* host) : m_doc(NULL), m_pidentity(NULL)
 {
 		CoInitializeEx(NULL, COINIT_MULTITHREADED);
 //		std::ifstream in(configFile);
@@ -100,14 +99,12 @@ ISISSTUFF::ISISSTUFF(const char *portName, const char *configFile, const char* h
 //		}			
 		m_host = "";
 	}
-	try
+	m_doc = new TiXmlDocument;
+	if ( !m_doc->LoadFile(configFile) )
 	{
-		m_cfg = new Poco::Util::XMLConfiguration(configFile);
-	}
-	catch(const std::exception& ex)
-	{
-		m_cfg = NULL;
-		throw std::runtime_error("Cannot load " + std::string(configFile) + ": " + ex.what());
+		delete m_doc;
+		m_doc = NULL;
+		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
 	}
   	m_extint = doPath("extint[@path]").c_str();
 }
@@ -169,7 +166,7 @@ void ISISSTUFF::getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumen
 	UINT len = SysStringLen(vi_name);
 	std::wstring ws(vi_name, SysStringLen(vi_name));
 
-	Poco::RWLock::ScopedWriteLock _lock(m_lock);
+	m_lock.lock();
 	vi_map_t::iterator it = m_vimap.find(ws);
 	if(it != m_vimap.end())
 	{
@@ -188,6 +185,7 @@ void ISISSTUFF::getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumen
 	{
 		createViRef(vi_name, reentrant, vi);
 	}
+	m_lock.unlock();
 }
 
 
@@ -280,11 +278,12 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, std::stri
 		throw std::runtime_error("getLabviewValue failed (NULL)");
 	}
 	CComVariant v;
-	std::string vi_name_xpath = Poco::format("item[@name='%s'].vi[@path]", portName);
-	std::string control_name_xpath = Poco::format("item[@name='%s'].vi.control[@id=%d].read[@target]", portName, addr);
+	char vi_name_xpath[256], control_name_xpath[256];
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "item[@name='%s'].vi[@path]", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "item[@name='%s'].vi.control[@id=%d].read[@target]", portName.c_str(), addr);
 	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
-	CComBSTR control_name(m_cfg->getString(control_name_xpath).c_str());
+	CComBSTR control_name(TinyXPath::S_xpath_string(m_doc->RootElement(), control_name_xpath).c_str());
     getLabviewValue(vi_name, control_name, &v);
 	if ( v.ChangeType(VT_BSTR) == S_OK )
 	{
@@ -305,11 +304,12 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, T* value,
 		throw std::runtime_error("getLabviewValue failed (NULL)");
 	}
 	CComVariant v;
-	std::string vi_name_xpath = Poco::format("item[@name='%s'].vi[@path]", portName);
-	std::string control_name_xpath = Poco::format("item[@name='%s'].vi.control[@id=%d].read[@target]", portName, addr);
+	char vi_name_xpath[256], control_name_xpath[256];
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "item[@name='%s'].vi[@path]", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "item[@name='%s'].vi.control[@id=%d].read[@target]", portName.c_str(), addr);
 	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
-	CComBSTR control_name(m_cfg->getString(control_name_xpath).c_str());
+	CComBSTR control_name(TinyXPath::S_xpath_string(m_doc->RootElement(), control_name_xpath).c_str());
     getLabviewValue(vi_name, control_name, &v);
 	if ( v.vt != (VT_ARRAY | CVarTypeInfo<T>::VT) )
 	{
@@ -334,11 +334,12 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, T* value)
 		throw std::runtime_error("getLabviewValue failed (NULL)");
 	}
 	CComVariant v;
-	std::string vi_name_xpath = Poco::format("item[@name='%s'].vi[@path]", portName);
-	std::string control_name_xpath = Poco::format("item[@name='%s'].vi.control[@id=%d].read[@target]", portName, addr);
+	char vi_name_xpath[256], control_name_xpath[256];
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "item[@name='%s'].vi[@path]", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "item[@name='%s'].vi.control[@id=%d].read[@target]", portName.c_str(), addr);
 	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
-	CComBSTR control_name(m_cfg->getString(control_name_xpath).c_str());
+	CComBSTR control_name(TinyXPath::S_xpath_string(m_doc->RootElement(), control_name_xpath).c_str());
     getLabviewValue(vi_name, control_name, &v);
 	if ( v.ChangeType(CVarTypeInfo<T>::VT) == S_OK )
 	{
@@ -369,13 +370,14 @@ void ISISSTUFF::setLabviewValue(const std::string& portName, int addr, const std
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	CComVariant v(value.c_str()), results;
-	std::string vi_name_xpath = Poco::format("item[@name='%s'].vi[@path]", portName);
-	std::string control_name_xpath = Poco::format("item[@name='%s'].vi.control[@id=%d].set[@target]", portName, addr);
-	std::string use_extint_xpath = Poco::format("item[@name='%s'].vi.control[@id=%d].set[@extint]", portName, addr);
+	char vi_name_xpath[256], control_name_xpath[256], use_extint_xpath[256];
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "item[@name='%s'].vi[@path]", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "item[@name='%s'].vi.control[@id=%d].set[@target]", portName.c_str(), addr);
+	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "item[@name='%s'].vi.control[@id=%d].set[@extint]", portName.c_str(), addr);
 	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
-	CComBSTR control_name(doPath(control_name_xpath).c_str());
-	bool use_ext = m_cfg->getBool(use_extint_xpath);
+	CComBSTR control_name(TinyXPath::S_xpath_string(m_doc->RootElement(), control_name_xpath).c_str());
+	bool use_ext = TinyXPath::o_xpath_bool(m_doc->RootElement(), use_extint_xpath); 
 	if (use_ext)
 	{
 		setLabviewValueExt(vi_name, control_name, v, &results);	
@@ -391,13 +393,14 @@ void ISISSTUFF::setLabviewValue(const std::string& portName, int addr, const T& 
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	CComVariant v(value), results;
-	std::string vi_name_xpath = Poco::format("item[@name='%s'].vi[@path]", portName);
-	std::string control_name_xpath = Poco::format("item[@name='%s'].vi.control[@id=%d].set[@target]", portName, addr);
-	std::string use_extint_xpath = Poco::format("item[@name='%s'].vi.control[@id=%d].set[@extint]", portName, addr);
+	char vi_name_xpath[256], control_name_xpath[256], use_extint_xpath[256];
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "item[@name='%s'].vi[@path]", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "item[@name='%s'].vi.control[@id=%d].set[@target]", portName.c_str(), addr);
+	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "item[@name='%s'].vi.control[@id=%d].set[@extint]", portName.c_str(), addr);
 	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
-	CComBSTR control_name(doPath(control_name_xpath).c_str());
-	bool use_ext = m_cfg->getBool(use_extint_xpath);
+	CComBSTR control_name(TinyXPath::S_xpath_string(m_doc->RootElement(), control_name_xpath).c_str());
+	bool use_ext = TinyXPath::o_xpath_bool(m_doc->RootElement(), use_extint_xpath); 
 	if (use_ext)
 	{
 		setLabviewValueExt(vi_name, control_name, v, &results);	

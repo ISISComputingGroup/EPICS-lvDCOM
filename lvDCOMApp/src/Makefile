@@ -7,21 +7,21 @@ include $(TOP)/configure/CONFIG
 FILE_TYPE += pdb
 INSTALL_pdb = $(INSTALL_BIN)
 
-THIRD_PARTY=../../../../Third_Party
+#THIRD_PARTY=../../../../Third_Party
 
-USR_INCLUDES += -I$(THIRD_PARTY)/POCO/include
+#USR_INCLUDES += -I$(THIRD_PARTY)/POCO/include
 USR_INCLUDES += -I../tlb
 
 USR_CXXFLAGS += /Zi
 #USR_CPPFLAGS
 USR_LDFLAGS += /DEBUG
 
-pocofoundation_DIR = $(THIRD_PARTY)/POCO/lib_x64
-pocofoundationd_DIR = $(THIRD_PARTY)/POCO/lib_x64
-pocoxml_DIR = $(THIRD_PARTY)/POCO/lib_x64
-pocoxmld_DIR = $(THIRD_PARTY)/POCO/lib_x64
-pocoutil_DIR = $(THIRD_PARTY)/POCO/lib_x64
-pocoutild_DIR = $(THIRD_PARTY)/POCO/lib_x64
+#pocofoundation_DIR = $(THIRD_PARTY)/POCO/lib_x64
+#pocofoundationd_DIR = $(THIRD_PARTY)/POCO/lib_x64
+#pocoxml_DIR = $(THIRD_PARTY)/POCO/lib_x64
+#pocoxmld_DIR = $(THIRD_PARTY)/POCO/lib_x64
+#pocoutil_DIR = $(THIRD_PARTY)/POCO/lib_x64
+#pocoutild_DIR = $(THIRD_PARTY)/POCO/lib_x64
 
 #=============================
 # Build the IOC support library
@@ -37,12 +37,12 @@ DBD += lvexport.dbd
 # Compile and add the code to the support library
 lvexportSupport_SRCS += testAsynPortDriver.cpp isis_stuff.cpp variant_utils.cpp
 
-lvexportSupport_LIBS += asyn
-ifeq ($(T_A),windows-x64-debug)
-    lvexportSupport_LIBS += pocoutild pocoxmld pocofoundationd
-else
-    lvexportSupport_LIBS += pocoutil pocoxml pocofoundation
-endif
+lvexportSupport_LIBS += asyn tinyxpath
+#ifeq ($(T_A),windows-x64-debug)
+#    lvexportSupport_LIBS += pocoutild pocoxmld pocofoundationd
+#else
+#    lvexportSupport_LIBS += pocoutil pocoxml pocofoundation
+#endif
 lvexportSupport_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #=============================
