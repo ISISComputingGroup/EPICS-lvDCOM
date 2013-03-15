@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+//#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
 
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // some CString constructors will be explicit
@@ -15,7 +15,6 @@
 #include <atlsafe.h>
 #include <comdef.h>
 
-
 #include <string>
 #include <vector>
 #include <map>
@@ -25,37 +24,151 @@
 #include <fstream>
 #include <iostream>
 
-//#import "progid:isisicp.Idae" named_guids
-//#import "isisicp.tlb" named_guids
-//#import "Seci.tlb" named_guids
-//#import "LabVIEW.tlb" named_guids
-
-//#include "Poco/DOM/DOMParser.h"
-//#include "Poco/DOM/Document.h"
-//#include "Poco/DOM/NodeIterator.h"
-//#include "Poco/DOM/NodeFilter.h"
-//#include "Poco/DOM/AutoPtr.h"
-//#include "Poco/DOM/Element.h"
-//#include "Poco/DOM/Text.h"
-//#include "Poco/SAX/InputSource.h"
-
-//#include <Poco/Util/AbstractConfiguration.h>
-//#include <Poco/Util/XMLConfiguration.h>
-//#include <Poco/AutoPtr.h>
-
-//#include <Poco/Path.h>
-
 #include "isis_stuff.h"
 #include "variant_utils.h"
 
-	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
-std::string ISISSTUFF::doPath(const std::string& xpath)
+class ScopedLock
+{
+private:
+	epicsMutex& m_lock;
+	ScopedLock() : m_lock(*(new epicsMutex)) { throw std::runtime_error("ScopedLock error"); }
+	void operator=(const ScopedLock&) { throw std::runtime_error("ScopedLock error"); }
+	
+public:
+	explicit ScopedLock(epicsMutex& lock) : m_lock(lock)
+	{
+		m_lock.lock();
+	}
+	~ScopedLock()
+	{
+		m_lock.unlock();
+	}
+};
+
+std::string ISISSTUFF::doXPATH(const std::string& xpath)
+{
+	if (m_pxmldom == NULL)
+	{
+		throw std::runtime_error("m_cfg is NULL");
+	}
+	std::map<std::string,std::string>::const_iterator it = m_xpath_map.find(xpath);
+	if (it != m_xpath_map.end())
+	{
+		return it->second;
+	}
+	ScopedLock _lock(m_lock);
+	IXMLDOMNode *pNode = NULL;
+	std::string S_res;
+    BSTR bstrValue = NULL;
+	HRESULT hr = m_pxmldom->selectSingleNode(_bstr_t(xpath.c_str()), &pNode);
+	if (SUCCEEDED(hr) && pNode != NULL)
+	{
+		hr=pNode->get_text(&bstrValue);
+		if (SUCCEEDED(hr))
+		{
+			S_res = CW2CT(bstrValue);
+			SysFreeString(bstrValue);
+		}
+		pNode->Release();
+	}
+	else
+	{
+		throw std::runtime_error("m_cfg is NULL");
+	}
+	m_xpath_map[xpath] = S_res;
+	return S_res;
+}
+
+bool ISISSTUFF::doXPATHbool(const std::string& xpath)
+{
+	if (m_pxmldom == NULL)
+	{
+		throw std::runtime_error("m_cfg is NULL");
+	}
+	std::map<std::string,bool>::const_iterator it = m_xpath_bool_map.find(xpath);
+	if (it != m_xpath_bool_map.end())
+	{
+		return it->second;
+	}
+	ScopedLock _lock(m_lock);
+	IXMLDOMNode *pNode = NULL;
+	bool res = false;
+    BSTR bstrValue = NULL;
+	std::string bool_str;
+	HRESULT hr = m_pxmldom->selectSingleNode(_bstr_t(xpath.c_str()), &pNode);
+	if (SUCCEEDED(hr) && pNode != NULL)
+	{
+		hr=pNode->get_text(&bstrValue);
+		if (SUCCEEDED(hr))
+		{
+			bool_str = CW2CT(bstrValue);
+			if ( (bool_str.size() == 0) || (bool_str[0] == 'f') || (bool_str[0] == 'F') || (atol(bool_str.c_str()) == 0) )
+			{
+				res = false;
+			}
+			else
+			{
+				res = true;
+			}
+			SysFreeString(bstrValue);
+		}
+		pNode->Release();
+	}
+	else
+	{
+		throw std::runtime_error("m_cfg is NULL");
+	}
+	m_xpath_bool_map[xpath] = res;
+	return res;
+}
+
+#if 0
+
+std::string ISISSTUFF::doXPATH_old(const std::string& xpath)
 {
 	if (m_doc == NULL)
 	{
 		throw std::runtime_error("m_cfg is NULL");
 	}
-	TIXML_STRING S_res = TinyXPath::S_xpath_string (m_doc -> RootElement (), xpath.c_str());
+	std::map<std::string,std::string>::const_iterator it = m_xpath_map.find(xpath);
+	if (it != m_xpath_map.end())
+	{
+		return it->second;
+	}
+	m_lock.lock();
+	TinyXPath::xpath_processor xp_proc(m_root, xpath.c_str());
+//	TIXML_STRING S_res = TinyXPath::S_xpath_string(m_doc->RootElement(), xpath.c_str());
+	std::string S_res = xp_proc.S_compute_xpath().c_str();
+	m_xpath_map[xpath] = S_res;
+	m_lock.unlock();
+	return S_res;
+}
+
+bool ISISSTUFF::doXPATHbool_old(const std::string& xpath)
+{
+	if (m_doc == NULL)
+	{
+		throw std::runtime_error("m_cfg is NULL");
+	}
+	std::map<std::string,bool>::const_iterator it = m_xpath_bool_map.find(xpath);
+	if (it != m_xpath_bool_map.end())
+	{
+		return it->second;
+	}
+	m_lock.lock();
+	TinyXPath::xpath_processor xp_proc(m_root, xpath.c_str());
+	bool res = xp_proc.o_compute_xpath();
+	m_xpath_bool_map[xpath] = res;
+	m_lock.unlock();
+	return res;
+}
+
+#endif
+// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
+
+std::string ISISSTUFF::doPath(const std::string& xpath)
+{
+    std::string S_res = doXPATH(xpath);
 	for(int i=0; i<S_res.size(); ++i)
 	{
 	    if (S_res[i] == '/')
@@ -63,10 +176,32 @@ std::string ISISSTUFF::doPath(const std::string& xpath)
 			S_res[i] = '\\';
 		}
 	}
-	return std::string(S_res.c_str());
+	return S_res;
 }
 
-ISISSTUFF::ISISSTUFF(const char *portName, const char *configFile, const char* host) : m_doc(NULL), m_pidentity(NULL)
+void ISISSTUFF::DomFromCOM()
+{
+	m_pxmldom = NULL;
+    HRESULT hr=CoCreateInstance(CLSID_DOMDocument, NULL, CLSCTX_SERVER,
+               IID_IXMLDOMDocument2, (void**)&m_pxmldom);
+	if (FAILED(hr))
+	{
+		throw std::runtime_error("Cannot load DomFromCom");
+	}
+	if (m_pxmldom != NULL)
+	{
+	    m_pxmldom->put_async(VARIANT_FALSE);
+        m_pxmldom->put_validateOnParse(VARIANT_FALSE);
+	    m_pxmldom->put_resolveExternals(VARIANT_FALSE); 
+	}
+	else
+	{
+		throw std::runtime_error("Cannot load DomFromCom");
+	}
+}
+
+
+ISISSTUFF::ISISSTUFF(const char *portName, const char *configFile, const char* host) : /*m_doc(NULL),*/ m_pidentity(NULL), m_pxmldom(NULL)
 {
 		CoInitializeEx(NULL, COINIT_MULTITHREADED);
 //		std::ifstream in(configFile);
@@ -99,14 +234,26 @@ ISISSTUFF::ISISSTUFF(const char *portName, const char *configFile, const char* h
 //		}			
 		m_host = "";
 	}
-	m_doc = new TiXmlDocument;
-	if ( !m_doc->LoadFile(configFile) )
+//	m_doc = new TiXmlDocument;
+//	if ( !m_doc->LoadFile(configFile) )
+//	{
+//		delete m_doc;
+//		m_doc = NULL;
+//		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
+//	}
+//	m_root = m_doc->RootElement();
+	DomFromCOM();
+	short sResult = FALSE;
+	HRESULT hr = m_pxmldom->load(_variant_t(configFile), &sResult);
+    if(FAILED(hr))
 	{
-		delete m_doc;
-		m_doc = NULL;
 		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
 	}
-  	m_extint = doPath("extint[@path]").c_str();
+	if (sResult != VARIANT_TRUE)
+	{
+		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
+	}
+  	m_extint = doPath("/lvinput/extint/@path").c_str();
 }
 
 COAUTHIDENTITY* ISISSTUFF::createIdentity(const std::string& user, const std::string&  domain, const std::string& pass)
@@ -166,7 +313,7 @@ void ISISSTUFF::getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumen
 	UINT len = SysStringLen(vi_name);
 	std::wstring ws(vi_name, SysStringLen(vi_name));
 
-	m_lock.lock();
+	ScopedLock _lock(m_lock);
 	vi_map_t::iterator it = m_vimap.find(ws);
 	if(it != m_vimap.end())
 	{
@@ -185,7 +332,6 @@ void ISISSTUFF::getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumen
 	{
 		createViRef(vi_name, reentrant, vi);
 	}
-	m_lock.unlock();
 }
 
 
@@ -279,11 +425,11 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, std::stri
 	}
 	CComVariant v;
 	char vi_name_xpath[256], control_name_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "item[@name='%s'].vi[@path]", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "item[@name='%s'].vi.control[@id=%d].read[@target]", portName.c_str(), addr);
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/item[@name='%s']/vi/@path", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/read/@target", portName.c_str(), addr);
 	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
-	CComBSTR control_name(TinyXPath::S_xpath_string(m_doc->RootElement(), control_name_xpath).c_str());
+	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
     getLabviewValue(vi_name, control_name, &v);
 	if ( v.ChangeType(VT_BSTR) == S_OK )
 	{
@@ -305,11 +451,11 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, T* value,
 	}
 	CComVariant v;
 	char vi_name_xpath[256], control_name_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "item[@name='%s'].vi[@path]", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "item[@name='%s'].vi.control[@id=%d].read[@target]", portName.c_str(), addr);
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/item[@name='%s']/vi/@path", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/read/@target", portName.c_str(), addr);
 	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
-	CComBSTR control_name(TinyXPath::S_xpath_string(m_doc->RootElement(), control_name_xpath).c_str());
+	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
     getLabviewValue(vi_name, control_name, &v);
 	if ( v.vt != (VT_ARRAY | CVarTypeInfo<T>::VT) )
 	{
@@ -335,11 +481,11 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, T* value)
 	}
 	CComVariant v;
 	char vi_name_xpath[256], control_name_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "item[@name='%s'].vi[@path]", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "item[@name='%s'].vi.control[@id=%d].read[@target]", portName.c_str(), addr);
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/item[@name='%s']/vi/@path", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/read/@target", portName.c_str(), addr);
 	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
-	CComBSTR control_name(TinyXPath::S_xpath_string(m_doc->RootElement(), control_name_xpath).c_str());
+	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
     getLabviewValue(vi_name, control_name, &v);
 	if ( v.ChangeType(CVarTypeInfo<T>::VT) == S_OK )
 	{
@@ -371,13 +517,13 @@ void ISISSTUFF::setLabviewValue(const std::string& portName, int addr, const std
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	CComVariant v(value.c_str()), results;
 	char vi_name_xpath[256], control_name_xpath[256], use_extint_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "item[@name='%s'].vi[@path]", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "item[@name='%s'].vi.control[@id=%d].set[@target]", portName.c_str(), addr);
-	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "item[@name='%s'].vi.control[@id=%d].set[@extint]", portName.c_str(), addr);
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/item[@name='%s']/vi/@path", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/set/@target", portName.c_str(), addr);
+	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/set/@extint", portName.c_str(), addr);
 	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
-	CComBSTR control_name(TinyXPath::S_xpath_string(m_doc->RootElement(), control_name_xpath).c_str());
-	bool use_ext = TinyXPath::o_xpath_bool(m_doc->RootElement(), use_extint_xpath); 
+	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
+	bool use_ext = doXPATHbool(use_extint_xpath); 
 	if (use_ext)
 	{
 		setLabviewValueExt(vi_name, control_name, v, &results);	
@@ -394,13 +540,13 @@ void ISISSTUFF::setLabviewValue(const std::string& portName, int addr, const T& 
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	CComVariant v(value), results;
 	char vi_name_xpath[256], control_name_xpath[256], use_extint_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "item[@name='%s'].vi[@path]", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "item[@name='%s'].vi.control[@id=%d].set[@target]", portName.c_str(), addr);
-	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "item[@name='%s'].vi.control[@id=%d].set[@extint]", portName.c_str(), addr);
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/item[@name='%s']/vi/@path", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/set/@target", portName.c_str(), addr);
+	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/set/@extint", portName.c_str(), addr);
 	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
-	CComBSTR control_name(TinyXPath::S_xpath_string(m_doc->RootElement(), control_name_xpath).c_str());
-	bool use_ext = TinyXPath::o_xpath_bool(m_doc->RootElement(), use_extint_xpath); 
+	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
+	bool use_ext = doXPATHbool(use_extint_xpath); 
 	if (use_ext)
 	{
 		setLabviewValueExt(vi_name, control_name, v, &results);	
@@ -574,7 +720,6 @@ void ISISSTUFF::closeViFrontPanel(BSTR vi_name)
 		throw std::runtime_error("CloseViFrontPanel failed");
 	}
 }
-
 
 template void ISISSTUFF::setLabviewValue(const std::string& portName, int addr, const double& value);
 template void ISISSTUFF::setLabviewValue(const std::string& portName, int addr, const int& value);

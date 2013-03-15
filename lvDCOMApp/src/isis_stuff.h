@@ -1,7 +1,14 @@
+#ifndef _ISIS_STUFF_H
+#define _ISIS_STUFF_H
+
 #include <stdio.h>
 
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+//#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
+#include <tchar.h>
+//#include <sys/stat.h>
+//#include <process.h>
+//#include <fcntl.h>
 
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // some CString constructors will be explicit
 #include <atlbase.h>
@@ -24,13 +31,13 @@
 #include <epicsMutex.h>
 #include <epicsThread.h>
 
-//#import "progid:isisicp.Idae" named_guids
-//#import "isisicp.tlb" named_guids
-//#import "Seci.tlb" named_guids
 #import "LabVIEW.tlb" named_guids
 
+#include <msxml2.h>
+
 // TinyXPath
-#include <xpath_static.h>  
+//#include <xpath_processor.h>  
+//#include <xpath_static.h>  
 
 struct ViRef
 {
@@ -46,19 +53,26 @@ public:
 	template<typename T> void setLabviewValue(const std::string& portName, int addr, const T& value);
 	template<typename T> void getLabviewValue(const std::string& portName, int addr, T* value);
 	template<typename T> void getLabviewValue(const std::string& portName, int addr, T* value, size_t nElements, size_t& nIn);
-
+	~ISISSTUFF() { if (m_pxmldom != NULL) { m_pxmldom->Release(); m_pxmldom = 0; } }
 private:
 	typedef std::map<std::wstring, ViRef> vi_map_t;
 	vi_map_t m_vimap;
 	epicsMutex m_lock;
-	TiXmlDocument* m_doc;
+//	TiXmlDocument* m_doc;
+//	TiXmlElement* m_root;
+	IXMLDOMDocument2 *m_pxmldom;
 	CComBSTR m_extint;
 	std::string m_host;
 	CComPtr<LabVIEW::_Application> m_lv;
 	COAUTHIDENTITY* m_pidentity;
+	std::map<std::string,std::string> m_xpath_map;
+	std::map<std::string,bool> m_xpath_bool_map;
 
 	int testlv();
+	void DomFromCOM();
 	std::string doPath(const std::string& xpath);
+	std::string doXPATH(const std::string& xpath);
+	bool doXPATHbool(const std::string& xpath);
 	void getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr &vi);
 	void createViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr &vi);
 	void getLabviewValue(BSTR vi_name, BSTR control_name, VARIANT* value);
@@ -73,3 +87,4 @@ private:
 	HRESULT setIdentity(COAUTHIDENTITY* pidentity, IUnknown* pUnk);
 };
 
+#endif /* _ISIS_STUFF_H */

@@ -10,7 +10,7 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------------------
 # Create and install (or just install)
 # databases, templates, substitutions like this
-DB += lvdcom.db
+DB += lvDCOM.db
 DB += user.substitutions
 DB += userHost.substitutions
 

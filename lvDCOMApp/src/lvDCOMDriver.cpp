@@ -1,23 +1,8 @@
-/*
- * testAsynPortDriver.cpp
- * 
- * Asyn driver that inherits from the asynPortDriver class to demonstrate its use.
- * It simulates a digital scope looking at a 1kHz 1000-point noisy sine wave.  Controls are
- * provided for time/division, volts/division, volt offset, trigger delay, noise amplitude, update time,
- * and run/stop.
- * Readbacks are provides for the waveform data, min, max and mean values.
- *
- * Author: Mark Rivers
- *
- * Created Feb. 5, 2009
- */
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
 #include <math.h>
-
 #include <exception>
 #include <iostream>
 
@@ -30,19 +15,19 @@
 #include <epicsEvent.h>
 #include <iocsh.h>
 
-#include "testAsynPortDriver.h"
+#include "lvDCOMDriver.h"
 #include <epicsExport.h>
 
 #include "isis_stuff.h"
 
-static const char *driverName="testAsynPortDriver";
+static const char *driverName="lvDCOMDriver";
 
 /** Called when asyn clients call pasynFloat64->write().
   * This function sends a signal to the simTask thread if the value of P_UpdateTime has changed.
   * For all  parameters it  sets the value in the parameter library and calls any registered callbacks.
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Value to write. */
-asynStatus testAsynPortDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
+asynStatus lvDCOMDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
@@ -71,7 +56,7 @@ asynStatus testAsynPortDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 va
 	}
 }
 
-asynStatus testAsynPortDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
+asynStatus lvDCOMDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
@@ -101,7 +86,7 @@ asynStatus testAsynPortDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 	}
 }
 
-asynStatus testAsynPortDriver::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn)
+asynStatus lvDCOMDriver::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn)
 {
   int function = pasynUser->reason;
   int addr;
@@ -133,7 +118,7 @@ asynStatus testAsynPortDriver::readFloat64Array(asynUser *pasynUser, epicsFloat6
 }
 
 
-asynStatus testAsynPortDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn)
+asynStatus lvDCOMDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn)
 {
   int function = pasynUser->reason;
   int addr;
@@ -165,7 +150,7 @@ asynStatus testAsynPortDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *v
 }
 
 
-asynStatus testAsynPortDriver::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
+asynStatus lvDCOMDriver::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
 {
 	int addr;
 	int function = pasynUser->reason;
@@ -194,7 +179,7 @@ asynStatus testAsynPortDriver::readFloat64(asynUser *pasynUser, epicsFloat64 *va
 	}
 }
 
-asynStatus testAsynPortDriver::readInt32(asynUser *pasynUser, epicsInt32 *value)
+asynStatus lvDCOMDriver::readInt32(asynUser *pasynUser, epicsInt32 *value)
 {
 	int addr;
 	int function = pasynUser->reason;
@@ -223,7 +208,7 @@ asynStatus testAsynPortDriver::readInt32(asynUser *pasynUser, epicsInt32 *value)
 	}
 }
 
-asynStatus testAsynPortDriver::readOctet(asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason)
+asynStatus lvDCOMDriver::readOctet(asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason)
 {
 	int addr;
 	int function = pasynUser->reason;
@@ -270,7 +255,7 @@ asynStatus testAsynPortDriver::readOctet(asynUser *pasynUser, char *value, size_
 	}
 }
 
-asynStatus testAsynPortDriver::writeOctet(asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual)
+asynStatus lvDCOMDriver::writeOctet(asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
@@ -305,11 +290,11 @@ asynStatus testAsynPortDriver::writeOctet(asynUser *pasynUser, const char *value
 
 /* Report
 
-/** Constructor for the testAsynPortDriver class.
+/** Constructor for the lvDCOMDriver class.
   * Calls constructor for the asynPortDriver base class.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] maxPoints The maximum  number of points in the volt and time arrays */
-testAsynPortDriver::testAsynPortDriver(const char *portName, const char *configFile, const char *host) 
+lvDCOMDriver::lvDCOMDriver(const char *portName, const char *configFile, const char *host) 
    : asynPortDriver(portName, 
                     MAX_NUM_LV_CONTROLS, /* maxAddr */ 
                     NUM_LV_PARAMS,
@@ -322,7 +307,7 @@ testAsynPortDriver::testAsynPortDriver(const char *portName, const char *configF
 {
     asynStatus status;
     int i;
-    const char *functionName = "testAsynPortDriver";
+    const char *functionName = "lvDCOMDriver";
 
     createParam(P_LvRunString,                asynParamInt32,         &P_LvRun);
     createParam(P_LvRun2String,                asynParamInt32,         &P_LvRun2);
@@ -341,7 +326,7 @@ testAsynPortDriver::testAsynPortDriver(const char *portName, const char *configF
  //   setIntegerParam(addr, P_LvRun,               0);
 
     /* Create the thread that computes the waveforms in the background */
- //   status = (asynStatus)(epicsThreadCreate("testAsynPortDriverTask",
+ //   status = (asynStatus)(epicsThreadCreate("lvDCOMDriverTask",
  //                         epicsThreadPriorityMedium,
  //                         epicsThreadGetStackSize(epicsThreadStackMedium),
  //                         (EPICSTHREADFUNC)::simTask,
@@ -357,12 +342,12 @@ testAsynPortDriver::testAsynPortDriver(const char *portName, const char *configF
 
 extern "C" {
 
-/** EPICS iocsh callable function to call constructor for the testAsynPortDriver class.
+/** EPICS iocsh callable function to call constructor for the lvDCOMDriver class.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] maxPoints The maximum  number of points in the volt and time arrays */
-int testAsynPortDriverConfigure(const char *portName, const char *configFile, const char *host)
+int lvDCOMConfigure(const char *portName, const char *configFile, const char *host)
 {
-		new testAsynPortDriver(portName, configFile, host);
+		new lvDCOMDriver(portName, configFile, host);
 		return(asynSuccess);
 }
 
@@ -376,18 +361,18 @@ static const iocshArg initArg2 = { "host",iocshArgString};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
 											&initArg2};
-static const iocshFuncDef initFuncDef = {"testAsynPortDriverConfigure",3,initArgs};
+static const iocshFuncDef initFuncDef = {"lvDCOMConfigure",3,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-    testAsynPortDriverConfigure(args[0].sval, args[1].sval, args[2].sval);
+    lvDCOMConfigure(args[0].sval, args[1].sval, args[2].sval);
 }
 
-void testAsynPortDriverRegister(void)
+void lvDCOMRegister(void)
 {
     iocshRegister(&initFuncDef,initCallFunc);
 }
 
-epicsExportRegistrar(testAsynPortDriverRegister);
+epicsExportRegistrar(lvDCOMRegister);
 
 }
 

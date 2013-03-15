@@ -1,17 +1,6 @@
-/*
- * testAsynPortDriver.h
- * 
- * Asyn driver that inherits from the asynPortDriver class to demonstrate its use.
- * It simulates a digital scope looking at a 1kHz 1000-point noisy sine wave.  Controls are
- * provided for time/division, volts/division, volt offset, trigger delay, noise amplitude, update time,
- * and run/stop.
- * Readbacks are provides for the waveform data, min, max and mean values.
- *
- * Author: Mark Rivers
- *
- * Created Feb. 5, 2009
- */
-
+#ifndef LVDCOMDRIVER_H
+#define LVDCOMDRIVER_H
+ 
 #include "asynPortDriver.h"
 
 /* These are the drvInfo strings that are used to identify the parameters.
@@ -27,9 +16,9 @@ class ISISSTUFF;
   * statistics on the waveform, and does callbacks with the statistics and the waveform data itself. 
   * I have made the methods of this class public in order to generate doxygen documentation for them,
   * but they should really all be private. */
-class testAsynPortDriver : public asynPortDriver {
+class lvDCOMDriver : public asynPortDriver {
 public:
-    testAsynPortDriver(const char *portName, const char *configFile, const char* host);
+    lvDCOMDriver(const char *portName, const char *configFile, const char* host);
                  
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
@@ -60,3 +49,5 @@ private:
 
 #define NUM_LV_PARAMS (&LAST_LV_COMMAND - &FIRST_LV_COMMAND + 1)
 #define MAX_NUM_LV_CONTROLS		100
+
+#endif /* LVDCOMDRIVER_H */
