@@ -300,7 +300,7 @@ asynStatus lvDCOMDriver::writeOctet(asynUser *pasynUser, const char *value, size
 /** Constructor for the lvDCOMDriver class.
   * Calls constructor for the asynPortDriver base class.
   * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] maxPoints The maximum  number of points in the volt and time arrays */
+  * \param[in] configFile The maximum  number of points in the volt and time arrays */
 lvDCOMDriver::lvDCOMDriver(ISISSTUFF* stuff, const char *portName, const char *configFile, const char *host) 
    : asynPortDriver(portName, 
                     0, /* maxAddr */ 
