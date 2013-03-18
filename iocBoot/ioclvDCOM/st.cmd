@@ -16,8 +16,8 @@ cd ${TOP}/iocBoot/${IOC}
 # Turn on asynTraceFlow and asynTraceError for global trace, i.e. no connected asynUser.
 #asynSetTraceMask("", 0, 17)
 
-lvDCOMConfigure("beamlogger", "../../lvDCOMApp/src/lvinput.xml")
-lvDCOMConfigure("remotebl", "../../lvDCOMApp/src/lvinput2.xml", "ndxtestfaa")
+lvDCOMConfigure("beamlogger", "../../lvDCOMApp/src/lvinput.xml", "", 1, 1)
+#lvDCOMConfigure("remotebl", "../../lvDCOMApp/src/lvinput2.xml", "ndxtestfaa", 1, 1)
 
 dbLoadRecords("../../db/lvDCOM.db","P=beamlogger:,R=scope1:,PORT=beamlogger,ADDR=0,TIMEOUT=1,NPOINTS=1000")
 dbLoadRecords("$(ASYN)/db/asynRecord.db","P=beamlogger:,R=asyn1,PORT=beamlogger,ADDR=0,OMAX=80,IMAX=80")

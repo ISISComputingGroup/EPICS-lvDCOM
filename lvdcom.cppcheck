@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="1">
+    <includedir>
+		<dir name="C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/include"/>
+		<dir name="C:/Program Files (x86)/Microsoft Visual Studio 10.0/VC/atlmfc/include"/>
+		<dir name="C:/Program Files (x86)/Microsoft SDKs/Windows/v7.0A/include"/>	
+    </includedir>
+    <defines>
+        <define name="_SCL_SECURE_NO_WARNINGS"/>
+        <define name="WIN32"/>
+        <define name="_WIN32"/>
+        <define name="_DEBUG"/>
+        <define name="_CRT_SECURE_NO_WARNINGS"/>
+        <define name="_CRT_NONSTDC_NO_WARNINGS"/>
+        <define name="_MBCS"/>
+        <define name="_VC80_UPGRADE=0x0710"/>
+        <define name="__cplusplus"/>
+        <define name="_MSC_VER=1600"/>
+		<define name="_MSC_FULL_VER=160040219"/>
+		<define name="_MSC_BUILD=1"/>
+        <define name="_MT"/>
+        <define name="_DLL"/>
+        <define name="_WIN64"/>
+        <define name="_M_X64"/>	
+		<define name="_AMD64_"/>
+		<define name="_M_AMD64"/>
+		<define name="_MFC_VER=0x0A00"/>
+		<define name="_WCHAR_T_DEFINED"/>
+		<define name="__MSVC_RUNTIME_CHECKS"/>
+		<define name="_VC_NODEFAULTLIB"/>
+		<define name="_ATL_VER=0x1000"/>
+    </defines>
+</project>

@@ -3,10 +3,7 @@
  
 #include "asynPortDriver.h"
 
-/* These are the drvInfo strings that are used to identify the parameters.
- * They are used by asyn clients, including standard asyn device support */
-#define P_LvRunString                	"LV_RUN" 
-#define P_LvRun2String                	"LV_RUN2" 
+//#include <map>
 
 class ISISSTUFF;
 
@@ -18,7 +15,7 @@ class ISISSTUFF;
   * but they should really all be private. */
 class lvDCOMDriver : public asynPortDriver {
 public:
-    lvDCOMDriver(const char *portName, const char *configFile, const char* host);
+    lvDCOMDriver(ISISSTUFF* stuff, const char *portName, const char *configFile, const char* host);
                  
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
@@ -31,13 +28,9 @@ public:
     virtual asynStatus readInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn);
 
 protected:
-    /** Values used for pasynUser->reason, and indexes into the parameter library. */
-    int P_LvRun;
-    int P_LvRun2;
 	
-    #define FIRST_LV_COMMAND P_LvRun
-    #define LAST_LV_COMMAND P_LvRun2
- 
+	static void task(void* arg) { lvDCOMDriver* driver = (lvDCOMDriver*)arg; }
+	
 private:
     /* Our data */
 //    epicsEventId eventId;
@@ -45,9 +38,5 @@ private:
 //    epicsFloat64 *pTimeBase;
 	ISISSTUFF* m_stuff;
 };
-
-
-#define NUM_LV_PARAMS (&LAST_LV_COMMAND - &FIRST_LV_COMMAND + 1)
-#define MAX_NUM_LV_CONTROLS		100
 
 #endif /* LVDCOMDRIVER_H */

@@ -25,7 +25,7 @@ DBD += lvDCOM.dbd
 # Compile and add the code to the support library
 lvDCOMSupport_SRCS += lvDCOMDriver.cpp isis_stuff.cpp variant_utils.cpp
 
-lvDCOMSupport_LIBS += asyn tinyxpath
+lvDCOMSupport_LIBS += asyn # tinyxpath
 lvDCOMSupport_LIBS += $(EPICS_BASE_IOC_LIBS)
 lvDCOMSupport_SYS_LIBS_WIN32 += msxml2
 #=============================
@@ -42,7 +42,11 @@ lvDCOM_LIBS += lvDCOMSupport asyn
 # Finally link to the EPICS Base libraries
 lvDCOM_LIBS += $(EPICS_BASE_IOC_LIBS)
 
-pdb += lvDCOM.pdb
+pdb += lvDCOM.pdb generateConfig.pdb
+
+PROD = generateConfig
+generateConfig_SRCS += generateConfig.cpp
+generateConfig_LIBS += lvDCOMSupport
 
 #=============================
 

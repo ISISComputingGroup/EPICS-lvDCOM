@@ -49,14 +49,14 @@ std::string ISISSTUFF::doXPATH(const std::string& xpath)
 {
 	if (m_pxmldom == NULL)
 	{
-		throw std::runtime_error("m_cfg is NULL");
+		throw std::runtime_error("m_pxmldom is NULL");
 	}
+	ScopedLock _lock(m_lock);
 	std::map<std::string,std::string>::const_iterator it = m_xpath_map.find(xpath);
 	if (it != m_xpath_map.end())
 	{
 		return it->second;
 	}
-	ScopedLock _lock(m_lock);
 	IXMLDOMNode *pNode = NULL;
 	std::string S_res;
     BSTR bstrValue = NULL;
@@ -73,7 +73,7 @@ std::string ISISSTUFF::doXPATH(const std::string& xpath)
 	}
 	else
 	{
-		throw std::runtime_error("m_cfg is NULL");
+		throw std::runtime_error("doXPATH: cannot find " + xpath);
 	}
 	m_xpath_map[xpath] = S_res;
 	return S_res;
@@ -83,14 +83,14 @@ bool ISISSTUFF::doXPATHbool(const std::string& xpath)
 {
 	if (m_pxmldom == NULL)
 	{
-		throw std::runtime_error("m_cfg is NULL");
+		throw std::runtime_error("m_pxmldom is NULL");
 	}
+	ScopedLock _lock(m_lock);
 	std::map<std::string,bool>::const_iterator it = m_xpath_bool_map.find(xpath);
 	if (it != m_xpath_bool_map.end())
 	{
 		return it->second;
 	}
-	ScopedLock _lock(m_lock);
 	IXMLDOMNode *pNode = NULL;
 	bool res = false;
     BSTR bstrValue = NULL;
@@ -116,7 +116,7 @@ bool ISISSTUFF::doXPATHbool(const std::string& xpath)
 	}
 	else
 	{
-		throw std::runtime_error("m_cfg is NULL");
+		throw std::runtime_error("doXPATHbool: cannot find " + xpath);
 	}
 	m_xpath_bool_map[xpath] = res;
 	return res;
@@ -164,7 +164,6 @@ bool ISISSTUFF::doXPATHbool_old(const std::string& xpath)
 }
 
 #endif
-// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
 
 std::string ISISSTUFF::doPath(const std::string& xpath)
 {
@@ -201,7 +200,9 @@ void ISISSTUFF::DomFromCOM()
 }
 
 
-ISISSTUFF::ISISSTUFF(const char *portName, const char *configFile, const char* host) : /*m_doc(NULL),*/ m_pidentity(NULL), m_pxmldom(NULL)
+ISISSTUFF::ISISSTUFF(const char *portName, const char *configFile, const char* host, int warnViIdle, int autostartVi) : 
+         /*m_doc(NULL),*/ m_port(portName), m_pidentity(NULL), m_pxmldom(NULL), m_warnViIdle(warnViIdle != 0 ? true : false),
+			m_autostartVi(autostartVi != 0 ? true : false)
 {
 		CoInitializeEx(NULL, COINIT_MULTITHREADED);
 //		std::ifstream in(configFile);
@@ -210,7 +211,6 @@ ISISSTUFF::ISISSTUFF(const char *portName, const char *configFile, const char* h
 //		Poco::AutoPtr<Poco::XML::Document> pDoc = parser.parse(&src);
 //		Poco::XML::NodeIterator it(pDoc, Poco::XML::NodeFilter::SHOW_ALL);   // or SHOW_ELEMENTS ?
 //		Poco::XML::Node* pNode = it.nextNode();
-
 //		while (pNode)
 //		{
 //			std::cout<<pNode->nodeName()<<":"<< pNode->nodeValue()<<std::endl;
@@ -254,6 +254,98 @@ ISISSTUFF::ISISSTUFF(const char *portName, const char *configFile, const char* h
 		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
 	}
   	m_extint = doPath("/lvinput/extint/@path").c_str();
+	epicsAtExit(epicsExitFunc, this);
+}
+
+void ISISSTUFF::epicsExitFunc(void* arg)
+{
+    ISISSTUFF* stuff = static_cast<ISISSTUFF*>(arg);
+	if (stuff != NULL)
+	{
+		stuff->stopAutoStartedVis();
+	}
+}
+
+void ISISSTUFF::stopAutoStartedVis()
+{
+    for(vi_map_t::const_iterator it = m_vimap.begin(); it != m_vimap.end(); ++it)
+	{
+		LabVIEW::VirtualInstrumentPtr vi_ref = it->second.vi_ref;
+	    if (it->second.started && vi_ref != NULL)
+		{
+			if (vi_ref->ExecState != LabVIEW::ExecStateEnum::eIdle) // don't try to stop it if it is already stopped
+			{
+				std::cerr << "stopping \"" << CW2CT(it->first.c_str()) << "\" as it was auto-started and is still running" << std::endl;
+				try
+				{
+					vi_ref->Abort();
+				}
+				catch(const std::exception& ex)
+				{
+					std::cerr << "error stopping vi: " << ex.what() << std::endl;
+				}
+				catch(...)  
+				{ 
+					std::cerr << "error stopping vi: unknown" << std::endl;
+				}
+			}
+		}
+	}
+}
+
+long ISISSTUFF::nParams()
+{
+	long n = 0;
+	char control_name_xpath[256];
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param", m_port.c_str());
+	IXMLDOMNodeList* pXMLDomNodeList = NULL;
+	HRESULT hr = m_pxmldom->selectNodes(_bstr_t(control_name_xpath), &pXMLDomNodeList);
+	if (SUCCEEDED(hr) && pXMLDomNodeList != NULL)
+	{
+		pXMLDomNodeList->get_length(&n);
+		pXMLDomNodeList->Release();
+	}
+	return n;
+}
+
+void ISISSTUFF::getParams(std::map<std::string,std::string>& res)
+{
+	res.clear();
+	char control_name_xpath[256];
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param", m_port.c_str());
+	IXMLDOMNodeList* pXMLDomNodeList = NULL;
+	HRESULT hr = m_pxmldom->selectNodes(_bstr_t(control_name_xpath), &pXMLDomNodeList);
+	if (FAILED(hr) || pXMLDomNodeList == NULL)
+	{
+		return;
+	}
+	IXMLDOMNode *pNode, *pAttrNode1, *pAttrNode2;
+	long n = 0;
+	pXMLDomNodeList->get_length(&n);
+	for(long i=0; i<n; ++i)
+	{
+		pNode = NULL;
+		hr = pXMLDomNodeList->get_item(i, &pNode);
+		if (SUCCEEDED(hr) && pNode != NULL)
+		{
+			IXMLDOMNamedNodeMap *attributeMap = NULL;
+			pAttrNode1 = pAttrNode2 = NULL;
+			pNode->get_attributes(&attributeMap);
+			hr = attributeMap->getNamedItem(_bstr_t("name"), &pAttrNode1);
+			hr = attributeMap->getNamedItem(_bstr_t("type"), &pAttrNode2);
+			BSTR bstrValue1 = NULL, bstrValue2 = NULL;
+			hr=pAttrNode1->get_text(&bstrValue1);
+			hr=pAttrNode2->get_text(&bstrValue2);
+			res[std::string(COLE2CT(bstrValue1))] = COLE2CT(bstrValue2);
+			SysFreeString(bstrValue1);
+			SysFreeString(bstrValue2);
+			pAttrNode1->Release();
+			pAttrNode2->Release();
+			attributeMap->Release();
+			pNode->Release();
+		}
+	}	
+	pXMLDomNodeList->Release();
 }
 
 COAUTHIDENTITY* ISISSTUFF::createIdentity(const std::string& user, const std::string&  domain, const std::string& pass)
@@ -285,28 +377,6 @@ HRESULT ISISSTUFF::setIdentity(COAUTHIDENTITY* pidentity, IUnknown* pUnk)
     return S_OK;
 }
 
-int ISISSTUFF::testlv()
-{
-	CComPtr<LabVIEW::_Application> lv;
-	HRESULT hr = lv.CoCreateInstance(LabVIEW::CLSID_Application, 0, CLSCTX_LOCAL_SERVER);
-
-	if (FAILED(hr))
-	{
-//		AtlReportError(GetObjectCLSID(), "CoCreateInstance failed"); 
-		return -1;
-	}
-
-	CComBSTR ccombstr((char *)lv->GetVersion());
-
-	if (ccombstr.Length() == 0)
-	{
-		//Did not talk to LabVIEW
-//		AtlReportError(GetObjectCLSID(), "Failed to communicate with LabVIEW"); 
-		return -1;
-	}
-	
-	return 0;
-}
 
 void ISISSTUFF::getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr& vi)
 {
@@ -408,15 +478,28 @@ void ISISSTUFF::createViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstru
 			reentrant = true;
 		}
 	}
-	ViRef viref;
-	viref.vi_ref = vi;
-	viref.reentrant = reentrant;
+	ViRef viref(vi, reentrant, false);
+	// LabVIEW::ExecStateEnum.eIdle = 1
+	// LabVIEW::ExecStateEnum.eRunTopLevel = 2
+	if (vi->ExecState == LabVIEW::ExecStateEnum::eIdle)
+	{
+		if (m_autostartVi) // autostart
+		{
+			std::cerr << "autostart: starting \"" << CW2CT(vi_name) << "\" on " << (m_host.size() > 0 ? m_host : "localhost") << std::endl;
+			vi->Run(true);
+			viref.started = true;
+		}
+		else if (m_warnViIdle)
+		{
+			std::cerr << "\"" << CW2CT(vi_name) << "\" is not running on " << (m_host.size() > 0 ? m_host : "localhost") << " and autostart is disabled" << std::endl;
+		}
+	}
 	m_vimap[ws] = viref;
 }
 
 
 template <>
-void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, std::string* value)
+void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, std::string* value)
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	if (value == NULL)
@@ -425,9 +508,8 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, std::stri
 	}
 	CComVariant v;
 	char vi_name_xpath[256], control_name_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/item[@name='%s']/vi/@path", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/read/@target", portName.c_str(), addr);
-	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/port[@name='%s']/vi/@path", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/read/@target", portName.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
     getLabviewValue(vi_name, control_name, &v);
@@ -442,7 +524,7 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, std::stri
 }
 
 template<typename T> 
-void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, T* value, size_t nElements, size_t& nIn)
+void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, T* value, size_t nElements, size_t& nIn)
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	if (value == NULL)
@@ -451,9 +533,8 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, T* value,
 	}
 	CComVariant v;
 	char vi_name_xpath[256], control_name_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/item[@name='%s']/vi/@path", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/read/@target", portName.c_str(), addr);
-	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/port[@name='%s']/vi/@path", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/read/@target", portName.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
     getLabviewValue(vi_name, control_name, &v);
@@ -472,7 +553,7 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, T* value,
 }
 
 template <typename T>
-void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, T* value)
+void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, T* value)
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	if (value == NULL)
@@ -481,9 +562,8 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, T* value)
 	}
 	CComVariant v;
 	char vi_name_xpath[256], control_name_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/item[@name='%s']/vi/@path", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/read/@target", portName.c_str(), addr);
-	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/port[@name='%s']/vi/@path", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/read/@target", portName.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
     getLabviewValue(vi_name, control_name, &v);
@@ -510,17 +590,15 @@ void ISISSTUFF::getLabviewValue(BSTR vi_name, BSTR control_name, VARIANT* value)
 	}
 }
 
-
 template <>
-void ISISSTUFF::setLabviewValue(const std::string& portName, int addr, const std::string& value)
+void ISISSTUFF::setLabviewValue(const std::string& portName, const char* param, const std::string& value)
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	CComVariant v(value.c_str()), results;
 	char vi_name_xpath[256], control_name_xpath[256], use_extint_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/item[@name='%s']/vi/@path", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/set/@target", portName.c_str(), addr);
-	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/set/@extint", portName.c_str(), addr);
-	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/port[@name='%s']/vi/@path", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/set/@target", portName.c_str(), param);
+	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/set/@extint", portName.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
 	bool use_ext = doXPATHbool(use_extint_xpath); 
@@ -535,15 +613,14 @@ void ISISSTUFF::setLabviewValue(const std::string& portName, int addr, const std
 }
 
 template <typename T>
-void ISISSTUFF::setLabviewValue(const std::string& portName, int addr, const T& value)
+void ISISSTUFF::setLabviewValue(const std::string& portName, const char* param, const T& value)
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	CComVariant v(value), results;
 	char vi_name_xpath[256], control_name_xpath[256], use_extint_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/item[@name='%s']/vi/@path", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/set/@target", portName.c_str(), addr);
-	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "/lvinput/item[@name='%s']/vi/control[@id=%d]/set/@extint", portName.c_str(), addr);
-	// Use Poco::Path to convert to native (windows) style path as config file is UNIX style
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/port[@name='%s']/vi/@path", portName.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/set/@target", portName.c_str(), param);
+	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/set/@extint", portName.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
 	bool use_ext = doXPATHbool(use_extint_xpath); 
@@ -603,9 +680,7 @@ void ISISSTUFF::setLabviewValueExt(BSTR vi_name, BSTR control_name, const VARIAN
 void ISISSTUFF::callLabview(BSTR vi_name, VARIANT& names, VARIANT& values, VARIANT_BOOL reentrant, VARIANT* results)
 {
 	HRESULT hr = S_OK;
-
 		LabVIEW::VirtualInstrumentPtr vi;
-
 		if (reentrant)
 		{
 			getViRef(vi_name, true, vi);
@@ -614,118 +689,21 @@ void ISISSTUFF::callLabview(BSTR vi_name, VARIANT& names, VARIANT& values, VARIA
 		{
 			getViRef(vi_name, false, vi);
 		}
-
 		hr = vi->Call(&names, &values);
 		vi.Detach();
-
 		CComVariant var(values);
 		var.Detach(results);
-
 	if (FAILED(hr))
 	{
 		throw std::runtime_error("CallLabviewValue failed");
 	}
 }
 
+template void ISISSTUFF::setLabviewValue(const std::string& portName, const char* param, const double& value);
+template void ISISSTUFF::setLabviewValue(const std::string& portName, const char* param, const int& value);
 
-void ISISSTUFF::getViState(BSTR vi_name, VARIANT* value)
-{
-	HRESULT hr = S_OK;
+template void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, double* value);
+template void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, int* value);
 
-		LabVIEW::VirtualInstrumentPtr vi;
-		getViRef(vi_name, false, vi);
-		CComVariant wrapper;
-		wrapper.ChangeType(VT_INT);
-		wrapper.Detach(value);
-		value->intVal = vi->ExecState;
-		vi.Detach();
-
-	if (FAILED(hr))
-	{
-		throw std::runtime_error("GetViState failed");
-	}
-}
-
-void ISISSTUFF::startVi(BSTR vi_name)
-{
-	HRESULT hr = S_OK;
-
-	try
-	{
-		LabVIEW::VirtualInstrumentPtr vi;
-		getViRef(vi_name, false, vi);
-		// LabVIEW::ExecStateEnum.eIdle = 1
-		if (vi->ExecState == 1)
-		{
-			vi->Run(true);
-		}
-		vi.Detach();
-	}
-	catch(...)
-	{
-		hr = -1;
-	}
-
-	if (FAILED(hr))
-	{
-		throw std::runtime_error("StartVi failed");
-	}
-}
-
-void ISISSTUFF::stopVi(BSTR vi_name)
-{
-	HRESULT hr = S_OK;
-
-	try
-	{
-		LabVIEW::VirtualInstrumentPtr vi;
-		getViRef(vi_name, false, vi);
-		// LabVIEW::ExecStateEnum.eIdle = 1
-		// LabVIEW::ExecStateEnum.eRunTopLevel = 2
-		if (vi->ExecState == 1 || vi->ExecState == 2)
-		{
-			vi->Abort();
-		}
-		vi.Detach();
-	}
-	catch(...)
-	{
-		hr = -1;
-	}
-
-	if (FAILED(hr))
-	{
-		throw std::runtime_error("StopVi failed");
-	}
-}
-
-void ISISSTUFF::closeViFrontPanel(BSTR vi_name)
-{
-	HRESULT hr = S_OK;
-
-	try
-	{
-		LabVIEW::VirtualInstrumentPtr vi;
-		getViRef(vi_name, false, vi);
-		hr = vi->CloseFrontPanel();
-		vi.Detach();
-	}
-	catch(...)
-	{
-		hr = -1;
-	}
-
-	if (FAILED(hr))
-	{
-		throw std::runtime_error("CloseViFrontPanel failed");
-	}
-}
-
-template void ISISSTUFF::setLabviewValue(const std::string& portName, int addr, const double& value);
-template void ISISSTUFF::setLabviewValue(const std::string& portName, int addr, const int& value);
-
-template void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, double* value);
-template void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, int* value);
-
-template void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, double* value, size_t nElements, size_t& nIn);
-template void ISISSTUFF::getLabviewValue(const std::string& portName, int addr, int* value, size_t nElements, size_t& nIn);
+template void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, double* value, size_t nElements, size_t& nIn);
+template void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, int* value, size_t nElements, size_t& nIn);

@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #include "epicsThread.h"
+#include "epicsExit.h"
 #include "iocsh.h"
 
 int main(int argc,char *argv[])
@@ -14,5 +15,7 @@ int main(int argc,char *argv[])
         epicsThreadSleep(.2);
     }
     iocsh(NULL);
+	epicsExit(EXIT_SUCCESS);
+	// Note that the following statement will never be executed
     return(0);
 }
