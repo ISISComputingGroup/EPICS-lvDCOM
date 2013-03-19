@@ -23,7 +23,7 @@ pdb += lvDCOMSupport.pdb
 DBD += lvDCOM.dbd
 
 # Compile and add the code to the support library
-lvDCOMSupport_SRCS += lvDCOMDriver.cpp isis_stuff.cpp variant_utils.cpp
+lvDCOMSupport_SRCS += lvDCOMDriver.cpp lvDCOMInterface.cpp variant_utils.cpp convertToString.cpp
 
 lvDCOMSupport_LIBS += asyn # tinyxpath
 lvDCOMSupport_LIBS += $(EPICS_BASE_IOC_LIBS)

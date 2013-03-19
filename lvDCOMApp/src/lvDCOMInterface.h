@@ -50,19 +50,21 @@ struct ViRef
 };
 
 
-class ISISSTUFF
+class lvDCOMInterface
 {
 public:
-	ISISSTUFF(const char *portName, const char *configFile, const char* host, int warnViIdle, int autostartVi);
+	lvDCOMInterface(const char* configSection, const char *configFile, const char* host, int warnViIdle, int autostartVi);
 	long nParams();
 	void getParams(std::map<std::string,std::string>& res);
-	template<typename T> void setLabviewValue(const std::string& portName, const char* param, const T& value);
-	template<typename T> void getLabviewValue(const std::string& portName, const char* param, T* value);
-	template<typename T> void getLabviewValue(const std::string& portName, const char* param, T* value, size_t nElements, size_t& nIn);
-	~ISISSTUFF() { if (m_pxmldom != NULL) { m_pxmldom->Release(); m_pxmldom = 0; } }
+	template<typename T> void setLabviewValue(const char* param, const T& value);
+	template<typename T> void getLabviewValue(const char* param, T* value);
+	template<typename T> void getLabviewValue(const char* param, T* value, size_t nElements, size_t& nIn);
+	~lvDCOMInterface() { if (m_pxmldom != NULL) { m_pxmldom->Release(); m_pxmldom = 0; } }
 private:
 	bool m_warnViIdle;
 	bool m_autostartVi;
+	std::string m_configSection;
+	std::string m_host;
 	typedef std::map<std::wstring, ViRef> vi_map_t;
 	vi_map_t m_vimap;
 	epicsMutex m_lock;
@@ -70,8 +72,6 @@ private:
 //	TiXmlElement* m_root;
 	IXMLDOMDocument2 *m_pxmldom;
 	CComBSTR m_extint;
-	std::string m_host;
-	std::string m_port;
 	CComPtr<LabVIEW::_Application> m_lv;
 	COAUTHIDENTITY* m_pidentity;
 	std::map<std::string,std::string> m_xpath_map;

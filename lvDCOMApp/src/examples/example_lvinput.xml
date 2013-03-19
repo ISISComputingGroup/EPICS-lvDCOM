@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Example lvDCOM driver configuration file, loaded at IOC boot time in st.cmd via e.g.
+	
+	    lvDCOMConfigure("example1", "example", "example_lvinput.xml", "", 1, 1)
+
+    @author Freddie Akeroyd, STFC ISIS facility, UK (freddie.akeroyd at stfc.ac.uk)
+
+    $LastChangedRevision: 1489 $: 
+    $LastChangedBy: FreddieAkeroyd $: 
+    $LastChangedDate: 2012-12-10 14:13:43 +0000 (Mon, 10 Dec 2012) $:  
+    $HeadURL: http://svn.isis.rl.ac.uk/InstrumentControl/ICP/trunk/get_svn_revision.bat $:
+-->
+<lvinput>
+   <!--
+        the exint Vi is an ISIS Vi that is used as a proxy Vi for "set" operations when extint="true" is specified below.
+		If your labview front panels are not "labview event driven" then you do not need to worry about this.
+		If, however, they are (i.e. you would require the "signalling" version of the setControlValue() method) then contact
+		ISIS computing group
+		
+		path is parsed using EPICS macEnvExpand() and so can contain epics environment variables
+   -->
+   
+   <extint path="c:/LabVIEW Modules old/Common/External Interface/External Interface.llb/External Interface - Set Value.vi" />
+   
+   <section name="example"> <!-- this will be mapped to an asyn driver port name (via lvDCOMConfigure) that can then be specified in an epics record  -->
+
+    <!-- path to LabVIEW vi file we are using, which is parsed using EPICS macEnvExpand() and so can contain epics environment variables -->
+    <vi path="$(TOP)/lvDCOMApp/src/examples/example.vi"> 
+      <!--
+	      <param> defines as asyn driver parameter that can be specified in an epics record to access data on the labview Vi. The <set>
+                  and <read> items specify the name of the appropriate control/indicator on the LabVIEW Vi to access for these
+                  operations. The "method" attribute controls the underlying method by which the new value is communicated, 
+				  currently only "GCV" for reads (use DCOM exposed getControlValue()) and "SCV" for sets (use DCOM exposed setControlValue()) 
+				  are supported. The meaning and use of the extint attribute has been covered earlier.
+	  -->
+	  <param name="cont1" type="float64"> 
+        <read method="GCV" target="Some Control" />  
+        <set method="SCV" extint="false" target="Some Control" /> 
+	  </param>
+	
+      <param name="ind1" type="int32"> 
+        <read method="GCV" target="Some Indicator" />
+        <set method="SCV" extint="false" target="Some Indicator" />
+      </param>
+
+	</vi>
+	 
+  </section>
+  
+</lvinput>

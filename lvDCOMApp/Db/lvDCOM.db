@@ -1,31 +1,16 @@
-record(ao, "TS1BEAMW")
+record(ao, "CON1")
 {
    field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn(beamlogger,0,0)TS1Beam")
+   field(OUT,  "@asyn(ex1,0,0)cont1")
    field(PREC, "3")
 }
 
-record(ao, "TS1BEAMFAAW")
+record(ai, "IND1")
 {
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn(remotebl,0,0)TS1Beam")
-   field(PREC, "3")
-}
-
-record(ai, "TS1BEAM")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(beamlogger,0,0)TS1Beam")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn(ex1,0,0)ind1")
    field(PREC, "3")
    field(SCAN, ".1 second")
-}
-
-record(ai, "TS1BEAMFAA")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn(remotebl,0,0)TS1Beam")
-   field(PREC, "3")
-   field(SCAN, "1 second")
 }
 
 #record(waveform, "FLTARRAY")

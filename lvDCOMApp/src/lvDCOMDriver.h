@@ -5,7 +5,7 @@
 
 //#include <map>
 
-class ISISSTUFF;
+class lvDCOMInterface;
 
 /** Class that demonstrates the use of the asynPortDriver base class to greatly simplify the task
   * of writing an asyn port driver.
@@ -15,7 +15,7 @@ class ISISSTUFF;
   * but they should really all be private. */
 class lvDCOMDriver : public asynPortDriver {
 public:
-    lvDCOMDriver(ISISSTUFF* stuff, const char *portName, const char *configFile, const char* host);
+    lvDCOMDriver(lvDCOMInterface* stuff, const char *portName);
                  
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
@@ -28,15 +28,18 @@ public:
     virtual asynStatus readInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn);
 
 protected:
-	
-	static void task(void* arg) { lvDCOMDriver* driver = (lvDCOMDriver*)arg; }
+	template<typename T> asynStatus writeValue(asynUser *pasynUser, const char* functionName, T value);
+    template<typename T> asynStatus readValue(asynUser *pasynUser, const char* functionName, T* value);
+    template<typename T> asynStatus readArray(asynUser *pasynUser, const char* functionName, T *value, size_t nElements, size_t *nIn);
+
+	static void lvDCOMTask(void* arg) { lvDCOMDriver* driver = (lvDCOMDriver*)arg; }
 	
 private:
     /* Our data */
 //    epicsEventId eventId;
 //    epicsFloat64 *pData;
 //    epicsFloat64 *pTimeBase;
-	ISISSTUFF* m_stuff;
+	lvDCOMInterface* m_lvdcom;
 };
 
 #endif /* LVDCOMDRIVER_H */

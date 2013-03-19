@@ -24,8 +24,19 @@
 #include <fstream>
 #include <iostream>
 
-#include "isis_stuff.h"
+#include "lvDCOMInterface.h"
 #include "variant_utils.h"
+
+#include <macLib.h>
+
+/// _com_error is not derived from std::exception hence this bit of code
+void __stdcall _com_raise_error(HRESULT hr, IErrorInfo* perrinfo) 
+{
+	_com_error com_error(hr, perrinfo);
+//	std::string message = "(" + com_error.Source() + ") " + com_error.Description();
+	std::string message = com_error.Description();
+    throw COMexception(message, hr);
+}
 
 class ScopedLock
 {
@@ -45,7 +56,7 @@ public:
 	}
 };
 
-std::string ISISSTUFF::doXPATH(const std::string& xpath)
+std::string lvDCOMInterface::doXPATH(const std::string& xpath)
 {
 	if (m_pxmldom == NULL)
 	{
@@ -79,7 +90,7 @@ std::string ISISSTUFF::doXPATH(const std::string& xpath)
 	return S_res;
 }
 
-bool ISISSTUFF::doXPATHbool(const std::string& xpath)
+bool lvDCOMInterface::doXPATHbool(const std::string& xpath)
 {
 	if (m_pxmldom == NULL)
 	{
@@ -124,7 +135,7 @@ bool ISISSTUFF::doXPATHbool(const std::string& xpath)
 
 #if 0
 
-std::string ISISSTUFF::doXPATH_old(const std::string& xpath)
+std::string lvDCOMInterface::doXPATH_old(const std::string& xpath)
 {
 	if (m_doc == NULL)
 	{
@@ -144,7 +155,7 @@ std::string ISISSTUFF::doXPATH_old(const std::string& xpath)
 	return S_res;
 }
 
-bool ISISSTUFF::doXPATHbool_old(const std::string& xpath)
+bool lvDCOMInterface::doXPATHbool_old(const std::string& xpath)
 {
 	if (m_doc == NULL)
 	{
@@ -165,9 +176,12 @@ bool ISISSTUFF::doXPATHbool_old(const std::string& xpath)
 
 #endif
 
-std::string ISISSTUFF::doPath(const std::string& xpath)
+std::string lvDCOMInterface::doPath(const std::string& xpath)
 {
     std::string S_res = doXPATH(xpath);
+	char* exp_str = macEnvExpand(S_res.c_str());
+	S_res = exp_str;
+	free(exp_str);
 	for(int i=0; i<S_res.size(); ++i)
 	{
 	    if (S_res[i] == '/')
@@ -178,7 +192,7 @@ std::string ISISSTUFF::doPath(const std::string& xpath)
 	return S_res;
 }
 
-void ISISSTUFF::DomFromCOM()
+void lvDCOMInterface::DomFromCOM()
 {
 	m_pxmldom = NULL;
     HRESULT hr=CoCreateInstance(CLSID_DOMDocument, NULL, CLSCTX_SERVER,
@@ -200,8 +214,8 @@ void ISISSTUFF::DomFromCOM()
 }
 
 
-ISISSTUFF::ISISSTUFF(const char *portName, const char *configFile, const char* host, int warnViIdle, int autostartVi) : 
-         /*m_doc(NULL),*/ m_port(portName), m_pidentity(NULL), m_pxmldom(NULL), m_warnViIdle(warnViIdle != 0 ? true : false),
+lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFile, const char* host, int warnViIdle, int autostartVi) : 
+            m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_warnViIdle(warnViIdle != 0 ? true : false),
 			m_autostartVi(autostartVi != 0 ? true : false)
 {
 		CoInitializeEx(NULL, COINIT_MULTITHREADED);
@@ -244,7 +258,9 @@ ISISSTUFF::ISISSTUFF(const char *portName, const char *configFile, const char* h
 //	m_root = m_doc->RootElement();
 	DomFromCOM();
 	short sResult = FALSE;
-	HRESULT hr = m_pxmldom->load(_variant_t(configFile), &sResult);
+	char* configFile_expanded = macEnvExpand(configFile);
+	HRESULT hr = m_pxmldom->load(_variant_t(configFile_expanded), &sResult);
+	free(configFile_expanded);
     if(FAILED(hr))
 	{
 		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
@@ -257,16 +273,16 @@ ISISSTUFF::ISISSTUFF(const char *portName, const char *configFile, const char* h
 	epicsAtExit(epicsExitFunc, this);
 }
 
-void ISISSTUFF::epicsExitFunc(void* arg)
+void lvDCOMInterface::epicsExitFunc(void* arg)
 {
-    ISISSTUFF* stuff = static_cast<ISISSTUFF*>(arg);
+    lvDCOMInterface* stuff = static_cast<lvDCOMInterface*>(arg);
 	if (stuff != NULL)
 	{
 		stuff->stopAutoStartedVis();
 	}
 }
 
-void ISISSTUFF::stopAutoStartedVis()
+void lvDCOMInterface::stopAutoStartedVis()
 {
     for(vi_map_t::const_iterator it = m_vimap.begin(); it != m_vimap.end(); ++it)
 	{
@@ -293,11 +309,11 @@ void ISISSTUFF::stopAutoStartedVis()
 	}
 }
 
-long ISISSTUFF::nParams()
+long lvDCOMInterface::nParams()
 {
 	long n = 0;
 	char control_name_xpath[256];
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param", m_port.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param", m_configSection.c_str());
 	IXMLDOMNodeList* pXMLDomNodeList = NULL;
 	HRESULT hr = m_pxmldom->selectNodes(_bstr_t(control_name_xpath), &pXMLDomNodeList);
 	if (SUCCEEDED(hr) && pXMLDomNodeList != NULL)
@@ -308,11 +324,11 @@ long ISISSTUFF::nParams()
 	return n;
 }
 
-void ISISSTUFF::getParams(std::map<std::string,std::string>& res)
+void lvDCOMInterface::getParams(std::map<std::string,std::string>& res)
 {
 	res.clear();
 	char control_name_xpath[256];
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param", m_port.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param", m_configSection.c_str());
 	IXMLDOMNodeList* pXMLDomNodeList = NULL;
 	HRESULT hr = m_pxmldom->selectNodes(_bstr_t(control_name_xpath), &pXMLDomNodeList);
 	if (FAILED(hr) || pXMLDomNodeList == NULL)
@@ -348,7 +364,7 @@ void ISISSTUFF::getParams(std::map<std::string,std::string>& res)
 	pXMLDomNodeList->Release();
 }
 
-COAUTHIDENTITY* ISISSTUFF::createIdentity(const std::string& user, const std::string&  domain, const std::string& pass)
+COAUTHIDENTITY* lvDCOMInterface::createIdentity(const std::string& user, const std::string&  domain, const std::string& pass)
 {
     COAUTHIDENTITY* pidentity = new COAUTHIDENTITY;
     pidentity->Domain = (USHORT*)strdup(domain.c_str());
@@ -361,7 +377,7 @@ COAUTHIDENTITY* ISISSTUFF::createIdentity(const std::string& user, const std::st
     return pidentity;
 }
 
-HRESULT ISISSTUFF::setIdentity(COAUTHIDENTITY* pidentity, IUnknown* pUnk)
+HRESULT lvDCOMInterface::setIdentity(COAUTHIDENTITY* pidentity, IUnknown* pUnk)
 {
     HRESULT hr;
     if (pidentity != NULL)
@@ -378,7 +394,7 @@ HRESULT ISISSTUFF::setIdentity(COAUTHIDENTITY* pidentity, IUnknown* pUnk)
 }
 
 
-void ISISSTUFF::getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr& vi)
+void lvDCOMInterface::getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr& vi)
 {
 	UINT len = SysStringLen(vi_name);
 	std::wstring ws(vi_name, SysStringLen(vi_name));
@@ -405,7 +421,7 @@ void ISISSTUFF::getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumen
 }
 
 
-void ISISSTUFF::createViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr& vi)
+void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr& vi)
 {
 	std::wstring ws(vi_name, SysStringLen(vi_name));
 	HRESULT hr;
@@ -499,7 +515,7 @@ void ISISSTUFF::createViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstru
 
 
 template <>
-void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, std::string* value)
+void lvDCOMInterface::getLabviewValue(const char* param, std::string* value)
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	if (value == NULL)
@@ -508,8 +524,8 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, 
 	}
 	CComVariant v;
 	char vi_name_xpath[256], control_name_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/port[@name='%s']/vi/@path", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/read/@target", portName.c_str(), param);
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
     getLabviewValue(vi_name, control_name, &v);
@@ -524,7 +540,7 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, 
 }
 
 template<typename T> 
-void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, T* value, size_t nElements, size_t& nIn)
+void lvDCOMInterface::getLabviewValue(const char* param, T* value, size_t nElements, size_t& nIn)
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	if (value == NULL)
@@ -533,8 +549,8 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, 
 	}
 	CComVariant v;
 	char vi_name_xpath[256], control_name_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/port[@name='%s']/vi/@path", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/read/@target", portName.c_str(), param);
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
     getLabviewValue(vi_name, control_name, &v);
@@ -553,7 +569,7 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, 
 }
 
 template <typename T>
-void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, T* value)
+void lvDCOMInterface::getLabviewValue(const char* param, T* value)
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	if (value == NULL)
@@ -562,8 +578,8 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, 
 	}
 	CComVariant v;
 	char vi_name_xpath[256], control_name_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/port[@name='%s']/vi/@path", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/read/@target", portName.c_str(), param);
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
     getLabviewValue(vi_name, control_name, &v);
@@ -577,7 +593,7 @@ void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, 
 	}
 }
 
-void ISISSTUFF::getLabviewValue(BSTR vi_name, BSTR control_name, VARIANT* value)
+void lvDCOMInterface::getLabviewValue(BSTR vi_name, BSTR control_name, VARIANT* value)
 {
 	HRESULT hr = S_OK;
 	LabVIEW::VirtualInstrumentPtr vi;
@@ -591,14 +607,14 @@ void ISISSTUFF::getLabviewValue(BSTR vi_name, BSTR control_name, VARIANT* value)
 }
 
 template <>
-void ISISSTUFF::setLabviewValue(const std::string& portName, const char* param, const std::string& value)
+void lvDCOMInterface::setLabviewValue(const char* param, const std::string& value)
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	CComVariant v(value.c_str()), results;
 	char vi_name_xpath[256], control_name_xpath[256], use_extint_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/port[@name='%s']/vi/@path", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/set/@target", portName.c_str(), param);
-	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/set/@extint", portName.c_str(), param);
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@target", m_configSection.c_str(), param);
+	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@extint", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
 	bool use_ext = doXPATHbool(use_extint_xpath); 
@@ -613,14 +629,14 @@ void ISISSTUFF::setLabviewValue(const std::string& portName, const char* param, 
 }
 
 template <typename T>
-void ISISSTUFF::setLabviewValue(const std::string& portName, const char* param, const T& value)
+void lvDCOMInterface::setLabviewValue(const char* param, const T& value)
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	CComVariant v(value), results;
 	char vi_name_xpath[256], control_name_xpath[256], use_extint_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/port[@name='%s']/vi/@path", portName.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/set/@target", portName.c_str(), param);
-	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "/lvinput/port[@name='%s']/vi/param[@name='%s']/set/@extint", portName.c_str(), param);
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
+	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@target", m_configSection.c_str(), param);
+	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@extint", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
 	bool use_ext = doXPATHbool(use_extint_xpath); 
@@ -634,7 +650,7 @@ void ISISSTUFF::setLabviewValue(const std::string& portName, const char* param, 
 	}
 }
 
-void ISISSTUFF::setLabviewValue(BSTR vi_name, BSTR control_name, const VARIANT& value)
+void lvDCOMInterface::setLabviewValue(BSTR vi_name, BSTR control_name, const VARIANT& value)
 {
 	HRESULT hr = S_OK;
 	LabVIEW::VirtualInstrumentPtr vi;
@@ -647,7 +663,7 @@ void ISISSTUFF::setLabviewValue(BSTR vi_name, BSTR control_name, const VARIANT& 
 	}
 }
 
-void ISISSTUFF::setLabviewValueExt(BSTR vi_name, BSTR control_name, const VARIANT& value, VARIANT* results)
+void lvDCOMInterface::setLabviewValueExt(BSTR vi_name, BSTR control_name, const VARIANT& value, VARIANT* results)
 {
 
 	CComSafeArray<BSTR> names(6);
@@ -677,7 +693,7 @@ void ISISSTUFF::setLabviewValueExt(BSTR vi_name, BSTR control_name, const VARIAN
 	callLabview(m_extint, n, v, true, results);
 }
 
-void ISISSTUFF::callLabview(BSTR vi_name, VARIANT& names, VARIANT& values, VARIANT_BOOL reentrant, VARIANT* results)
+void lvDCOMInterface::callLabview(BSTR vi_name, VARIANT& names, VARIANT& values, VARIANT_BOOL reentrant, VARIANT* results)
 {
 	HRESULT hr = S_OK;
 		LabVIEW::VirtualInstrumentPtr vi;
@@ -699,11 +715,11 @@ void ISISSTUFF::callLabview(BSTR vi_name, VARIANT& names, VARIANT& values, VARIA
 	}
 }
 
-template void ISISSTUFF::setLabviewValue(const std::string& portName, const char* param, const double& value);
-template void ISISSTUFF::setLabviewValue(const std::string& portName, const char* param, const int& value);
+template void lvDCOMInterface::setLabviewValue(const char* param, const double& value);
+template void lvDCOMInterface::setLabviewValue(const char* param, const int& value);
 
-template void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, double* value);
-template void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, int* value);
+template void lvDCOMInterface::getLabviewValue(const char* param, double* value);
+template void lvDCOMInterface::getLabviewValue(const char* param, int* value);
 
-template void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, double* value, size_t nElements, size_t& nIn);
-template void ISISSTUFF::getLabviewValue(const std::string& portName, const char* param, int* value, size_t nElements, size_t& nIn);
+template void lvDCOMInterface::getLabviewValue(const char* param, double* value, size_t nElements, size_t& nIn);
+template void lvDCOMInterface::getLabviewValue(const char* param, int* value, size_t nElements, size_t& nIn);

@@ -18,9 +18,96 @@
 #include "lvDCOMDriver.h"
 #include <epicsExport.h>
 
-#include "isis_stuff.h"
+#include "lvDCOMInterface.h"
+#include "convertToString.h"
 
 static const char *driverName="lvDCOMDriver";
+
+template<typename T>
+asynStatus lvDCOMDriver::writeValue(asynUser *pasynUser, const char* functionName, T value)
+{
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    const char *paramName = NULL;
+	getParamName(function, &paramName);
+	try
+	{
+		if (m_lvdcom == NULL)
+		{
+			throw std::runtime_error("m_lvdcom is NULL");
+		}
+		m_lvdcom->setLabviewValue(paramName, value);
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, name=%s, value=%s\n", 
+              driverName, functionName, function, paramName, convertToString(value).c_str());
+		return asynSuccess;
+	}
+	catch(const std::exception& ex)
+	{
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                  "%s:%s: status=%d, function=%d, name=%s, value=%s, error=%s", 
+                  driverName, functionName, status, function, paramName, convertToString(value).c_str(), ex.what());
+		return asynError;
+	}
+}
+
+template<typename T>
+asynStatus lvDCOMDriver::readValue(asynUser *pasynUser, const char* functionName, T* value)
+{
+	int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    const char *paramName = NULL;
+	getParamName(function, &paramName);
+	try
+	{
+		if (m_lvdcom == NULL)
+		{
+			throw std::runtime_error("m_lvdcom is NULL");
+		}
+		m_lvdcom->getLabviewValue(paramName, value);
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, name=%s, value=%s\n", 
+              driverName, functionName, function, paramName, convertToString(*value).c_str());
+		return asynSuccess;
+	}
+	catch(const std::exception& ex)
+	{
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                  "%s:%s: status=%d, function=%d, name=%s, value=%s, error=%s", 
+                  driverName, functionName, status, function, paramName, convertToString(*value).c_str(), ex.what());
+		return asynError;
+	}
+}
+
+template<typename T>
+asynStatus lvDCOMDriver::readArray(asynUser *pasynUser, const char* functionName, T *value, size_t nElements, size_t *nIn)
+{
+  int function = pasynUser->reason;
+  asynStatus status = asynSuccess;
+  const char *paramName = "";
+
+	try
+	{
+		if (m_lvdcom == NULL)
+		{
+			throw std::runtime_error("m_lvdcom is NULL");
+		}
+		m_lvdcom->getLabviewValue(paramName, value, nElements, *nIn);
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, name=%s\n", 
+              driverName, functionName, function, paramName);
+		return asynSuccess;
+	}
+	catch(const std::exception& ex)
+	{
+		*nIn = 0;
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                  "%s:%s: status=%d, function=%d, name=%s, error=%s", 
+                  driverName, functionName, status, function, paramName, ex.what());
+		return asynError;
+	}
+}
+
 
 /** Called when asyn clients call pasynFloat64->write().
   * This function sends a signal to the simTask thread if the value of P_UpdateTime has changed.
@@ -29,193 +116,36 @@ static const char *driverName="lvDCOMDriver";
   * \param[in] value Value to write. */
 asynStatus lvDCOMDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-    int addr;
-    const char *paramName = NULL;
-	getParamName(function, &paramName);
-    const char* functionName = "writeFloat64";
-	try
-	{
-		this->getAddress(pasynUser, &addr);
-		if (m_stuff == NULL)
-		{
-			throw std::runtime_error("m_stuff is NULL");
-		}
-		m_stuff->setLabviewValue(this->portName, paramName, value);
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, name=%s, value=%f\n", 
-              driverName, functionName, function, paramName, value);
-		return asynSuccess;
-	}
-	catch(const std::exception& ex)
-	{
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, name=%s, value=%f, error=%s", 
-                  driverName, functionName, status, function, paramName, value, ex.what());
-		return asynError;
-	}
+	return writeValue(pasynUser, "writeFloat64", value);
 }
 
 asynStatus lvDCOMDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-    int addr;
-    const char *paramName = NULL;
-	getParamName(function, &paramName);
-    const char* functionName = "writeInt32";
-
-	try
-	{
-		this->getAddress(pasynUser, &addr);
-		if (m_stuff == NULL)
-		{
-			throw std::runtime_error("m_stuff is NULL");
-		}
-		m_stuff->setLabviewValue(this->portName, paramName, value);
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, name=%s, value=%d\n", 
-              driverName, functionName, function, paramName, value);
-		return asynSuccess;
-	}
-	catch(const std::exception& ex)
-	{
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, name=%s, value=%d, error=%s", 
-                  driverName, functionName, status, function, paramName, value, ex.what());
-		return asynError;
-	}
+	return writeValue(pasynUser, "writeInt32", value);
 }
 
 asynStatus lvDCOMDriver::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn)
 {
-  int function = pasynUser->reason;
-  int addr;
-  int status=0;
-  const char *paramName = "";
-  static const char *functionName = "readFloat64Array";
-
-	try
-	{
-		this->getAddress(pasynUser, &addr);
-		if (m_stuff == NULL)
-		{
-			throw std::runtime_error("m_stuff is NULL");
-		}
-		m_stuff->getLabviewValue(this->portName, paramName, value, nElements, *nIn);
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, name=%s\n", 
-              driverName, functionName, function, paramName);
-		return asynSuccess;
-	}
-	catch(const std::exception& ex)
-	{
-		*nIn = 0;
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, name=%s, error=%s", 
-                  driverName, functionName, status, function, paramName, ex.what());
-		return asynError;
-	}
+    return readArray(pasynUser, "readFloat64Array", value, nElements, nIn);
 }
-
 
 asynStatus lvDCOMDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn)
 {
-  int function = pasynUser->reason;
-  int addr;
-  int status=0;
-  const char *paramName = NULL;
-	getParamName(function, &paramName);
-  static const char *functionName = "readInt32Array";
-
-	try
-	{
-		this->getAddress(pasynUser, &addr);
-		if (m_stuff == NULL)
-		{
-			throw std::runtime_error("m_stuff is NULL");
-		}
-		m_stuff->getLabviewValue(this->portName, paramName, value, nElements, *nIn);
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, name=%s\n", 
-              driverName, functionName, function, paramName);
-		return asynSuccess;
-	}
-	catch(const std::exception& ex)
-	{
-		*nIn = 0;
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, name=%s, error=%s", 
-                  driverName, functionName, status, function, paramName, ex.what());
-		return asynError;
-	}
+    return readArray(pasynUser, "readInt32Array", value, nElements, nIn);
 }
-
 
 asynStatus lvDCOMDriver::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
 {
-	int addr;
-	int function = pasynUser->reason;
-	int status=0;
-	const char *functionName = "readFloat64";
-    const char *paramName = NULL;
-	getParamName(function, &paramName);
-	try
-	{
-		this->getAddress(pasynUser, &addr);
-		if (m_stuff == NULL)
-		{
-			throw std::runtime_error("m_stuff is NULL");
-		}
-		m_stuff->getLabviewValue(this->portName, paramName, value);
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, name=%s, value=%f\n", 
-              driverName, functionName, function, paramName, *value);
-		return asynSuccess;
-	}
-	catch(const std::exception& ex)
-	{
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, name=%s, value=%f, error=%s", 
-                  driverName, functionName, status, function, paramName, *value, ex.what());
-		return asynError;
-	}
+	return readValue(pasynUser, "readFloat64", value);
 }
 
 asynStatus lvDCOMDriver::readInt32(asynUser *pasynUser, epicsInt32 *value)
 {
-	int addr;
-	int function = pasynUser->reason;
-	int status=0;
-	const char *functionName = "readInt32";
-    const char *paramName = NULL;
-	getParamName(function, &paramName);
-	try
-	{
-		this->getAddress(pasynUser, &addr);
-		if (m_stuff == NULL)
-		{
-			throw std::runtime_error("m_stuff is NULL");
-		}
-		m_stuff->getLabviewValue(this->portName, paramName, value);
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, name=%s, value=%d\n", 
-              driverName, functionName, function, paramName, *value);
-		return asynSuccess;
-	}
-	catch(const std::exception& ex)
-	{
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, name=%s, value=%d, error=%s", 
-                  driverName, functionName, status, function, paramName, *value, ex.what());
-		return asynError;
-	}
+	return readValue(pasynUser, "readInt32", value);
 }
 
 asynStatus lvDCOMDriver::readOctet(asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason)
 {
-	int addr;
 	int function = pasynUser->reason;
 	int status=0;
 	const char *functionName = "readOctet";
@@ -224,12 +154,11 @@ asynStatus lvDCOMDriver::readOctet(asynUser *pasynUser, char *value, size_t maxC
 	std::string value_s;
 	try
 	{
-		this->getAddress(pasynUser, &addr);
-		if (m_stuff == NULL)
+		if (m_lvdcom == NULL)
 		{
-			throw std::runtime_error("m_stuff is NULL");
+			throw std::runtime_error("m_lvdcom is NULL");
 		}
-		m_stuff->getLabviewValue(this->portName, paramName, &value_s);
+		m_lvdcom->getLabviewValue(paramName, &value_s);
 		if ( value_s.size() > maxChars ) // did we read more than we have space for?
 		{
 			*nActual = maxChars;
@@ -265,19 +194,17 @@ asynStatus lvDCOMDriver::writeOctet(asynUser *pasynUser, const char *value, size
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    int addr;
     const char *paramName = NULL;
 	getParamName(function, &paramName);
     const char* functionName = "writeOctet";
 	std::string value_s(value, maxChars);
 	try
 	{
-		this->getAddress(pasynUser, &addr);
-		if (m_stuff == NULL)
+		if (m_lvdcom == NULL)
 		{
-			throw std::runtime_error("m_stuff is NULL");
+			throw std::runtime_error("m_lvdcom is NULL");
 		}
-		m_stuff->setLabviewValue(this->portName, paramName, value_s);
+		m_lvdcom->setLabviewValue(paramName, value_s);
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s: function=%d, name=%s, value=%s\n", 
               driverName, functionName, function, paramName, value_s.c_str());
@@ -295,13 +222,11 @@ asynStatus lvDCOMDriver::writeOctet(asynUser *pasynUser, const char *value, size
 }
 
 
-/* Report
-
 /** Constructor for the lvDCOMDriver class.
   * Calls constructor for the asynPortDriver base class.
-  * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] configFile The maximum  number of points in the volt and time arrays */
-lvDCOMDriver::lvDCOMDriver(ISISSTUFF* stuff, const char *portName, const char *configFile, const char *host) 
+  * \param[in] portName @copydoc #initArg0
+  */
+lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* stuff, const char *portName) 
    : asynPortDriver(portName, 
                     0, /* maxAddr */ 
                     stuff->nParams(),
@@ -311,15 +236,14 @@ lvDCOMDriver::lvDCOMDriver(ISISSTUFF* stuff, const char *portName, const char *c
                     1, /* Autoconnect */
                     0, /* Default priority */
                     0),	/* Default stack size*/
-					m_stuff(stuff)
+					m_lvdcom(stuff)
 {
     asynStatus status;
     int i;
     const char *functionName = "lvDCOMDriver";
 	std::map<std::string,std::string> res;
-	m_stuff->getParams(res);
-	std::map<std::string,std::string>::const_iterator it;
-	for(it=res.begin(); it != res.end(); ++it)
+	m_lvdcom->getParams(res);
+	for(std::map<std::string,std::string>::const_iterator it=res.begin(); it != res.end(); ++it)
 	{
 		if (it->second == "float64")
 		{
@@ -347,31 +271,35 @@ lvDCOMDriver::lvDCOMDriver(ISISSTUFF* stuff, const char *portName, const char *c
 		}
 	}
 
-    /* Create the thread that computes the waveforms in the background */
+    /* Create the thread for background tasks */
     if (epicsThreadCreate("lvDCOMDriverTask",
                           epicsThreadPriorityMedium,
                           epicsThreadGetStackSize(epicsThreadStackMedium),
-                          (EPICSTHREADFUNC)task, this) == 0)
+                          (EPICSTHREADFUNC)lvDCOMTask, this) == 0)
     {
         printf("%s:%s: epicsThreadCreate failure\n", driverName, functionName);
         return;
     }
 }
 
-
 /* Configuration routine.  Called directly, or from the iocsh function below */
 
 extern "C" {
 
 /** EPICS iocsh callable function to call constructor for the lvDCOMDriver class.
-  * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] maxPoints The maximum  number of points in the volt and time arrays */
-int lvDCOMConfigure(const char *portName, const char *configFile, const char *host, int warnViIdle, int autostartVi)
+  * \param[in] portName @copydoc #initArg0
+  * \param[in] configSection @copydoc #initArg1
+  * \param[in] configFile @copydoc #initArg2
+  * \param[in] host @copydoc #initArg3
+  * \param[in] warnViIdle @copydoc #initArg4
+  * \param[in] autostartVi @copydoc #initArg5
+  */
+int lvDCOMConfigure(const char *portName, const char* configSection, const char *configFile, const char *host, int warnViIdle, int autostartVi)
 {
 	try
 	{
-		ISISSTUFF* stuff = new ISISSTUFF(portName, configFile, host, warnViIdle, autostartVi);
-		new lvDCOMDriver(stuff, portName, configFile, host);
+		lvDCOMInterface* dcomint = new lvDCOMInterface(configSection, configFile, host, warnViIdle, autostartVi);
+		new lvDCOMDriver(dcomint, portName);
 		return(asynSuccess);
 	}
 	catch(const std::exception& ex)
@@ -382,26 +310,30 @@ int lvDCOMConfigure(const char *portName, const char *configFile, const char *ho
 
 /* EPICS iocsh shell commands */
 
-static const iocshArg initArg0 = { "portName", iocshArgString};
-static const iocshArg initArg1 = { "configFile", iocshArgString};
-static const iocshArg initArg2 = { "host", iocshArgString};
-static const iocshArg initArg3 = { "warnViIdle", iocshArgInt};
-static const iocshArg initArg4 = { "autostartVi", iocshArgInt};
+static const iocshArg initArg0 = { "portName", iocshArgString};			///< The name of the asyn driver port we will create
+static const iocshArg initArg1 = { "configSection", iocshArgString};	///< section of configFile to use to configure this asyn port
+static const iocshArg initArg2 = { "configFile", iocshArgString};		///< XML file to load configuration information from
+static const iocshArg initArg3 = { "host", iocshArgString};				///< host name where LabVIEW is running ("" for loaclhost) 
+static const iocshArg initArg4 = { "warnViIdle", iocshArgInt};			///< warn if LabVIEW Vi is not running when we connect to it 
+static const iocshArg initArg5 = { "autostartVi", iocshArgInt};			///< if LabVIEW Vi is not running when we connect, start it
 
-static const iocshArg * const initArgs[] = {&initArg0,
-                                            &initArg1,
-                                            &initArg2,
-                                            &initArg3,
-											&initArg4};
-static const iocshFuncDef initFuncDef = {"lvDCOMConfigure",5,initArgs};
+static const iocshArg * const initArgs[] = { &initArg0,
+                                             &initArg1,
+                                             &initArg2,
+                                             &initArg3,
+											 &initArg4,
+											 &initArg5 };
+
+static const iocshFuncDef initFuncDef = {"lvDCOMConfigure", sizeof(initArgs) / sizeof(iocshArg*), initArgs};
+
 static void initCallFunc(const iocshArgBuf *args)
 {
-    lvDCOMConfigure(args[0].sval, args[1].sval, args[2].sval, args[3].ival, args[4].ival);
+    lvDCOMConfigure(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].ival, args[5].ival);
 }
 
 void lvDCOMRegister(void)
 {
-    iocshRegister(&initFuncDef,initCallFunc);
+    iocshRegister(&initFuncDef, initCallFunc);
 }
 
 epicsExportRegistrar(lvDCOMRegister);
