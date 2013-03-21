@@ -109,11 +109,11 @@ asynStatus lvDCOMDriver::readArray(asynUser *pasynUser, const char* functionName
 }
 
 
-/** Called when asyn clients call pasynFloat64->write().
-  * This function sends a signal to the simTask thread if the value of P_UpdateTime has changed.
-  * For all  parameters it  sets the value in the parameter library and calls any registered callbacks.
-  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
-  * \param[in] value Value to write. */
+/// Called when asyn clients call pasynFloat64->write().
+/// This function sends a signal to the simTask thread if the value of P_UpdateTime has changed.
+/// For all  parameters it  sets the value in the parameter library and calls any registered callbacks.
+/// \param[in] pasynUser pasynUser structure that encodes the reason and address.
+/// \param[in] value Value to write. */
 asynStatus lvDCOMDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
 	return writeValue(pasynUser, "writeFloat64", value);
@@ -222,11 +222,10 @@ asynStatus lvDCOMDriver::writeOctet(asynUser *pasynUser, const char *value, size
 }
 
 
-/** Constructor for the lvDCOMDriver class.
-  * Calls constructor for the asynPortDriver base class.
-  * \param[in] dcomint DCOM interface pointer created by lvDCOMConfigure()
-  * \param[in] portName @copydoc initArg0
-  */
+/// Constructor for the lvDCOMDriver class.
+/// Calls constructor for the asynPortDriver base class.
+/// \param[in] dcomint DCOM interface pointer created by lvDCOMConfigure()
+/// \param[in] portName @copydoc initArg0
 lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* dcomint, const char *portName) 
    : asynPortDriver(portName, 
                     0, /* maxAddr */ 
@@ -284,15 +283,14 @@ lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* dcomint, const char *portName)
 
 extern "C" {
 
-/** EPICS iocsh callable function to call constructor of lvDCOMInterface().
-  * \param[in] portName @copydoc initArg0
-  * \param[in] configSection @copydoc initArg1
-  * \param[in] configFile @copydoc initArg2
-  * \param[in] host @copydoc initArg3
-  * \param[in] options @copydoc initArg4
-  * \param[in] username @copydoc initArg5
-  * \param[in] password @copydoc initArg6
-  */
+/// EPICS iocsh callable function to call constructor of lvDCOMInterface().
+/// \param[in] portName @copydoc initArg0
+/// \param[in] configSection @copydoc initArg1
+/// \param[in] configFile @copydoc initArg2
+/// \param[in] host @copydoc initArg3
+/// \param[in] options @copydoc initArg4
+/// \param[in] username @copydoc initArg5
+/// \param[in] password @copydoc initArg6
 int lvDCOMConfigure(const char *portName, const char* configSection, const char *configFile, const char *host, int options, 
 					const char* username, const char* password)
 {
