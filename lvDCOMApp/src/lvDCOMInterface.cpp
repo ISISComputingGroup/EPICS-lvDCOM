@@ -714,11 +714,11 @@ void lvDCOMInterface::callLabview(BSTR vi_name, VARIANT& names, VARIANT& values,
 	}
 }
 
-template <> void lvDCOMInterface::setLabviewValue(const char* param, const double& value);
-template <> void lvDCOMInterface::setLabviewValue(const char* param, const int& value);
+template void lvDCOMInterface::setLabviewValue(const char* param, const double& value);
+template void lvDCOMInterface::setLabviewValue(const char* param, const int& value);
 
-template <> void lvDCOMInterface::getLabviewValue(const char* param, double* value);
-template <> void lvDCOMInterface::getLabviewValue(const char* param, int* value);
+template void lvDCOMInterface::getLabviewValue(const char* param, double* value);
+template void lvDCOMInterface::getLabviewValue(const char* param, int* value);
 
-template <> void lvDCOMInterface::getLabviewValue(const char* param, double* value, size_t nElements, size_t& nIn);
-template <> void lvDCOMInterface::getLabviewValue(const char* param, int* value, size_t nElements, size_t& nIn);
+template void lvDCOMInterface::getLabviewValue(const char* param, double* value, size_t nElements, size_t& nIn);
+template void lvDCOMInterface::getLabviewValue(const char* param, int* value, size_t nElements, size_t& nIn);
