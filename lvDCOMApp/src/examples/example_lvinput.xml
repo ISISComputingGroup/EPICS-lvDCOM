@@ -42,8 +42,18 @@
 	
       <param name="ind1" type="int32"> 
         <read method="GCV" target="Some Indicator" />
-        <set method="SCV" extint="false" target="Some Indicator" />
+        <!--set method="SCV" extint="false" target="Some Indicator" /-->
       </param>
+
+	  <param name="strcont1" type="string"> 
+        <read method="GCV" target="Some String" />  
+        <set method="SCV" extint="false" target="Some String" /> 
+	  </param>
+
+	  <param name="arrayind1" type="float64array"> 
+        <read method="GCV" target="Some Array" />  
+        <!--set method="SCV" extint="false" target="Some Array" /--> 
+	  </param>
 
 	</vi>
 	 

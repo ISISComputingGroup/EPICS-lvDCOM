@@ -203,30 +203,20 @@ void lvDCOMInterface::DomFromCOM()
 	}
 }
 
-/// 
+
 /// \param[in] configSection @copydoc initArg1
 /// \param[in] configFile @copydoc initArg2
 /// \param[in] host @copydoc initArg3
 /// \param[in] options @copydoc initArg4
-/// \param[in] username @copydoc initArg5
-/// \param[in] password @copydoc initArg6
-lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFile, const char* host, int options, const char* username, const char* password) : 
+/// \param[in] progid @copydoc initArg5
+/// \param[in] username @copydoc initArg6
+/// \param[in] password @copydoc initArg7
+lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFile, const char* host, int options, const char* progid, const char* username, const char* password) : 
             m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(options), 
-			m_username(username != NULL? username : ""), m_password(password != NULL ? password : "")
+			m_progid(progid != NULL? progid : ""), m_username(username != NULL? username : ""), m_password(password != NULL ? password : "")
 {
 	epicsThreadOnce(&onceId, initCOM, NULL);
-//		std::ifstream in(configFile);
-//		Poco::XML::InputSource src(in);
-//		Poco::XML::DOMParser parser;
-//		Poco::AutoPtr<Poco::XML::Document> pDoc = parser.parse(&src);
-//		Poco::XML::NodeIterator it(pDoc, Poco::XML::NodeFilter::SHOW_ALL);   // or SHOW_ELEMENTS ?
-//		Poco::XML::Node* pNode = it.nextNode();
-//		while (pNode)
-//		{
-//			std::cout<<pNode->nodeName()<<":"<< pNode->nodeValue()<<std::endl;
-//			pNode = it.nextNode();
-//		}
-    if (host != NULL)
+    if (host != NULL && host[0] != '\0') 
 	{
 	    m_host = host;
 	}
@@ -242,7 +232,7 @@ lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFi
 //		{
 //			m_host = "localhost";
 //		}			
-		m_host = "";
+		m_host = "localhost";
 	}
 //	m_doc = new TiXmlDocument;
 //	if ( !m_doc->LoadFile(configFile) )
@@ -267,6 +257,28 @@ lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFi
 	}
   	m_extint = doPath("/lvinput/extint/@path").c_str();
 	epicsAtExit(epicsExitFunc, this);
+	if (m_progid.size() > 0)
+	{
+		if ( CLSIDFromProgID(CT2W(m_progid.c_str()), &m_clsid) != S_OK )
+		{
+			throw std::runtime_error("Cannot find progId " + m_progid);
+		}
+	}
+	else
+	{
+		m_clsid = LabVIEW::CLSID_Application;
+		wchar_t* progid_str = NULL;
+		if (ProgIDFromCLSID(m_clsid, &progid_str) != S_OK)
+		{
+			throw std::runtime_error("Cannot find progId " + m_progid);
+		}
+		m_progid = CW2CT(progid_str);
+		CoTaskMemFree(progid_str);
+	}
+	wchar_t* clsid_str = NULL;
+	StringFromCLSID(m_clsid, &clsid_str);
+	std::cerr << "Using ProgID \"" << m_progid << "\" clsid " << CW2CT(clsid_str) << std::endl;
+	CoTaskMemFree(clsid_str);
 }
 
 void lvDCOMInterface::epicsExitFunc(void* arg)
@@ -370,6 +382,10 @@ void lvDCOMInterface::getParams(std::map<std::string,std::string>& res)
 
 COAUTHIDENTITY* lvDCOMInterface::createIdentity(const std::string& user, const std::string&  domain, const std::string& pass)
 {
+	if (user.size() == 0)
+	{
+		return NULL;
+	}
     COAUTHIDENTITY* pidentity = new COAUTHIDENTITY;
     pidentity->Domain = (USHORT*)strdup(domain.c_str());
     pidentity->DomainLength = static_cast<ULONG>(strlen((const char*)pidentity->Domain));
@@ -427,6 +443,7 @@ void lvDCOMInterface::getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualIns
 
 void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr& vi)
 {
+	epicsThreadOnce(&onceId, initCOM, NULL);
 	std::wstring ws(vi_name, SysStringLen(vi_name));
 	HRESULT hr;
 	if ( (m_lv != NULL) && (m_lv->CheckConnection() == S_OK) )
@@ -453,10 +470,10 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 		mq[ 0 ].pIID = &IID_IDispatch;  // &LabVIEW::DIID__Application; // &IID_IDispatch; 
 		mq[ 0 ].pItf = NULL; 
 		mq[ 0 ].hr   = S_OK; 
-		hr = CoCreateInstanceEx( LabVIEW::CLSID_Application, NULL, CLSCTX_REMOTE_SERVER | CLSCTX_LOCAL_SERVER, &csi, 1, mq ); 
+		hr = CoCreateInstanceEx( m_clsid, NULL, CLSCTX_REMOTE_SERVER | CLSCTX_LOCAL_SERVER, &csi, 1, mq ); 
 		if( FAILED( hr ) ) 
 		{ 
-			hr = CoCreateInstanceEx( LabVIEW::CLSID_Application, NULL, CLSCTX_ALL, &csi, 1, mq );
+			hr = CoCreateInstanceEx( m_clsid, NULL, CLSCTX_ALL, &csi, 1, mq );
 		}
 		if( FAILED( hr ) ) 
 		{
@@ -464,7 +481,7 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 		} 
 		if( S_OK != mq[ 0 ].hr || NULL == mq[ 0 ].pItf ) 
 		{ 
- 			throw COMexception("CoCreateInstanceEx (LabVIEW) ", mq[ 0 ].hr);
+ 			throw COMexception("CoCreateInstanceEx (LabVIEW)(mq) ", mq[ 0 ].hr);
 		} 
 		setIdentity(m_pidentity, mq[ 0 ].pItf);
 		m_lv.Release();
@@ -472,13 +489,13 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 	}
 	else
 	{
-		std::cerr << "(Re)Making connection to LabVIEW on localhost" << std::endl;
+		std::cerr << "(Re)Making local connection to LabVIEW" << std::endl;
 		m_pidentity = NULL;
 		m_lv.Release();
-		hr = m_lv.CoCreateInstance(LabVIEW::CLSID_Application, NULL, CLSCTX_LOCAL_SERVER);
+		hr = m_lv.CoCreateInstance(m_clsid, NULL, CLSCTX_LOCAL_SERVER);
 		if( FAILED( hr ) ) 
 		{
- 			throw COMexception("CoCreateInstanceEx (LabVIEW) ", hr);
+ 			throw COMexception("CoCreateInstance (LabVIEW) ", hr);
 		} 
 	}
 	if (reentrant)

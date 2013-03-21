@@ -1,5 +1,7 @@
-#ifndef _ISIS_STUFF_H
-#define _ISIS_STUFF_H
+#ifndef LV_DCOM_INTERFACE_H
+#define LV_DCOM_INTERFACE_H
+
+/// \file lvDCOMInterface.h header for #lvDCOMInterface class.
 
 #include <stdio.h>
 
@@ -36,8 +38,6 @@
 
 #include <msxml2.h>
 
-/// \file lvDCOMInterface.h header for #lvDCOMInterface class.
-
 // TinyXPath
 //#include <xpath_processor.h>  
 //#include <xpath_static.h>  
@@ -64,7 +64,7 @@ enum lvDCOMOptions
 class lvDCOMInterface
 {
 public:
-	lvDCOMInterface(const char* configSection, const char *configFile, const char* host, int options, const char* username, const char* password);
+	lvDCOMInterface(const char* configSection, const char *configFile, const char* host, int options, const char* progid, const char* username, const char* password);
 	long nParams();
 	void getParams(std::map<std::string,std::string>& res);
 	template<typename T> void setLabviewValue(const char* param, const T& value);
@@ -74,6 +74,8 @@ public:
 private:
 	std::string m_configSection;  ///< section of \a configFile to load information from
 	std::string m_host;
+	std::string m_progid;
+	CLSID m_clsid;
 	std::string m_username;
 	std::string m_password;
 	int m_options; ///< the various #lvDCOMOptions currently in use
@@ -106,4 +108,4 @@ private:
 	bool checkOption(lvDCOMOptions option) { return ( m_options & static_cast<int>(option) ) != 0; }
 };
 
-#endif /* _ISIS_STUFF_H */
+#endif /* LV_DCOM_INTERFACE_H */

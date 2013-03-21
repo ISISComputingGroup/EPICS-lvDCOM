@@ -84,7 +84,8 @@ asynStatus lvDCOMDriver::readArray(asynUser *pasynUser, const char* functionName
 {
   int function = pasynUser->reason;
   asynStatus status = asynSuccess;
-  const char *paramName = "";
+  const char *paramName = NULL;
+	getParamName(function, &paramName);
 
 	try
 	{
@@ -108,12 +109,6 @@ asynStatus lvDCOMDriver::readArray(asynUser *pasynUser, const char* functionName
 	}
 }
 
-
-/// Called when asyn clients call pasynFloat64->write().
-/// This function sends a signal to the simTask thread if the value of P_UpdateTime has changed.
-/// For all  parameters it  sets the value in the parameter library and calls any registered callbacks.
-/// \param[in] pasynUser pasynUser structure that encodes the reason and address.
-/// \param[in] value Value to write. */
 asynStatus lvDCOMDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
 	return writeValue(pasynUser, "writeFloat64", value);
@@ -270,7 +265,7 @@ lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* dcomint, const char *portName)
 		}
 	}
 
-    /* Create the thread for background tasks */
+    // Create the thread for background tasks (not used at present, could be used for I/O intr scanning) 
     if (epicsThreadCreate("lvDCOMDriverTask",
                           epicsThreadPriorityMedium,
                           epicsThreadGetStackSize(epicsThreadStackMedium),
@@ -289,14 +284,15 @@ extern "C" {
 /// \param[in] configFile @copydoc initArg2
 /// \param[in] host @copydoc initArg3
 /// \param[in] options @copydoc initArg4
-/// \param[in] username @copydoc initArg5
-/// \param[in] password @copydoc initArg6
+/// \param[in] progid @copydoc initArg5
+/// \param[in] username @copydoc initArg6
+/// \param[in] password @copydoc initArg7
 int lvDCOMConfigure(const char *portName, const char* configSection, const char *configFile, const char *host, int options, 
-					const char* username, const char* password)
+					const char* progid, const char* username, const char* password)
 {
 	try
 	{
-		lvDCOMInterface* dcomint = new lvDCOMInterface(configSection, configFile, host, options, username, password);
+		lvDCOMInterface* dcomint = new lvDCOMInterface(configSection, configFile, host, options, progid, username, password);
 		new lvDCOMDriver(dcomint, portName);
 		return(asynSuccess);
 	}
@@ -307,15 +303,16 @@ int lvDCOMConfigure(const char *portName, const char* configSection, const char 
 	}
 }
 
-/* EPICS iocsh shell commands */
+// EPICS iocsh shell commands 
 
 static const iocshArg initArg0 = { "portName", iocshArgString};			///< The name of the asyn driver port we will create
 static const iocshArg initArg1 = { "configSection", iocshArgString};	///< section of configFile #initArg2 to use to configure this asyn port
 static const iocshArg initArg2 = { "configFile", iocshArgString};		///< XML file to load configuration information from
 static const iocshArg initArg3 = { "host", iocshArgString};				///< host name where LabVIEW is running ("" for localhost) 
 static const iocshArg initArg4 = { "options", iocshArgInt};			    ///< options as per #lvDCOMOptions enum
-static const iocshArg initArg5 = { "username", iocshArgString};			///< (optional) remote username for host #initArg3
-static const iocshArg initArg6 = { "password", iocshArgString};			///< (optional) remote password for username #initArg5 on host #initArg3
+static const iocshArg initArg5 = { "progid", iocshArgString};			///< (optional) DCOM ProgID (required if connecting to a compiled LabVIEW application)
+static const iocshArg initArg6 = { "username", iocshArgString};			///< (optional) remote username for host #initArg3
+static const iocshArg initArg7 = { "password", iocshArgString};			///< (optional) remote password for username #initArg6 on host #initArg3
 
 static const iocshArg * const initArgs[] = { &initArg0,
                                              &initArg1,
@@ -323,16 +320,17 @@ static const iocshArg * const initArgs[] = { &initArg0,
                                              &initArg3,
                                              &initArg4,
                                              &initArg5,
-											 &initArg6 };
+                                             &initArg6,
+											 &initArg7 };
 
 static const iocshFuncDef initFuncDef = {"lvDCOMConfigure", sizeof(initArgs) / sizeof(iocshArg*), initArgs};
 
 static void initCallFunc(const iocshArgBuf *args)
 {
-    lvDCOMConfigure(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].ival, args[5].sval, args[6].sval);
+    lvDCOMConfigure(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].ival, args[5].sval, args[6].sval, args[7].sval);
 }
 
-void lvDCOMRegister(void)
+static void lvDCOMRegister(void)
 {
     iocshRegister(&initFuncDef, initCallFunc);
 }
