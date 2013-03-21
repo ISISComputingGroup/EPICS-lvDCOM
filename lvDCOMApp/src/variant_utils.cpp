@@ -166,13 +166,13 @@ int arrayVariantDimensions(VARIANT* v, int dims_array[], int& ndims)
 template <typename T> 
 int makeVariantFromArray(VARIANT* v, const std::vector<T>& the_array)
 {
-	return makeVariantFromArray(v, &(the_array[0]), the_array.size());
+	return makeVariantFromArray(v, &(the_array[0]), static_cast<int>(the_array.size()));
 }
 
 template <> 
 int makeVariantFromArray(VARIANT* v, const std::vector<std::string>& the_array)
 {
-	int n = the_array.size();
+	int n = static_cast<int>(the_array.size());
 	allocateArrayVariant(v, VT_BSTR, &n, 1);
 	BSTR* v_array = NULL;
 	accessArrayVariant(v, &v_array);

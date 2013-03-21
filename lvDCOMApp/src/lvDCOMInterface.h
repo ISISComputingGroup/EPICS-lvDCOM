@@ -36,6 +36,8 @@
 
 #include <msxml2.h>
 
+/// \file lvDCOMInterface.h header for #lvDCOMInterface class.
+
 // TinyXPath
 //#include <xpath_processor.h>  
 //#include <xpath_static.h>  
@@ -43,17 +45,26 @@
 struct ViRef
 {
 	LabVIEW::VirtualInstrumentPtr vi_ref;
-	bool reentrant;
-	bool started;    // did we start this vi because it was idle and autostart was enabled? 
+	bool reentrant;  ///< is the VI reentrant
+	bool started;    ///< did we start this vi because it was idle and #viStartIfIdle was specified  
 	ViRef(LabVIEW::VirtualInstrumentPtr vi_ref_, bool reentrant_, bool started_) : vi_ref(vi_ref_), reentrant(reentrant_), started(started_) { }
 	ViRef() : vi_ref(NULL), reentrant(false), started(false) { }
 };
 
+/// Options that can be passed from EPICS iocsh via #lvDCOMConfigure command.
+/// In the iocBoot st.cmd file you will need to add the relevant integer enum values together and pass this single integer value.
+enum lvDCOMOptions
+{
+    viWarnIfIdle = 1, 				///< If the LabVIEW VI is idle when we connect to it, issue a warning message  
+	viStartIfIdle = 2, 				///< If the LabVIEW VI is idle when we connect to it, attempt to start it
+	viStopOnExitIfStarted = 4, 		///< On IOC exit, stop any LabVIEW VIs that we started due to #viStartIfIdle being specified
+	viAlwaysStopOnExit = 8			///< On IOC exit, stop any LabVIEW VIs that we have connected to
+};	
 
 class lvDCOMInterface
 {
 public:
-	lvDCOMInterface(const char* configSection, const char *configFile, const char* host, int warnViIdle, int autostartVi);
+	lvDCOMInterface(const char* configSection, const char *configFile, const char* host, int options, const char* username, const char* password);
 	long nParams();
 	void getParams(std::map<std::string,std::string>& res);
 	template<typename T> void setLabviewValue(const char* param, const T& value);
@@ -61,10 +72,11 @@ public:
 	template<typename T> void getLabviewValue(const char* param, T* value, size_t nElements, size_t& nIn);
 	~lvDCOMInterface() { if (m_pxmldom != NULL) { m_pxmldom->Release(); m_pxmldom = 0; } }
 private:
-	bool m_warnViIdle;
-	bool m_autostartVi;
-	std::string m_configSection;
+	std::string m_configSection;  ///< section of \a configFile to load information from
 	std::string m_host;
+	std::string m_username;
+	std::string m_password;
+	int m_options; ///< the various #lvDCOMOptions currently in use
 	typedef std::map<std::wstring, ViRef> vi_map_t;
 	vi_map_t m_vimap;
 	epicsMutex m_lock;
@@ -90,7 +102,8 @@ private:
 	COAUTHIDENTITY* createIdentity(const std::string& user, const std::string& domain, const std::string& pass);
 	HRESULT setIdentity(COAUTHIDENTITY* pidentity, IUnknown* pUnk);
 	static void epicsExitFunc(void* arg);
-	void stopAutoStartedVis();
+	void stopVis(bool only_ones_we_started);
+	bool checkOption(lvDCOMOptions option) { return ( m_options & static_cast<int>(option) ) != 0; }
 };
 
 #endif /* _ISIS_STUFF_H */

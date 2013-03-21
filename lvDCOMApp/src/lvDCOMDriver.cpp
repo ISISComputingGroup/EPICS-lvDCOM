@@ -224,21 +224,21 @@ asynStatus lvDCOMDriver::writeOctet(asynUser *pasynUser, const char *value, size
 
 /** Constructor for the lvDCOMDriver class.
   * Calls constructor for the asynPortDriver base class.
-  * \param[in] portName @copydoc #initArg0
+  * \param[in] dcomint DCOM interface pointer created by lvDCOMConfigure()
+  * \param[in] portName @copydoc initArg0
   */
-lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* stuff, const char *portName) 
+lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* dcomint, const char *portName) 
    : asynPortDriver(portName, 
                     0, /* maxAddr */ 
-                    stuff->nParams(),
+                    dcomint->nParams(),
                     asynInt32Mask | asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynOctetMask | asynDrvUserMask, /* Interface mask */
                     asynInt32Mask | asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynOctetMask,  /* Interrupt mask */
                     ASYN_CANBLOCK, /* asynFlags.  This driver can block but it is not multi-device */
                     1, /* Autoconnect */
                     0, /* Default priority */
                     0),	/* Default stack size*/
-					m_lvdcom(stuff)
+					m_lvdcom(dcomint)
 {
-    asynStatus status;
     int i;
     const char *functionName = "lvDCOMDriver";
 	std::map<std::string,std::string> res;
@@ -267,7 +267,7 @@ lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* stuff, const char *portName)
 		}
 		else
 		{
-			std::cerr << "unknown type " << it->second << " for parameter " << it->first << std::endl;
+			std::cerr << driverName << ":" << functionName << ": unknown type " << it->second << " for parameter " << it->first << std::endl;
 		}
 	}
 
@@ -282,53 +282,56 @@ lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* stuff, const char *portName)
     }
 }
 
-/* Configuration routine.  Called directly, or from the iocsh function below */
-
 extern "C" {
 
-/** EPICS iocsh callable function to call constructor for the lvDCOMDriver class.
-  * \param[in] portName @copydoc #initArg0
-  * \param[in] configSection @copydoc #initArg1
-  * \param[in] configFile @copydoc #initArg2
-  * \param[in] host @copydoc #initArg3
-  * \param[in] warnViIdle @copydoc #initArg4
-  * \param[in] autostartVi @copydoc #initArg5
+/** EPICS iocsh callable function to call constructor of lvDCOMInterface().
+  * \param[in] portName @copydoc initArg0
+  * \param[in] configSection @copydoc initArg1
+  * \param[in] configFile @copydoc initArg2
+  * \param[in] host @copydoc initArg3
+  * \param[in] options @copydoc initArg4
+  * \param[in] username @copydoc initArg5
+  * \param[in] password @copydoc initArg6
   */
-int lvDCOMConfigure(const char *portName, const char* configSection, const char *configFile, const char *host, int warnViIdle, int autostartVi)
+int lvDCOMConfigure(const char *portName, const char* configSection, const char *configFile, const char *host, int options, 
+					const char* username, const char* password)
 {
 	try
 	{
-		lvDCOMInterface* dcomint = new lvDCOMInterface(configSection, configFile, host, warnViIdle, autostartVi);
+		lvDCOMInterface* dcomint = new lvDCOMInterface(configSection, configFile, host, options, username, password);
 		new lvDCOMDriver(dcomint, portName);
 		return(asynSuccess);
 	}
 	catch(const std::exception& ex)
 	{
-		std::cerr << "isis_setup failed: " << ex.what() << std::endl;
+		std::cerr << "lvDCOMConfigure failed: " << ex.what() << std::endl;
+		return(asynError);
 	}
 }
 
 /* EPICS iocsh shell commands */
 
 static const iocshArg initArg0 = { "portName", iocshArgString};			///< The name of the asyn driver port we will create
-static const iocshArg initArg1 = { "configSection", iocshArgString};	///< section of configFile to use to configure this asyn port
+static const iocshArg initArg1 = { "configSection", iocshArgString};	///< section of configFile #initArg2 to use to configure this asyn port
 static const iocshArg initArg2 = { "configFile", iocshArgString};		///< XML file to load configuration information from
-static const iocshArg initArg3 = { "host", iocshArgString};				///< host name where LabVIEW is running ("" for loaclhost) 
-static const iocshArg initArg4 = { "warnViIdle", iocshArgInt};			///< warn if LabVIEW Vi is not running when we connect to it 
-static const iocshArg initArg5 = { "autostartVi", iocshArgInt};			///< if LabVIEW Vi is not running when we connect, start it
+static const iocshArg initArg3 = { "host", iocshArgString};				///< host name where LabVIEW is running ("" for localhost) 
+static const iocshArg initArg4 = { "options", iocshArgInt};			    ///< options as per #lvDCOMOptions enum
+static const iocshArg initArg5 = { "username", iocshArgString};			///< (optional) remote username for host #initArg3
+static const iocshArg initArg6 = { "password", iocshArgString};			///< (optional) remote password for username #initArg5 on host #initArg3
 
 static const iocshArg * const initArgs[] = { &initArg0,
                                              &initArg1,
                                              &initArg2,
                                              &initArg3,
-											 &initArg4,
-											 &initArg5 };
+                                             &initArg4,
+                                             &initArg5,
+											 &initArg6 };
 
 static const iocshFuncDef initFuncDef = {"lvDCOMConfigure", sizeof(initArgs) / sizeof(iocshArg*), initArgs};
 
 static void initCallFunc(const iocshArgBuf *args)
 {
-    lvDCOMConfigure(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].ival, args[5].ival);
+    lvDCOMConfigure(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].ival, args[5].sval, args[6].sval);
 }
 
 void lvDCOMRegister(void)

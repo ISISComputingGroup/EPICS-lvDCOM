@@ -28,33 +28,23 @@
 #include "variant_utils.h"
 
 #include <macLib.h>
+#include <epicsGuard.h>
 
-/// _com_error is not derived from std::exception hence this bit of code
+static epicsThreadOnceId onceId = EPICS_THREAD_ONCE_INIT;
+
+static void initCOM(void*)
+{
+	CoInitializeEx(NULL, COINIT_MULTITHREADED);
+}
+
+/// The Microsoft ATL _com_error is not derived from std::exception hence this bit of code to throw our own COMexception() instead
 void __stdcall _com_raise_error(HRESULT hr, IErrorInfo* perrinfo) 
 {
 	_com_error com_error(hr, perrinfo);
 //	std::string message = "(" + com_error.Source() + ") " + com_error.Description();
-	std::string message = com_error.Description();
+	std::string message = com_error.Description();  // for LabVIEW generated messages, Description() already includes Source()
     throw COMexception(message, hr);
 }
-
-class ScopedLock
-{
-private:
-	epicsMutex& m_lock;
-	ScopedLock() : m_lock(*(new epicsMutex)) { throw std::runtime_error("ScopedLock error"); }
-	void operator=(const ScopedLock&) { throw std::runtime_error("ScopedLock error"); }
-	
-public:
-	explicit ScopedLock(epicsMutex& lock) : m_lock(lock)
-	{
-		m_lock.lock();
-	}
-	~ScopedLock()
-	{
-		m_lock.unlock();
-	}
-};
 
 std::string lvDCOMInterface::doXPATH(const std::string& xpath)
 {
@@ -62,7 +52,7 @@ std::string lvDCOMInterface::doXPATH(const std::string& xpath)
 	{
 		throw std::runtime_error("m_pxmldom is NULL");
 	}
-	ScopedLock _lock(m_lock);
+	epicsGuard<epicsMutex> _lock(m_lock);
 	std::map<std::string,std::string>::const_iterator it = m_xpath_map.find(xpath);
 	if (it != m_xpath_map.end())
 	{
@@ -96,7 +86,7 @@ bool lvDCOMInterface::doXPATHbool(const std::string& xpath)
 	{
 		throw std::runtime_error("m_pxmldom is NULL");
 	}
-	ScopedLock _lock(m_lock);
+	epicsGuard<epicsMutex> _lock(m_lock);
 	std::map<std::string,bool>::const_iterator it = m_xpath_bool_map.find(xpath);
 	if (it != m_xpath_bool_map.end())
 	{
@@ -213,12 +203,20 @@ void lvDCOMInterface::DomFromCOM()
 	}
 }
 
-
-lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFile, const char* host, int warnViIdle, int autostartVi) : 
-            m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_warnViIdle(warnViIdle != 0 ? true : false),
-			m_autostartVi(autostartVi != 0 ? true : false)
+/** 
+  * \param[in] portName @copydoc initArg0
+  * \param[in] configSection @copydoc initArg1
+  * \param[in] configFile @copydoc initArg2
+  * \param[in] host @copydoc initArg3
+  * \param[in] options @copydoc initArg4
+  * \param[in] username @copydoc initArg5
+  * \param[in] password @copydoc initArg6
+  */
+lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFile, const char* host, int options, const char* username, const char* password) : 
+            m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(options), 
+			m_username(username != NULL? username : ""), m_password(password != NULL ? password : "")
 {
-		CoInitializeEx(NULL, COINIT_MULTITHREADED);
+	epicsThreadOnce(&onceId, initCOM, NULL);
 //		std::ifstream in(configFile);
 //		Poco::XML::InputSource src(in);
 //		Poco::XML::DOMParser parser;
@@ -275,21 +273,29 @@ lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFi
 
 void lvDCOMInterface::epicsExitFunc(void* arg)
 {
-    lvDCOMInterface* stuff = static_cast<lvDCOMInterface*>(arg);
-	if (stuff != NULL)
+    lvDCOMInterface* dcomint = static_cast<lvDCOMInterface*>(arg);
+	if (dcomint == NULL)
 	{
-		stuff->stopAutoStartedVis();
+		return;
+	}
+	if ( dcomint->checkOption(viAlwaysStopOnExit) )
+	{
+		dcomint->stopVis(false);
+	}
+	else if ( dcomint->checkOption(viStopOnExitIfStarted) )
+	{
+		dcomint->stopVis(true);
 	}
 }
 
-void lvDCOMInterface::stopAutoStartedVis()
+void lvDCOMInterface::stopVis(bool only_ones_we_started)
 {
-    for(vi_map_t::const_iterator it = m_vimap.begin(); it != m_vimap.end(); ++it)
+   for(vi_map_t::const_iterator it = m_vimap.begin(); it != m_vimap.end(); ++it)
 	{
 		LabVIEW::VirtualInstrumentPtr vi_ref = it->second.vi_ref;
-	    if (it->second.started && vi_ref != NULL)
+	    if ( (!only_ones_we_started || it->second.started) && (vi_ref != NULL) )
 		{
-			if (vi_ref->ExecState != LabVIEW::ExecStateEnum::eIdle) // don't try to stop it if it is already stopped
+			if (vi_ref->ExecState != LabVIEW::eIdle) // don't try to stop it if it is already stopped
 			{
 				std::cerr << "stopping \"" << CW2CT(it->first.c_str()) << "\" as it was auto-started and is still running" << std::endl;
 				try
@@ -368,12 +374,12 @@ COAUTHIDENTITY* lvDCOMInterface::createIdentity(const std::string& user, const s
 {
     COAUTHIDENTITY* pidentity = new COAUTHIDENTITY;
     pidentity->Domain = (USHORT*)strdup(domain.c_str());
-    pidentity->DomainLength = strlen((const char*)pidentity->Domain);
+    pidentity->DomainLength = static_cast<ULONG>(strlen((const char*)pidentity->Domain));
     pidentity->Flags = SEC_WINNT_AUTH_IDENTITY_ANSI;
     pidentity->Password = (USHORT*)strdup(pass.c_str());
-    pidentity->PasswordLength = strlen((const char*)pidentity->Password);
+    pidentity->PasswordLength = static_cast<ULONG>(strlen((const char*)pidentity->Password));
     pidentity->User = (USHORT*)strdup(user.c_str());
-    pidentity->UserLength = strlen((const char*)pidentity->User);
+    pidentity->UserLength = static_cast<ULONG>(strlen((const char*)pidentity->User));
     return pidentity;
 }
 
@@ -399,7 +405,7 @@ void lvDCOMInterface::getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualIns
 	UINT len = SysStringLen(vi_name);
 	std::wstring ws(vi_name, SysStringLen(vi_name));
 
-	ScopedLock _lock(m_lock);
+	epicsGuard<epicsMutex> _lock(m_lock);
 	vi_map_t::iterator it = m_vimap.find(ws);
 	if(it != m_vimap.end())
 	{
@@ -433,7 +439,7 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 	{
 		std::cerr << "(Re)Making connection to LabVIEW on " << m_host << std::endl;
 		CComBSTR host(m_host.c_str());
-		m_pidentity = createIdentity("spudulike", m_host, "reliablebeam");
+		m_pidentity = createIdentity(m_username, m_host, m_password);
 		COAUTHINFO* pauth = new COAUTHINFO;
 		COSERVERINFO csi = { 0, NULL, NULL, 0 };
 		pauth->dwAuthnSvc = RPC_C_AUTHN_WINNT;
@@ -495,17 +501,17 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 		}
 	}
 	ViRef viref(vi, reentrant, false);
-	// LabVIEW::ExecStateEnum.eIdle = 1
-	// LabVIEW::ExecStateEnum.eRunTopLevel = 2
-	if (vi->ExecState == LabVIEW::ExecStateEnum::eIdle)
+	// LabVIEW::ExecStateEnum::eIdle = 1
+	// LabVIEW::ExecStateEnum::eRunTopLevel = 2
+	if (vi->ExecState == LabVIEW::eIdle)
 	{
-		if (m_autostartVi) // autostart
+		if ( checkOption(viStartIfIdle) ) 
 		{
-			std::cerr << "autostart: starting \"" << CW2CT(vi_name) << "\" on " << (m_host.size() > 0 ? m_host : "localhost") << std::endl;
+			std::cerr << "Starting \"" << CW2CT(vi_name) << "\" on " << (m_host.size() > 0 ? m_host : "localhost") << std::endl;
 			vi->Run(true);
 			viref.started = true;
 		}
-		else if (m_warnViIdle)
+		else if ( checkOption(viWarnIfIdle) )
 		{
 			std::cerr << "\"" << CW2CT(vi_name) << "\" is not running on " << (m_host.size() > 0 ? m_host : "localhost") << " and autostart is disabled" << std::endl;
 		}
@@ -517,7 +523,6 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 template <>
 void lvDCOMInterface::getLabviewValue(const char* param, std::string* value)
 {
-	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	if (value == NULL)
 	{
 		throw std::runtime_error("getLabviewValue failed (NULL)");
@@ -542,7 +547,6 @@ void lvDCOMInterface::getLabviewValue(const char* param, std::string* value)
 template<typename T> 
 void lvDCOMInterface::getLabviewValue(const char* param, T* value, size_t nElements, size_t& nIn)
 {
-	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	if (value == NULL)
 	{
 		throw std::runtime_error("getLabviewValue failed (NULL)");
@@ -561,7 +565,7 @@ void lvDCOMInterface::getLabviewValue(const char* param, T* value, size_t nEleme
 	CComSafeArray<T> sa;
 	sa.Attach(v.parray);
 	nIn = ( sa.GetCount() > nElements ? nElements : sa.GetCount() );
-	for(size_t i=0; i<nIn; ++i)
+	for(LONG i=0; i<nIn; ++i)
 	{
 		value[i] = sa.GetAt(i);
 	}
@@ -571,7 +575,6 @@ void lvDCOMInterface::getLabviewValue(const char* param, T* value, size_t nEleme
 template <typename T>
 void lvDCOMInterface::getLabviewValue(const char* param, T* value)
 {
-	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	if (value == NULL)
 	{
 		throw std::runtime_error("getLabviewValue failed (NULL)");
@@ -609,7 +612,6 @@ void lvDCOMInterface::getLabviewValue(BSTR vi_name, BSTR control_name, VARIANT* 
 template <>
 void lvDCOMInterface::setLabviewValue(const char* param, const std::string& value)
 {
-	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	CComVariant v(value.c_str()), results;
 	char vi_name_xpath[256], control_name_xpath[256], use_extint_xpath[256];
 	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
@@ -631,7 +633,6 @@ void lvDCOMInterface::setLabviewValue(const char* param, const std::string& valu
 template <typename T>
 void lvDCOMInterface::setLabviewValue(const char* param, const T& value)
 {
-	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	CComVariant v(value), results;
 	char vi_name_xpath[256], control_name_xpath[256], use_extint_xpath[256];
 	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());

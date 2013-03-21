@@ -6,10 +6,10 @@
 
     @author Freddie Akeroyd, STFC ISIS facility, UK (freddie.akeroyd at stfc.ac.uk)
 
-    $LastChangedRevision: 1489 $: 
-    $LastChangedBy: FreddieAkeroyd $: 
-    $LastChangedDate: 2012-12-10 14:13:43 +0000 (Mon, 10 Dec 2012) $:  
-    $HeadURL: http://svn.isis.rl.ac.uk/InstrumentControl/ICP/trunk/get_svn_revision.bat $:
+    $LastChangedRevision$: 
+    $LastChangedBy$: 
+    $LastChangedDate$:  
+    $HeadURL$:
 -->
 <lvinput>
    <!--
