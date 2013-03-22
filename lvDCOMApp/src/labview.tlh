@@ -1,0 +1,1450 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 10.00.40219.01 (ca0d89d1).
+//
+// c:\development\epics\isis\lvdcom\lvdcomapp\src\o.windows-x64-debug\labview.tlh
+//
+// C++ source equivalent of Win32 type library LabVIEW.tlb
+// compiler-generated file created 03/22/13 at 15:10:36 - DO NOT EDIT!
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+namespace LabVIEW {
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("9a872073-0a06-11d1-90b7-00a024ce2744"))
+/* LIBID */ __LabVIEW;
+enum PrintFormatEnum;
+enum HTMLImageFormatEnum;
+enum ExecStateEnum;
+enum ImgDataToFmtEnum;
+enum VIPriorityEnum;
+enum VIExecSysEnum;
+enum AppKindEnum;
+enum AppTargOSEnum;
+enum AppTargCPUEnum;
+enum VITypeEnum;
+enum VILockStateEnum;
+enum PageOrientationEnum;
+enum PrintMethodsEnum;
+enum FPBehaviorEnum;
+enum FPStateEnum;
+struct __declspec(uuid("00018c9e-0a06-11d1-90b7-00a024ce2744"))
+/* dispinterface */ Generic;
+struct __declspec(uuid("00018c9d-0a06-11d1-90b7-00a024ce2744"))
+/* interface */ _IGeneric;
+struct __declspec(uuid("9a872074-0a06-11d1-90b7-00a024ce2744"))
+/* dispinterface */ VirtualInstrument;
+struct __declspec(uuid("9a872075-0a06-11d1-90b7-00a024ce2744"))
+/* interface */ _IVI;
+struct __declspec(uuid("9a872072-0a06-11d1-90b7-00a024ce2744"))
+/* dispinterface */ _Application;
+struct __declspec(uuid("9a872071-0a06-11d1-90b7-00a024ce2744"))
+/* interface */ _IApplication;
+struct /* coclass */ Application;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(Generic, __uuidof(Generic));
+_COM_SMARTPTR_TYPEDEF(VirtualInstrument, __uuidof(VirtualInstrument));
+_COM_SMARTPTR_TYPEDEF(_IGeneric, __uuidof(_IGeneric));
+_COM_SMARTPTR_TYPEDEF(_IVI, __uuidof(_IVI));
+_COM_SMARTPTR_TYPEDEF(_Application, __uuidof(_Application));
+_COM_SMARTPTR_TYPEDEF(_IApplication, __uuidof(_IApplication));
+
+//
+// Type library items
+//
+
+enum __declspec(uuid("9a872076-0a06-11d1-90b7-00a024ce2744"))
+PrintFormatEnum
+{
+    eCustom = 0,
+    eStandard = 1,
+    eUsingPanel = 2,
+    eUsingSubVI = 3,
+    eComplete = 4
+};
+
+enum __declspec(uuid("9a872077-0a06-11d1-90b7-00a024ce2744"))
+HTMLImageFormatEnum
+{
+    ePNG = 0,
+    eJPEG = 1,
+    eGIF = 2
+};
+
+enum __declspec(uuid("9a872078-0a06-11d1-90b7-00a024ce2744"))
+ExecStateEnum
+{
+    eBad = 0,
+    eIdle = 1,
+    eRunTopLevel = 2,
+    eRunning = 3
+};
+
+enum __declspec(uuid("9a872084-0a06-11d1-90b7-00a024ce2744"))
+ImgDataToFmtEnum
+{
+    eImgDataFmtPNG = 0,
+    eImgDataFmtJPEG = 1,
+    eImgDataFmtEMF = 2
+};
+
+enum __declspec(uuid("9a872079-0a06-11d1-90b7-00a024ce2744"))
+VIPriorityEnum
+{
+    ePriInvalid = 0,
+    ePriBackground = 1,
+    ePriNormal = 2,
+    ePriAboveNormal = 3,
+    ePriHigh = 4,
+    ePriCritical = 5,
+    ePriSubroutine = 6
+};
+
+enum __declspec(uuid("9a87207a-0a06-11d1-90b7-00a024ce2744"))
+VIExecSysEnum
+{
+    eESysInvalid = 0,
+    eESysUserInterface = 1,
+    eESysNormal = 2,
+    eESysInstrIO = 3,
+    eESysDAQ = 4,
+    eESysOther1 = 5,
+    eESysOther2 = 6,
+    eESysSameAsCaller = 7
+};
+
+enum __declspec(uuid("9a87207b-0a06-11d1-90b7-00a024ce2744"))
+AppKindEnum
+{
+    eInvalidAppKind = 0,
+    eDevSysKind = 1,
+    eRunTimeSysKind = 2,
+    eStudEdKind = 3,
+    eEmbeddedKind = 4,
+    eEvaluationKind = 5,
+    eCustomKind = 6
+};
+
+enum __declspec(uuid("9a87207c-0a06-11d1-90b7-00a024ce2744"))
+AppTargOSEnum
+{
+    eInvalidTargOS = 0,
+    eMacOS = 1,
+    eWin31OS = 2,
+    eWin95NTOS = 3,
+    eSolaris1OS = 4,
+    eSolaris2OS = 5,
+    eHPUXOS = 6,
+    ePowerMaxOS = 7,
+    eLinuxOS = 8,
+    eIrixOS = 9,
+    eRhapsodyOS = 10,
+    eBeOS = 11,
+    eAIXOS = 12,
+    eOSF1OS = 13,
+    eVxWorksOS = 14,
+    ePharlapOS = 15,
+    eCarbonOS = 16,
+    eRTXOS = 17
+};
+
+enum __declspec(uuid("9a87207d-0a06-11d1-90b7-00a024ce2744"))
+AppTargCPUEnum
+{
+    eInvalidTargCPU = 0,
+    eMotorola68kCPU = 1,
+    ePowerPCCPU = 2,
+    eIntelx86CPU = 3,
+    eSPARCCPU = 4,
+    ePARISCCPU = 5,
+    eMIPSCPU = 6,
+    eAlphaCPU = 7
+};
+
+enum __declspec(uuid("9a87207e-0a06-11d1-90b7-00a024ce2744"))
+VITypeEnum
+{
+    eInvalidVIType = 0,
+    eStandardVIType = 1,
+    eControlVIType = 2,
+    eGlobalVIType = 3,
+    ePolymorphicVIType = 4,
+    eConfigurationVIType = 5,
+    eSubSystemVIType = 6
+};
+
+enum __declspec(uuid("9a87207f-0a06-11d1-90b7-00a024ce2744"))
+VILockStateEnum
+{
+    eInvalidLockState = 0,
+    eUnlockedState = 1,
+    eLockedNoPwdState = 2,
+    ePwdProtectedState = 3
+};
+
+enum __declspec(uuid("9a872080-0a06-11d1-90b7-00a024ce2744"))
+PageOrientationEnum
+{
+    ePortrait = 0,
+    eLandscape = 1,
+    eRotatedPortrait = 2,
+    eRotatedLandscape = 3
+};
+
+enum __declspec(uuid("9a872081-0a06-11d1-90b7-00a024ce2744"))
+PrintMethodsEnum
+{
+    eStandardMethod = 0,
+    ePostscriptMethod = 1,
+    eBitmapMethod = 2
+};
+
+enum __declspec(uuid("9a872082-0a06-11d1-90b7-00a024ce2744"))
+FPBehaviorEnum
+{
+    eInvalidFPBehavior = 0,
+    eDefaultFPBehavior = 1,
+    eFloating = 2,
+    eFloatingAutoHide = 3,
+    eModal = 4
+};
+
+enum __declspec(uuid("9a872083-0a06-11d1-90b7-00a024ce2744"))
+FPStateEnum
+{
+    eInvalidFPState = 0,
+    eFPStandard = 1,
+    eFPClosed = 2,
+    eFPHidden = 3,
+    eFPMinimized = 4,
+    eFPMaximized = 5
+};
+
+struct __declspec(uuid("00018c9e-0a06-11d1-90b7-00a024ce2744"))
+Generic : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetClassID))
+    long ClassID;
+    __declspec(property(get=GetOwner))
+    GenericPtr Owner;
+    __declspec(property(get=GetOwningVI))
+    VirtualInstrumentPtr OwningVI;
+    __declspec(property(get=GetClassName))
+    _bstr_t ClassName;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    // Methods:
+    long GetClassID ( );
+    GenericPtr GetOwner ( );
+    VirtualInstrumentPtr GetOwningVI ( );
+    _bstr_t GetClassName ( );
+};
+
+struct __declspec(uuid("9a872074-0a06-11d1-90b7-00a024ce2744"))
+VirtualInstrument : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetPrintHeaderDatePrint,put=PutPrintHeaderDatePrint))
+    VARIANT_BOOL PrintHeaderDatePrint;
+    __declspec(property(get=GetPrintHeaderModifyDate,put=PutPrintHeaderModifyDate))
+    VARIANT_BOOL PrintHeaderModifyDate;
+    __declspec(property(get=GetPrintHeaderPageNumber,put=PutPrintHeaderPageNumber))
+    VARIANT_BOOL PrintHeaderPageNumber;
+    __declspec(property(get=GetPrintHeaderVIIcon,put=PutPrintHeaderVIIcon))
+    VARIANT_BOOL PrintHeaderVIIcon;
+    __declspec(property(get=GetPrintingHeaderVIPath,put=PutPrintingHeaderVIPath))
+    VARIANT_BOOL PrintingHeaderVIPath;
+    __declspec(property(get=GetFPBehavior,put=PutFPBehavior))
+    enum FPBehaviorEnum FPBehavior;
+    __declspec(property(get=GetFPState,put=PutFPState))
+    enum FPStateEnum FPState;
+    __declspec(property(get=GetPrintingBDScaling,put=PutPrintingBDScaling))
+    VARIANT_BOOL PrintingBDScaling;
+    __declspec(property(get=Get_CPTM_CRC))
+    long _CPTM_CRC;
+    __declspec(property(get=Get_FPWinOSWindow))
+    long _FPWinOSWindow;
+    __declspec(property(get=Get_BDWinOSWindow))
+    long _BDWinOSWindow;
+    __declspec(property(get=GetIsProbe))
+    VARIANT_BOOL IsProbe;
+    __declspec(property(get=GetName,put=PutName))
+    _bstr_t Name;
+    __declspec(property(get=GetPath))
+    _bstr_t Path;
+    __declspec(property(get=GetDescription,put=PutDescription))
+    _bstr_t Description;
+    __declspec(property(get=GetHistoryText))
+    _bstr_t HistoryText;
+    __declspec(property(get=GetFPTitleBarVisible,put=PutFPTitleBarVisible))
+    VARIANT_BOOL FPTitleBarVisible;
+    __declspec(property(get=GetFPWinClosable,put=PutFPWinClosable))
+    VARIANT_BOOL FPWinClosable;
+    __declspec(property(get=GetFPResizable,put=PutFPResizable))
+    VARIANT_BOOL FPResizable;
+    __declspec(property(get=GetFPAllowRTPopup,put=PutFPAllowRTPopup))
+    VARIANT_BOOL FPAllowRTPopup;
+    __declspec(property(get=GetFPHiliteReturnButton,put=PutFPHiliteReturnButton))
+    VARIANT_BOOL FPHiliteReturnButton;
+    __declspec(property(get=GetFPSizeToScreen,put=PutFPSizeToScreen))
+    VARIANT_BOOL FPSizeToScreen;
+    __declspec(property(get=GetFPAutoCenter,put=PutFPAutoCenter))
+    VARIANT_BOOL FPAutoCenter;
+    __declspec(property(get=GetFPShowScrollBars,put=PutFPShowScrollBars))
+    VARIANT_BOOL FPShowScrollBars;
+    __declspec(property(get=GetFPShowMenuBar,put=PutFPShowMenuBar))
+    VARIANT_BOOL FPShowMenuBar;
+    __declspec(property(get=GetTBVisible,put=PutTBVisible))
+    VARIANT_BOOL TBVisible;
+    __declspec(property(get=GetTBShowRunButton,put=PutTBShowRunButton))
+    VARIANT_BOOL TBShowRunButton;
+    __declspec(property(get=GetTBShowFreeRunButton,put=PutTBShowFreeRunButton))
+    VARIANT_BOOL TBShowFreeRunButton;
+    __declspec(property(get=GetTBShowAbortButton,put=PutTBShowAbortButton))
+    VARIANT_BOOL TBShowAbortButton;
+    __declspec(property(get=GetAllowDebugging,put=PutAllowDebugging))
+    VARIANT_BOOL AllowDebugging;
+    __declspec(property(get=GetShowFPOnLoad,put=PutShowFPOnLoad))
+    VARIANT_BOOL ShowFPOnLoad;
+    __declspec(property(get=GetShowFPOnCall,put=PutShowFPOnCall))
+    VARIANT_BOOL ShowFPOnCall;
+    __declspec(property(get=GetCloseFPAfterCall,put=PutCloseFPAfterCall))
+    VARIANT_BOOL CloseFPAfterCall;
+    __declspec(property(get=GetRunOnOpen,put=PutRunOnOpen))
+    VARIANT_BOOL RunOnOpen;
+    __declspec(property(get=GetIsReentrant,put=PutIsReentrant))
+    VARIANT_BOOL IsReentrant;
+    __declspec(property(get=GetExecPriority,put=PutExecPriority))
+    enum VIPriorityEnum ExecPriority;
+    __declspec(property(get=GetHistUseDefaults,put=PutHistUseDefaults))
+    VARIANT_BOOL HistUseDefaults;
+    __declspec(property(get=GetHistAddCommentsAtSave,put=PutHistAddCommentsAtSave))
+    VARIANT_BOOL HistAddCommentsAtSave;
+    __declspec(property(get=GetHistPromptAtClose,put=PutHistPromptAtClose))
+    VARIANT_BOOL HistPromptAtClose;
+    __declspec(property(get=GetHistPromptForCommentsAtSave,put=PutHistPromptForCommentsAtSave))
+    VARIANT_BOOL HistPromptForCommentsAtSave;
+    __declspec(property(get=GetHistRecordAppComments,put=PutHistRecordAppComments))
+    VARIANT_BOOL HistRecordAppComments;
+    __declspec(property(get=GetHelpDocumentTag,put=PutHelpDocumentTag))
+    _bstr_t HelpDocumentTag;
+    __declspec(property(get=GetHelpDocumentPath,put=PutHelpDocumentPath))
+    _bstr_t HelpDocumentPath;
+    __declspec(property(get=GetFPWinOpen,put=PutFPWinOpen))
+    VARIANT_BOOL FPWinOpen;
+    __declspec(property(get=GetFPWinIsFrontMost,put=PutFPWinIsFrontMost))
+    VARIANT_BOOL FPWinIsFrontMost;
+    __declspec(property(get=GetFPWinBounds,put=PutFPWinBounds))
+    _variant_t FPWinBounds;
+    __declspec(property(get=GetVIModificationBitSet))
+    long VIModificationBitSet;
+    __declspec(property(get=GetFPModificationBitSet))
+    long FPModificationBitSet;
+    __declspec(property(get=GetBDModificationBitSet))
+    long BDModificationBitSet;
+    __declspec(property(get=GetCodeSize))
+    long CodeSize;
+    __declspec(property(get=GetDataSize))
+    long DataSize;
+    __declspec(property(get=GetFPSize))
+    long FPSize;
+    __declspec(property(get=GetBDSize))
+    long BDSize;
+    __declspec(property(get=GetCallers))
+    _variant_t Callers;
+    __declspec(property(get=GetCallees))
+    _variant_t Callees;
+    __declspec(property(get=GetLogFilePath,put=PutLogFilePath))
+    _bstr_t LogFilePath;
+    __declspec(property(get=GetLogAtFinish,put=PutLogAtFinish))
+    VARIANT_BOOL LogAtFinish;
+    __declspec(property(get=GetPrintLogFileAtFinish,put=PutPrintLogFileAtFinish))
+    VARIANT_BOOL PrintLogFileAtFinish;
+    __declspec(property(get=GetFPWinOrigin,put=PutFPWinOrigin))
+    _variant_t FPWinOrigin;
+    __declspec(property(get=GetFPWinTitle,put=PutFPWinTitle))
+    _bstr_t FPWinTitle;
+    __declspec(property(get=GetSuspendOnCall,put=PutSuspendOnCall))
+    VARIANT_BOOL SuspendOnCall;
+    __declspec(property(get=GetFPWinPanelBounds,put=PutFPWinPanelBounds))
+    _variant_t FPWinPanelBounds;
+    __declspec(property(get=GetExecState))
+    enum ExecStateEnum ExecState;
+    __declspec(property(get=GetEditMode,put=PutEditMode))
+    VARIANT_BOOL EditMode;
+    __declspec(property(get=GetPreferredExecSystem,put=PutPreferredExecSystem))
+    enum VIExecSysEnum PreferredExecSystem;
+    __declspec(property(get=GetFPWinCustomTitle,put=PutFPWinCustomTitle))
+    VARIANT_BOOL FPWinCustomTitle;
+    __declspec(property(get=GetVIType))
+    enum VITypeEnum VIType;
+    __declspec(property(get=GetRevisionNumber,put=PutRevisionNumber))
+    long RevisionNumber;
+    __declspec(property(get=GetFPKeepWinProps,put=PutFPKeepWinProps))
+    VARIANT_BOOL FPKeepWinProps;
+    __declspec(property(get=GetRunTimeMenuPath,put=PutRunTimeMenuPath))
+    _bstr_t RunTimeMenuPath;
+    __declspec(property(get=GetFPMinimizeable,put=PutFPMinimizeable))
+    VARIANT_BOOL FPMinimizeable;
+    __declspec(property(get=GetFPResizeable,put=PutFPResizeable))
+    VARIANT_BOOL FPResizeable;
+    __declspec(property(get=GetExpandWhenDroppedAsSubVI,put=PutExpandWhenDroppedAsSubVI))
+    VARIANT_BOOL ExpandWhenDroppedAsSubVI;
+    __declspec(property(get=GetPrintingOrientation,put=PutPrintingOrientation))
+    enum PageOrientationEnum PrintingOrientation;
+    __declspec(property(get=GetPrintingHeaders,put=PutPrintingHeaders))
+    VARIANT_BOOL PrintingHeaders;
+    __declspec(property(get=GetPrintingFPScaling,put=PutPrintingFPScaling))
+    VARIANT_BOOL PrintingFPScaling;
+    __declspec(property(get=GetPrintMargins,put=PutPrintMargins))
+    _variant_t PrintMargins;
+    __declspec(property(get=GetPrintHeaderVIName,put=PutPrintHeaderVIName))
+    VARIANT_BOOL PrintHeaderVIName;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    // Methods:
+    _bstr_t GetName ( );
+    void PutName (
+        _bstr_t _arg1 );
+    _bstr_t GetPath ( );
+    _bstr_t GetDescription ( );
+    void PutDescription (
+        _bstr_t _arg1 );
+    _bstr_t GetHistoryText ( );
+    VARIANT_BOOL GetFPTitleBarVisible ( );
+    void PutFPTitleBarVisible (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetFPWinClosable ( );
+    void PutFPWinClosable (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetFPResizable ( );
+    void PutFPResizable (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetFPAllowRTPopup ( );
+    void PutFPAllowRTPopup (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetFPHiliteReturnButton ( );
+    void PutFPHiliteReturnButton (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetFPSizeToScreen ( );
+    void PutFPSizeToScreen (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetFPAutoCenter ( );
+    void PutFPAutoCenter (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetFPShowScrollBars ( );
+    void PutFPShowScrollBars (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetFPShowMenuBar ( );
+    void PutFPShowMenuBar (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetTBVisible ( );
+    void PutTBVisible (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetTBShowRunButton ( );
+    void PutTBShowRunButton (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetTBShowFreeRunButton ( );
+    void PutTBShowFreeRunButton (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetTBShowAbortButton ( );
+    void PutTBShowAbortButton (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetAllowDebugging ( );
+    void PutAllowDebugging (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetShowFPOnLoad ( );
+    void PutShowFPOnLoad (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetShowFPOnCall ( );
+    void PutShowFPOnCall (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetCloseFPAfterCall ( );
+    void PutCloseFPAfterCall (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetRunOnOpen ( );
+    void PutRunOnOpen (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetIsReentrant ( );
+    void PutIsReentrant (
+        VARIANT_BOOL _arg1 );
+    enum VIPriorityEnum GetExecPriority ( );
+    void PutExecPriority (
+        enum VIPriorityEnum _arg1 );
+    VARIANT_BOOL GetHistUseDefaults ( );
+    void PutHistUseDefaults (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetHistAddCommentsAtSave ( );
+    void PutHistAddCommentsAtSave (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetHistPromptAtClose ( );
+    void PutHistPromptAtClose (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetHistPromptForCommentsAtSave ( );
+    void PutHistPromptForCommentsAtSave (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetHistRecordAppComments ( );
+    void PutHistRecordAppComments (
+        VARIANT_BOOL _arg1 );
+    _bstr_t GetHelpDocumentTag ( );
+    void PutHelpDocumentTag (
+        _bstr_t _arg1 );
+    _bstr_t GetHelpDocumentPath ( );
+    void PutHelpDocumentPath (
+        _bstr_t _arg1 );
+    VARIANT_BOOL GetFPWinOpen ( );
+    void PutFPWinOpen (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetFPWinIsFrontMost ( );
+    void PutFPWinIsFrontMost (
+        VARIANT_BOOL _arg1 );
+    _variant_t GetFPWinBounds ( );
+    void PutFPWinBounds (
+        const _variant_t & _arg1 );
+    long GetVIModificationBitSet ( );
+    long GetFPModificationBitSet ( );
+    long GetBDModificationBitSet ( );
+    long GetCodeSize ( );
+    long GetDataSize ( );
+    long GetFPSize ( );
+    long GetBDSize ( );
+    _variant_t GetCallers ( );
+    _variant_t GetCallees ( );
+    _bstr_t GetLogFilePath ( );
+    void PutLogFilePath (
+        _bstr_t _arg1 );
+    VARIANT_BOOL GetLogAtFinish ( );
+    void PutLogAtFinish (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintLogFileAtFinish ( );
+    void PutPrintLogFileAtFinish (
+        VARIANT_BOOL _arg1 );
+    _variant_t GetFPWinOrigin ( );
+    void PutFPWinOrigin (
+        const _variant_t & _arg1 );
+    _bstr_t GetFPWinTitle ( );
+    void PutFPWinTitle (
+        _bstr_t _arg1 );
+    VARIANT_BOOL GetSuspendOnCall ( );
+    void PutSuspendOnCall (
+        VARIANT_BOOL _arg1 );
+    _variant_t GetFPWinPanelBounds ( );
+    void PutFPWinPanelBounds (
+        const _variant_t & _arg1 );
+    enum ExecStateEnum GetExecState ( );
+    VARIANT_BOOL GetEditMode ( );
+    void PutEditMode (
+        VARIANT_BOOL _arg1 );
+    enum VIExecSysEnum GetPreferredExecSystem ( );
+    void PutPreferredExecSystem (
+        enum VIExecSysEnum _arg1 );
+    VARIANT_BOOL GetFPWinCustomTitle ( );
+    void PutFPWinCustomTitle (
+        VARIANT_BOOL _arg1 );
+    enum VITypeEnum GetVIType ( );
+    long GetRevisionNumber ( );
+    void PutRevisionNumber (
+        long _arg1 );
+    VARIANT_BOOL GetFPKeepWinProps ( );
+    void PutFPKeepWinProps (
+        VARIANT_BOOL _arg1 );
+    _bstr_t GetRunTimeMenuPath ( );
+    void PutRunTimeMenuPath (
+        _bstr_t _arg1 );
+    VARIANT_BOOL GetFPMinimizeable ( );
+    void PutFPMinimizeable (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetFPResizeable ( );
+    void PutFPResizeable (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetExpandWhenDroppedAsSubVI ( );
+    void PutExpandWhenDroppedAsSubVI (
+        VARIANT_BOOL _arg1 );
+    enum PageOrientationEnum GetPrintingOrientation ( );
+    void PutPrintingOrientation (
+        enum PageOrientationEnum _arg1 );
+    VARIANT_BOOL GetPrintingHeaders ( );
+    void PutPrintingHeaders (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintingFPScaling ( );
+    void PutPrintingFPScaling (
+        VARIANT_BOOL _arg1 );
+    _variant_t GetPrintMargins ( );
+    void PutPrintMargins (
+        const _variant_t & _arg1 );
+    VARIANT_BOOL GetPrintHeaderVIName ( );
+    void PutPrintHeaderVIName (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintHeaderDatePrint ( );
+    void PutPrintHeaderDatePrint (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintHeaderModifyDate ( );
+    void PutPrintHeaderModifyDate (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintHeaderPageNumber ( );
+    void PutPrintHeaderPageNumber (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintHeaderVIIcon ( );
+    void PutPrintHeaderVIIcon (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintingHeaderVIPath ( );
+    void PutPrintingHeaderVIPath (
+        VARIANT_BOOL _arg1 );
+    enum FPBehaviorEnum GetFPBehavior ( );
+    void PutFPBehavior (
+        enum FPBehaviorEnum _arg1 );
+    enum FPStateEnum GetFPState ( );
+    void PutFPState (
+        enum FPStateEnum _arg1 );
+    VARIANT_BOOL GetPrintingBDScaling ( );
+    void PutPrintingBDScaling (
+        VARIANT_BOOL _arg1 );
+    long Get_CPTM_CRC ( );
+    long Get_FPWinOSWindow ( );
+    long Get_BDWinOSWindow ( );
+    VARIANT_BOOL GetIsProbe ( );
+    HRESULT ExportVIStrings (
+        _bstr_t stringFile,
+        VARIANT_BOOL interactive,
+        _bstr_t logFile,
+        VARIANT_BOOL captions,
+        VARIANT_BOOL diagram );
+    HRESULT ImportVIStrings (
+        _bstr_t stringFile,
+        VARIANT_BOOL interactive,
+        _bstr_t logFile );
+    HRESULT SaveInstrument (
+        _bstr_t viPath,
+        VARIANT_BOOL saveACopy,
+        VARIANT_BOOL withoutDiagram );
+    HRESULT Abort ( );
+    HRESULT PrintVIToPrinter (
+        enum PrintFormatEnum format,
+        VARIANT_BOOL scalePanel,
+        VARIANT_BOOL scaleDiagram,
+        VARIANT_BOOL pageHeaders,
+        VARIANT_BOOL pageBreaks,
+        VARIANT_BOOL sectionHeaders );
+    HRESULT PrintVIToHTML (
+        _bstr_t htmlFilePath,
+        VARIANT_BOOL append,
+        enum PrintFormatEnum format,
+        enum HTMLImageFormatEnum imageFormat,
+        long imageDepth,
+        _bstr_t imageDirectory );
+    HRESULT PrintVIToRTF (
+        _bstr_t rtfFilePath,
+        VARIANT_BOOL append,
+        enum PrintFormatEnum format,
+        long imageFormat,
+        long imageDepth,
+        _bstr_t imageDirectory,
+        VARIANT_BOOL helpFormat );
+    HRESULT PrintVIToText (
+        _bstr_t textFilePath,
+        VARIANT_BOOL append,
+        enum PrintFormatEnum format );
+    HRESULT MakeCurValueDefault ( );
+    HRESULT ReinitializeAllToDefault ( );
+    _variant_t GetControlValue (
+        _bstr_t controlName );
+    HRESULT SetControlValue (
+        _bstr_t controlName,
+        const _variant_t & value );
+    HRESULT Call (
+        VARIANT * paramNames = &vtMissing,
+        VARIANT * paramVals = &vtMissing );
+    HRESULT GetPanelImage (
+        VARIANT_BOOL visibleOnly,
+        long imgDepth,
+        VARIANT * img = &vtMissing,
+        VARIANT * colors = &vtMissing,
+        VARIANT * bounds = &vtMissing );
+    HRESULT Run (
+        VARIANT_BOOL async );
+    HRESULT Revert ( );
+    HRESULT PrintPanel (
+        VARIANT_BOOL entirePanel );
+    enum VILockStateEnum GetLockState (
+        VARIANT_BOOL * pwdInCache );
+    HRESULT SetLockState (
+        enum VILockStateEnum lockState,
+        VARIANT_BOOL interactive,
+        _bstr_t password,
+        VARIANT_BOOL putInCache );
+    HRESULT SaveForPrevious (
+        _bstr_t viPath,
+        BSTR * warnings );
+    HRESULT Call2 (
+        VARIANT * paramNames,
+        VARIANT * paramVals,
+        VARIANT_BOOL openFP,
+        VARIANT_BOOL CloseFPAfterCall,
+        VARIANT_BOOL SuspendOnCall,
+        VARIANT_BOOL bringAppToFront );
+    HRESULT SetVIIcon (
+        _bstr_t imageFile );
+    HRESULT SaveRunTimeMenu (
+        _bstr_t filePath );
+    HRESULT OldOpenFrontPanel (
+        VARIANT_BOOL Activate,
+        enum FPStateEnum State );
+    HRESULT CloseFrontPanel ( );
+    HRESULT OpenFrontPanel (
+        VARIANT_BOOL Activate,
+        enum FPStateEnum State );
+};
+
+struct __declspec(uuid("00018c9d-0a06-11d1-90b7-00a024ce2744"))
+_IGeneric : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual long __stdcall get_ClassID ( ) = 0;
+      virtual struct Generic * __stdcall get_Owner ( ) = 0;
+      virtual struct VirtualInstrument * __stdcall get_OwningVI ( ) = 0;
+      virtual BSTR __stdcall get_ClassName ( ) = 0;
+};
+
+struct __declspec(uuid("9a872075-0a06-11d1-90b7-00a024ce2744"))
+_IVI : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual BSTR __stdcall get_Name ( ) = 0;
+      virtual void __stdcall put_Name (
+        /*[in]*/ BSTR _arg1 ) = 0;
+      virtual BSTR __stdcall get_Path ( ) = 0;
+      virtual BSTR __stdcall get_Description ( ) = 0;
+      virtual void __stdcall put_Description (
+        /*[in]*/ BSTR _arg1 ) = 0;
+      virtual BSTR __stdcall get_HistoryText ( ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPTitleBarVisible ( ) = 0;
+      virtual void __stdcall put_FPTitleBarVisible (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPWinClosable ( ) = 0;
+      virtual void __stdcall put_FPWinClosable (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPResizable ( ) = 0;
+      virtual void __stdcall put_FPResizable (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPAllowRTPopup ( ) = 0;
+      virtual void __stdcall put_FPAllowRTPopup (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPHiliteReturnButton ( ) = 0;
+      virtual void __stdcall put_FPHiliteReturnButton (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPSizeToScreen ( ) = 0;
+      virtual void __stdcall put_FPSizeToScreen (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPAutoCenter ( ) = 0;
+      virtual void __stdcall put_FPAutoCenter (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPShowScrollBars ( ) = 0;
+      virtual void __stdcall put_FPShowScrollBars (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPShowMenuBar ( ) = 0;
+      virtual void __stdcall put_FPShowMenuBar (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_TBVisible ( ) = 0;
+      virtual void __stdcall put_TBVisible (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_TBShowRunButton ( ) = 0;
+      virtual void __stdcall put_TBShowRunButton (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_TBShowFreeRunButton ( ) = 0;
+      virtual void __stdcall put_TBShowFreeRunButton (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_TBShowAbortButton ( ) = 0;
+      virtual void __stdcall put_TBShowAbortButton (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_AllowDebugging ( ) = 0;
+      virtual void __stdcall put_AllowDebugging (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_ShowFPOnLoad ( ) = 0;
+      virtual void __stdcall put_ShowFPOnLoad (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_ShowFPOnCall ( ) = 0;
+      virtual void __stdcall put_ShowFPOnCall (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_CloseFPAfterCall ( ) = 0;
+      virtual void __stdcall put_CloseFPAfterCall (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_RunOnOpen ( ) = 0;
+      virtual void __stdcall put_RunOnOpen (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_IsReentrant ( ) = 0;
+      virtual void __stdcall put_IsReentrant (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual enum VIPriorityEnum __stdcall get_ExecPriority ( ) = 0;
+      virtual void __stdcall put_ExecPriority (
+        /*[in]*/ enum VIPriorityEnum _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_HistUseDefaults ( ) = 0;
+      virtual void __stdcall put_HistUseDefaults (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_HistAddCommentsAtSave ( ) = 0;
+      virtual void __stdcall put_HistAddCommentsAtSave (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_HistPromptAtClose ( ) = 0;
+      virtual void __stdcall put_HistPromptAtClose (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_HistPromptForCommentsAtSave ( ) = 0;
+      virtual void __stdcall put_HistPromptForCommentsAtSave (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_HistRecordAppComments ( ) = 0;
+      virtual void __stdcall put_HistRecordAppComments (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual BSTR __stdcall get_HelpDocumentTag ( ) = 0;
+      virtual void __stdcall put_HelpDocumentTag (
+        /*[in]*/ BSTR _arg1 ) = 0;
+      virtual BSTR __stdcall get_HelpDocumentPath ( ) = 0;
+      virtual void __stdcall put_HelpDocumentPath (
+        /*[in]*/ BSTR _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPWinOpen ( ) = 0;
+      virtual void __stdcall put_FPWinOpen (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPWinIsFrontMost ( ) = 0;
+      virtual void __stdcall put_FPWinIsFrontMost (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT __stdcall get_FPWinBounds ( ) = 0;
+      virtual void __stdcall put_FPWinBounds (
+        /*[in]*/ VARIANT _arg1 ) = 0;
+      virtual long __stdcall get_VIModificationBitSet ( ) = 0;
+      virtual long __stdcall get_FPModificationBitSet ( ) = 0;
+      virtual long __stdcall get_BDModificationBitSet ( ) = 0;
+      virtual long __stdcall get_CodeSize ( ) = 0;
+      virtual long __stdcall get_DataSize ( ) = 0;
+      virtual long __stdcall get_FPSize ( ) = 0;
+      virtual long __stdcall get_BDSize ( ) = 0;
+      virtual VARIANT __stdcall get_Callers ( ) = 0;
+      virtual VARIANT __stdcall get_Callees ( ) = 0;
+      virtual BSTR __stdcall get_LogFilePath ( ) = 0;
+      virtual void __stdcall put_LogFilePath (
+        /*[in]*/ BSTR _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_LogAtFinish ( ) = 0;
+      virtual void __stdcall put_LogAtFinish (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintLogFileAtFinish ( ) = 0;
+      virtual void __stdcall put_PrintLogFileAtFinish (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT __stdcall get_FPWinOrigin ( ) = 0;
+      virtual void __stdcall put_FPWinOrigin (
+        /*[in]*/ VARIANT _arg1 ) = 0;
+      virtual BSTR __stdcall get_FPWinTitle ( ) = 0;
+      virtual void __stdcall put_FPWinTitle (
+        /*[in]*/ BSTR _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_SuspendOnCall ( ) = 0;
+      virtual void __stdcall put_SuspendOnCall (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT __stdcall get_FPWinPanelBounds ( ) = 0;
+      virtual void __stdcall put_FPWinPanelBounds (
+        /*[in]*/ VARIANT _arg1 ) = 0;
+      virtual enum ExecStateEnum __stdcall get_ExecState ( ) = 0;
+      virtual VARIANT_BOOL __stdcall get_EditMode ( ) = 0;
+      virtual void __stdcall put_EditMode (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual enum VIExecSysEnum __stdcall get_PreferredExecSystem ( ) = 0;
+      virtual void __stdcall put_PreferredExecSystem (
+        /*[in]*/ enum VIExecSysEnum _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPWinCustomTitle ( ) = 0;
+      virtual void __stdcall put_FPWinCustomTitle (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual enum VITypeEnum __stdcall get_VIType ( ) = 0;
+      virtual long __stdcall get_RevisionNumber ( ) = 0;
+      virtual void __stdcall put_RevisionNumber (
+        /*[in]*/ long _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPKeepWinProps ( ) = 0;
+      virtual void __stdcall put_FPKeepWinProps (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual BSTR __stdcall get_RunTimeMenuPath ( ) = 0;
+      virtual void __stdcall put_RunTimeMenuPath (
+        /*[in]*/ BSTR _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPMinimizeable ( ) = 0;
+      virtual void __stdcall put_FPMinimizeable (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_FPResizeable ( ) = 0;
+      virtual void __stdcall put_FPResizeable (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_ExpandWhenDroppedAsSubVI ( ) = 0;
+      virtual void __stdcall put_ExpandWhenDroppedAsSubVI (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual enum PageOrientationEnum __stdcall get_PrintingOrientation ( ) = 0;
+      virtual void __stdcall put_PrintingOrientation (
+        /*[in]*/ enum PageOrientationEnum _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintingHeaders ( ) = 0;
+      virtual void __stdcall put_PrintingHeaders (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintingFPScaling ( ) = 0;
+      virtual void __stdcall put_PrintingFPScaling (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT __stdcall get_PrintMargins ( ) = 0;
+      virtual void __stdcall put_PrintMargins (
+        /*[in]*/ VARIANT _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintHeaderVIName ( ) = 0;
+      virtual void __stdcall put_PrintHeaderVIName (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintHeaderDatePrint ( ) = 0;
+      virtual void __stdcall put_PrintHeaderDatePrint (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintHeaderModifyDate ( ) = 0;
+      virtual void __stdcall put_PrintHeaderModifyDate (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintHeaderPageNumber ( ) = 0;
+      virtual void __stdcall put_PrintHeaderPageNumber (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintHeaderVIIcon ( ) = 0;
+      virtual void __stdcall put_PrintHeaderVIIcon (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintingHeaderVIPath ( ) = 0;
+      virtual void __stdcall put_PrintingHeaderVIPath (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual enum FPBehaviorEnum __stdcall get_FPBehavior ( ) = 0;
+      virtual void __stdcall put_FPBehavior (
+        /*[in]*/ enum FPBehaviorEnum _arg1 ) = 0;
+      virtual enum FPStateEnum __stdcall get_FPState ( ) = 0;
+      virtual void __stdcall put_FPState (
+        /*[in]*/ enum FPStateEnum _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintingBDScaling ( ) = 0;
+      virtual void __stdcall put_PrintingBDScaling (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual long __stdcall get__CPTM_CRC ( ) = 0;
+      virtual long __stdcall get__FPWinOSWindow ( ) = 0;
+      virtual long __stdcall get__BDWinOSWindow ( ) = 0;
+      virtual VARIANT_BOOL __stdcall get_IsProbe ( ) = 0;
+      virtual void __stdcall ExportVIStrings (
+        /*[in]*/ BSTR stringFile,
+        /*[in]*/ VARIANT_BOOL interactive,
+        /*[in]*/ BSTR logFile,
+        /*[in]*/ VARIANT_BOOL captions,
+        /*[in]*/ VARIANT_BOOL diagram ) = 0;
+      virtual void __stdcall ImportVIStrings (
+        /*[in]*/ BSTR stringFile,
+        /*[in]*/ VARIANT_BOOL interactive,
+        /*[in]*/ BSTR logFile ) = 0;
+      virtual void __stdcall SaveInstrument (
+        /*[in]*/ BSTR viPath,
+        /*[in]*/ VARIANT_BOOL saveACopy,
+        /*[in]*/ VARIANT_BOOL withoutDiagram ) = 0;
+      virtual void __stdcall Abort ( ) = 0;
+      virtual void __stdcall PrintVIToPrinter (
+        /*[in]*/ enum PrintFormatEnum format,
+        /*[in]*/ VARIANT_BOOL scalePanel,
+        /*[in]*/ VARIANT_BOOL scaleDiagram,
+        /*[in]*/ VARIANT_BOOL pageHeaders,
+        /*[in]*/ VARIANT_BOOL pageBreaks,
+        /*[in]*/ VARIANT_BOOL sectionHeaders ) = 0;
+      virtual void __stdcall PrintVIToHTML (
+        /*[in]*/ BSTR htmlFilePath,
+        /*[in]*/ VARIANT_BOOL append,
+        /*[in]*/ enum PrintFormatEnum format,
+        /*[in]*/ enum HTMLImageFormatEnum imageFormat,
+        /*[in]*/ long imageDepth,
+        /*[in]*/ BSTR imageDirectory ) = 0;
+      virtual void __stdcall PrintVIToRTF (
+        /*[in]*/ BSTR rtfFilePath,
+        /*[in]*/ VARIANT_BOOL append,
+        /*[in]*/ enum PrintFormatEnum format,
+        /*[in]*/ long imageFormat,
+        /*[in]*/ long imageDepth,
+        /*[in]*/ BSTR imageDirectory,
+        /*[in]*/ VARIANT_BOOL helpFormat ) = 0;
+      virtual void __stdcall PrintVIToText (
+        /*[in]*/ BSTR textFilePath,
+        /*[in]*/ VARIANT_BOOL append,
+        /*[in]*/ enum PrintFormatEnum format ) = 0;
+      virtual void __stdcall MakeCurValueDefault ( ) = 0;
+      virtual void __stdcall ReinitializeAllToDefault ( ) = 0;
+      virtual VARIANT __stdcall GetControlValue (
+        /*[in]*/ BSTR controlName ) = 0;
+      virtual void __stdcall SetControlValue (
+        /*[in]*/ BSTR controlName,
+        /*[in]*/ VARIANT value ) = 0;
+      virtual void __stdcall Call (
+        /*[in,out]*/ VARIANT * paramNames,
+        /*[in,out]*/ VARIANT * paramVals ) = 0;
+      virtual void __stdcall GetPanelImage (
+        /*[in]*/ VARIANT_BOOL visibleOnly,
+        /*[in]*/ long imgDepth,
+        /*[out]*/ VARIANT * img,
+        /*[out]*/ VARIANT * colors,
+        /*[out]*/ VARIANT * bounds ) = 0;
+      virtual void __stdcall Run (
+        /*[in]*/ VARIANT_BOOL async ) = 0;
+      virtual void __stdcall Revert ( ) = 0;
+      virtual void __stdcall PrintPanel (
+        /*[in]*/ VARIANT_BOOL entirePanel ) = 0;
+      virtual enum VILockStateEnum __stdcall GetLockState (
+        /*[out]*/ VARIANT_BOOL * pwdInCache ) = 0;
+      virtual void __stdcall SetLockState (
+        /*[in]*/ enum VILockStateEnum lockState,
+        /*[in]*/ VARIANT_BOOL interactive,
+        /*[in]*/ BSTR password,
+        /*[in]*/ VARIANT_BOOL putInCache ) = 0;
+      virtual void __stdcall SaveForPrevious (
+        /*[in]*/ BSTR viPath,
+        /*[out]*/ BSTR * warnings ) = 0;
+      virtual void __stdcall Call2 (
+        /*[in,out]*/ VARIANT * paramNames,
+        /*[in,out]*/ VARIANT * paramVals,
+        /*[in]*/ VARIANT_BOOL openFP,
+        /*[in]*/ VARIANT_BOOL CloseFPAfterCall,
+        /*[in]*/ VARIANT_BOOL SuspendOnCall,
+        /*[in]*/ VARIANT_BOOL bringAppToFront ) = 0;
+      virtual void __stdcall SetVIIcon (
+        /*[in]*/ BSTR imageFile ) = 0;
+      virtual void __stdcall SaveRunTimeMenu (
+        /*[in]*/ BSTR filePath ) = 0;
+      virtual void __stdcall OldOpenFrontPanel (
+        /*[in]*/ VARIANT_BOOL Activate,
+        /*[in]*/ enum FPStateEnum State ) = 0;
+      virtual void __stdcall CloseFrontPanel ( ) = 0;
+      virtual void __stdcall OpenFrontPanel (
+        /*[in]*/ VARIANT_BOOL Activate,
+        /*[in]*/ enum FPStateEnum State ) = 0;
+};
+
+struct __declspec(uuid("9a872072-0a06-11d1-90b7-00a024ce2744"))
+_Application : IDispatch
+{
+    //
+    // Property data
+    //
+
+    __declspec(property(get=GetAppName))
+    _bstr_t AppName;
+    __declspec(property(get=GetUserName,put=PutUserName))
+    _bstr_t UserName;
+    __declspec(property(get=GetVersion))
+    _bstr_t Version;
+    __declspec(property(get=GetAppKind))
+    enum AppKindEnum AppKind;
+    __declspec(property(get=GetAppTargetOS))
+    enum AppTargOSEnum AppTargetOS;
+    __declspec(property(get=GetAppTargetCPU))
+    enum AppTargCPUEnum AppTargetCPU;
+    __declspec(property(get=GetOSName))
+    _bstr_t OSName;
+    __declspec(property(get=GetOSVersion))
+    _bstr_t OSVersion;
+    __declspec(property(get=GetExportedVIs))
+    _variant_t ExportedVIs;
+    __declspec(property(get=GetPrintSetupFileWrapText,put=PutPrintSetupFileWrapText))
+    long PrintSetupFileWrapText;
+    __declspec(property(get=GetPrintSetupPNGCompressLevel,put=PutPrintSetupPNGCompressLevel))
+    long PrintSetupPNGCompressLevel;
+    __declspec(property(get=GetPrintSetupJPEGQuality,put=PutPrintSetupJPEGQuality))
+    long PrintSetupJPEGQuality;
+    __declspec(property(get=GetPrintSetupCustomConnector,put=PutPrintSetupCustomConnector))
+    VARIANT_BOOL PrintSetupCustomConnector;
+    __declspec(property(get=GetPrintSetupCustomDescription,put=PutPrintSetupCustomDescription))
+    VARIANT_BOOL PrintSetupCustomDescription;
+    __declspec(property(get=GetPrintSetupCustomPanel,put=PutPrintSetupCustomPanel))
+    VARIANT_BOOL PrintSetupCustomPanel;
+    __declspec(property(get=GetPrintSetupCustomPanelBorder,put=PutPrintSetupCustomPanelBorder))
+    VARIANT_BOOL PrintSetupCustomPanelBorder;
+    __declspec(property(get=GetPrintSetupCustomControls,put=PutPrintSetupCustomControls))
+    VARIANT_BOOL PrintSetupCustomControls;
+    __declspec(property(get=GetPrintSetupCustomControlDesc,put=PutPrintSetupCustomControlDesc))
+    VARIANT_BOOL PrintSetupCustomControlDesc;
+    __declspec(property(get=GetPrintSetupCustomControlTypes,put=PutPrintSetupCustomControlTypes))
+    VARIANT_BOOL PrintSetupCustomControlTypes;
+    __declspec(property(get=GetPrintSetupCustomDiagram,put=PutPrintSetupCustomDiagram))
+    VARIANT_BOOL PrintSetupCustomDiagram;
+    __declspec(property(get=GetPrintSetupCustomDiagramHidden,put=PutPrintSetupCustomDiagramHidden))
+    VARIANT_BOOL PrintSetupCustomDiagramHidden;
+    __declspec(property(get=GetPrintSetupCustomDiagramRepeat,put=PutPrintSetupCustomDiagramRepeat))
+    VARIANT_BOOL PrintSetupCustomDiagramRepeat;
+    __declspec(property(get=GetPrintSetupCustomSubVIs,put=PutPrintSetupCustomSubVIs))
+    VARIANT_BOOL PrintSetupCustomSubVIs;
+    __declspec(property(get=GetPrintSetupCustomHierarchy,put=PutPrintSetupCustomHierarchy))
+    VARIANT_BOOL PrintSetupCustomHierarchy;
+    __declspec(property(get=GetPrintSetupCustomHistory,put=PutPrintSetupCustomHistory))
+    VARIANT_BOOL PrintSetupCustomHistory;
+    __declspec(property(get=GetApplicationDirectory))
+    _bstr_t ApplicationDirectory;
+    __declspec(property(get=GetAppDefltDataLoc))
+    _bstr_t AppDefltDataLoc;
+    __declspec(property(get=GetRTHostConnected))
+    VARIANT_BOOL RTHostConnected;
+    __declspec(property(get=GetAllVIsInMemory))
+    _variant_t AllVIsInMemory;
+    __declspec(property(get=GetPrintSetupCustomExpressVIConfigInfo,put=PutPrintSetupCustomExpressVIConfigInfo))
+    VARIANT_BOOL PrintSetupCustomExpressVIConfigInfo;
+    __declspec(property(get=GetVIServerPort,put=PutVIServerPort))
+    long VIServerPort;
+    __declspec(property(get=GetLanguage))
+    _bstr_t Language;
+    __declspec(property(get=Get_WindowForPanelOrigin,put=Put_WindowForPanelOrigin))
+    long _WindowForPanelOrigin;
+    __declspec(property(get=Get_ModuleHandle))
+    long _ModuleHandle;
+    __declspec(property(get=GetAutomaticClose,put=PutAutomaticClose))
+    VARIANT_BOOL AutomaticClose;
+    __declspec(property(get=Get_ParentWindowForDialogs,put=Put_ParentWindowForDialogs))
+    long _ParentWindowForDialogs;
+    __declspec(property(get=GetShowFPTipStrips,put=PutShowFPTipStrips))
+    VARIANT_BOOL ShowFPTipStrips;
+    __declspec(property(get=GetPrintingColorDepth,put=PutPrintingColorDepth))
+    VARIANT_BOOL PrintingColorDepth;
+    __declspec(property(get=GetPrintDefaultPrinter,put=PutPrintDefaultPrinter))
+    _bstr_t PrintDefaultPrinter;
+    __declspec(property(get=GetPrintMethod,put=PutPrintMethod))
+    enum PrintMethodsEnum PrintMethod;
+    __declspec(property(get=GetPrintersAvailable))
+    _variant_t PrintersAvailable;
+    __declspec(property(get=GetCmdArgs))
+    _variant_t CmdArgs;
+    __declspec(property(get=Get_ProcessID))
+    long _ProcessID;
+
+    //
+    // Wrapper methods for error-handling
+    //
+
+    // Methods:
+    _bstr_t GetAppName ( );
+    _bstr_t GetUserName ( );
+    void PutUserName (
+        _bstr_t _arg1 );
+    _bstr_t GetVersion ( );
+    enum AppKindEnum GetAppKind ( );
+    enum AppTargOSEnum GetAppTargetOS ( );
+    enum AppTargCPUEnum GetAppTargetCPU ( );
+    _bstr_t GetOSName ( );
+    _bstr_t GetOSVersion ( );
+    _variant_t GetExportedVIs ( );
+    long GetPrintSetupFileWrapText ( );
+    void PutPrintSetupFileWrapText (
+        long _arg1 );
+    long GetPrintSetupPNGCompressLevel ( );
+    void PutPrintSetupPNGCompressLevel (
+        long _arg1 );
+    long GetPrintSetupJPEGQuality ( );
+    void PutPrintSetupJPEGQuality (
+        long _arg1 );
+    VARIANT_BOOL GetPrintSetupCustomConnector ( );
+    void PutPrintSetupCustomConnector (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintSetupCustomDescription ( );
+    void PutPrintSetupCustomDescription (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintSetupCustomPanel ( );
+    void PutPrintSetupCustomPanel (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintSetupCustomPanelBorder ( );
+    void PutPrintSetupCustomPanelBorder (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintSetupCustomControls ( );
+    void PutPrintSetupCustomControls (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintSetupCustomControlDesc ( );
+    void PutPrintSetupCustomControlDesc (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintSetupCustomControlTypes ( );
+    void PutPrintSetupCustomControlTypes (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintSetupCustomDiagram ( );
+    void PutPrintSetupCustomDiagram (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintSetupCustomDiagramHidden ( );
+    void PutPrintSetupCustomDiagramHidden (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintSetupCustomDiagramRepeat ( );
+    void PutPrintSetupCustomDiagramRepeat (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintSetupCustomSubVIs ( );
+    void PutPrintSetupCustomSubVIs (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintSetupCustomHierarchy ( );
+    void PutPrintSetupCustomHierarchy (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintSetupCustomHistory ( );
+    void PutPrintSetupCustomHistory (
+        VARIANT_BOOL _arg1 );
+    _bstr_t GetApplicationDirectory ( );
+    _variant_t GetAllVIsInMemory ( );
+    VARIANT_BOOL GetAutomaticClose ( );
+    void PutAutomaticClose (
+        VARIANT_BOOL _arg1 );
+    long Get_ParentWindowForDialogs ( );
+    void Put_ParentWindowForDialogs (
+        long _arg1 );
+    VARIANT_BOOL GetShowFPTipStrips ( );
+    void PutShowFPTipStrips (
+        VARIANT_BOOL _arg1 );
+    VARIANT_BOOL GetPrintingColorDepth ( );
+    void PutPrintingColorDepth (
+        VARIANT_BOOL _arg1 );
+    _bstr_t GetPrintDefaultPrinter ( );
+    void PutPrintDefaultPrinter (
+        _bstr_t _arg1 );
+    enum PrintMethodsEnum GetPrintMethod ( );
+    void PutPrintMethod (
+        enum PrintMethodsEnum _arg1 );
+    _variant_t GetPrintersAvailable ( );
+    _variant_t GetCmdArgs ( );
+    long Get_ProcessID ( );
+    _bstr_t GetAppDefltDataLoc ( );
+    VARIANT_BOOL GetRTHostConnected ( );
+    VARIANT_BOOL GetPrintSetupCustomExpressVIConfigInfo ( );
+    void PutPrintSetupCustomExpressVIConfigInfo (
+        VARIANT_BOOL _arg1 );
+    long GetVIServerPort ( );
+    void PutVIServerPort (
+        long _arg1 );
+    _bstr_t GetLanguage ( );
+    long Get_WindowForPanelOrigin ( );
+    void Put_WindowForPanelOrigin (
+        long _arg1 );
+    long Get_ModuleHandle ( );
+    VirtualInstrumentPtr GetVIReference (
+        _bstr_t viPath,
+        _bstr_t password,
+        VARIANT_BOOL resvForCall,
+        long options );
+    HRESULT MassCompile (
+        _bstr_t directory,
+        _bstr_t logFile,
+        VARIANT_BOOL appendLog,
+        long viCacheSize,
+        VARIANT_BOOL reloadLVSBs );
+    HRESULT Quit ( );
+    HRESULT BringToFront ( );
+    HRESULT DisconnectFromSlave ( );
+    long _CompareTypes (
+        const _variant_t & typeDesc1,
+        const _variant_t & typeDesc2,
+        short options );
+    HRESULT CheckConnection ( );
+    HRESULT ConnInfo (
+        long pingDelay,
+        long * prevPingDelay,
+        long pingTimeout,
+        long * prevPingTimeout );
+    _bstr_t GetVIVersion (
+        _bstr_t viPath,
+        long * VersNum );
+    VARIANT_BOOL _DropControlOrFunction (
+        _bstr_t ctlFuncName );
+    HRESULT BrowseDataSocket (
+        _bstr_t Prompt,
+        BSTR * SelectedURL );
+    HRESULT ResolveSymbolicPath (
+        _bstr_t SymbolicPath,
+        BSTR * ActualPath );
+    VARIANT_BOOL _HilitePalMenuItem (
+        _bstr_t funcname,
+        const _variant_t & Position = vtMissing );
+    _variant_t _CreateLVClsInst (
+        long ClassID );
+    _variant_t _GetPalMenuInfo (
+        _bstr_t palMenuPath );
+};
+
+struct __declspec(uuid("9a872071-0a06-11d1-90b7-00a024ce2744"))
+_IApplication : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual BSTR __stdcall get_AppName ( ) = 0;
+      virtual BSTR __stdcall get_UserName ( ) = 0;
+      virtual void __stdcall put_UserName (
+        /*[in]*/ BSTR _arg1 ) = 0;
+      virtual BSTR __stdcall get_Version ( ) = 0;
+      virtual enum AppKindEnum __stdcall get_AppKind ( ) = 0;
+      virtual enum AppTargOSEnum __stdcall get_AppTargetOS ( ) = 0;
+      virtual enum AppTargCPUEnum __stdcall get_AppTargetCPU ( ) = 0;
+      virtual BSTR __stdcall get_OSName ( ) = 0;
+      virtual BSTR __stdcall get_OSVersion ( ) = 0;
+      virtual VARIANT __stdcall get_ExportedVIs ( ) = 0;
+      virtual long __stdcall get_PrintSetupFileWrapText ( ) = 0;
+      virtual void __stdcall put_PrintSetupFileWrapText (
+        /*[in]*/ long _arg1 ) = 0;
+      virtual long __stdcall get_PrintSetupPNGCompressLevel ( ) = 0;
+      virtual void __stdcall put_PrintSetupPNGCompressLevel (
+        /*[in]*/ long _arg1 ) = 0;
+      virtual long __stdcall get_PrintSetupJPEGQuality ( ) = 0;
+      virtual void __stdcall put_PrintSetupJPEGQuality (
+        /*[in]*/ long _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomConnector ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomConnector (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomDescription ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomDescription (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomPanel ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomPanel (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomPanelBorder ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomPanelBorder (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomControls ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomControls (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomControlDesc ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomControlDesc (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomControlTypes ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomControlTypes (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomDiagram ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomDiagram (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomDiagramHidden ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomDiagramHidden (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomDiagramRepeat ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomDiagramRepeat (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomSubVIs ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomSubVIs (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomHierarchy ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomHierarchy (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomHistory ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomHistory (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual BSTR __stdcall get_ApplicationDirectory ( ) = 0;
+      virtual VARIANT __stdcall get_AllVIsInMemory ( ) = 0;
+      virtual VARIANT_BOOL __stdcall get_AutomaticClose ( ) = 0;
+      virtual void __stdcall put_AutomaticClose (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual long __stdcall get__ParentWindowForDialogs ( ) = 0;
+      virtual void __stdcall put__ParentWindowForDialogs (
+        /*[in]*/ long _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_ShowFPTipStrips ( ) = 0;
+      virtual void __stdcall put_ShowFPTipStrips (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintingColorDepth ( ) = 0;
+      virtual void __stdcall put_PrintingColorDepth (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual BSTR __stdcall get_PrintDefaultPrinter ( ) = 0;
+      virtual void __stdcall put_PrintDefaultPrinter (
+        /*[in]*/ BSTR _arg1 ) = 0;
+      virtual enum PrintMethodsEnum __stdcall get_PrintMethod ( ) = 0;
+      virtual void __stdcall put_PrintMethod (
+        /*[in]*/ enum PrintMethodsEnum _arg1 ) = 0;
+      virtual VARIANT __stdcall get_PrintersAvailable ( ) = 0;
+      virtual VARIANT __stdcall get_CmdArgs ( ) = 0;
+      virtual long __stdcall get__ProcessID ( ) = 0;
+      virtual BSTR __stdcall get_AppDefltDataLoc ( ) = 0;
+      virtual VARIANT_BOOL __stdcall get_RTHostConnected ( ) = 0;
+      virtual VARIANT_BOOL __stdcall get_PrintSetupCustomExpressVIConfigInfo ( ) = 0;
+      virtual void __stdcall put_PrintSetupCustomExpressVIConfigInfo (
+        /*[in]*/ VARIANT_BOOL _arg1 ) = 0;
+      virtual long __stdcall get_VIServerPort ( ) = 0;
+      virtual void __stdcall put_VIServerPort (
+        /*[in]*/ long _arg1 ) = 0;
+      virtual BSTR __stdcall get_Language ( ) = 0;
+      virtual long __stdcall get__WindowForPanelOrigin ( ) = 0;
+      virtual void __stdcall put__WindowForPanelOrigin (
+        /*[in]*/ long _arg1 ) = 0;
+      virtual long __stdcall get__ModuleHandle ( ) = 0;
+      virtual struct VirtualInstrument * __stdcall GetVIReference (
+        /*[in]*/ BSTR viPath,
+        /*[in]*/ BSTR password,
+        /*[in]*/ VARIANT_BOOL resvForCall,
+        /*[in]*/ long options ) = 0;
+      virtual void __stdcall MassCompile (
+        /*[in]*/ BSTR directory,
+        /*[in]*/ BSTR logFile,
+        /*[in]*/ VARIANT_BOOL appendLog,
+        /*[in]*/ long viCacheSize,
+        /*[in]*/ VARIANT_BOOL reloadLVSBs ) = 0;
+      virtual void __stdcall Quit ( ) = 0;
+      virtual void __stdcall BringToFront ( ) = 0;
+      virtual void __stdcall DisconnectFromSlave ( ) = 0;
+      virtual long __stdcall _CompareTypes (
+        /*[in]*/ VARIANT typeDesc1,
+        /*[in]*/ VARIANT typeDesc2,
+        /*[in]*/ short options ) = 0;
+      virtual void __stdcall CheckConnection ( ) = 0;
+      virtual void __stdcall ConnInfo (
+        /*[in]*/ long pingDelay,
+        /*[out]*/ long * prevPingDelay,
+        /*[in]*/ long pingTimeout,
+        /*[out]*/ long * prevPingTimeout ) = 0;
+      virtual BSTR __stdcall GetVIVersion (
+        /*[in]*/ BSTR viPath,
+        /*[out]*/ long * VersNum ) = 0;
+      virtual VARIANT_BOOL __stdcall _DropControlOrFunction (
+        /*[in]*/ BSTR ctlFuncName ) = 0;
+      virtual void __stdcall BrowseDataSocket (
+        /*[in]*/ BSTR Prompt,
+        /*[out]*/ BSTR * SelectedURL ) = 0;
+      virtual void __stdcall ResolveSymbolicPath (
+        /*[in]*/ BSTR SymbolicPath,
+        /*[out]*/ BSTR * ActualPath ) = 0;
+      virtual VARIANT_BOOL __stdcall _HilitePalMenuItem (
+        /*[in]*/ BSTR funcname,
+        /*[in]*/ VARIANT Position = vtMissing ) = 0;
+      virtual VARIANT __stdcall _CreateLVClsInst (
+        /*[in]*/ long ClassID ) = 0;
+      virtual VARIANT __stdcall _GetPalMenuInfo (
+        /*[in]*/ BSTR palMenuPath ) = 0;
+};
+
+struct __declspec(uuid("9a872070-0a06-11d1-90b7-00a024ce2744"))
+Application;
+    // [ default ] dispinterface _Application
+    // interface _IApplication
+
+//
+// Named GUID constants initializations
+//
+
+extern "C" const GUID __declspec(selectany) LIBID_LabVIEW =
+    {0x9a872073,0x0a06,0x11d1,{0x90,0xb7,0x00,0xa0,0x24,0xce,0x27,0x44}};
+extern "C" const GUID __declspec(selectany) DIID_Generic =
+    {0x00018c9e,0x0a06,0x11d1,{0x90,0xb7,0x00,0xa0,0x24,0xce,0x27,0x44}};
+extern "C" const GUID __declspec(selectany) DIID_VirtualInstrument =
+    {0x9a872074,0x0a06,0x11d1,{0x90,0xb7,0x00,0xa0,0x24,0xce,0x27,0x44}};
+extern "C" const GUID __declspec(selectany) IID__IGeneric =
+    {0x00018c9d,0x0a06,0x11d1,{0x90,0xb7,0x00,0xa0,0x24,0xce,0x27,0x44}};
+extern "C" const GUID __declspec(selectany) IID__IVI =
+    {0x9a872075,0x0a06,0x11d1,{0x90,0xb7,0x00,0xa0,0x24,0xce,0x27,0x44}};
+extern "C" const GUID __declspec(selectany) DIID__Application =
+    {0x9a872072,0x0a06,0x11d1,{0x90,0xb7,0x00,0xa0,0x24,0xce,0x27,0x44}};
+extern "C" const GUID __declspec(selectany) IID__IApplication =
+    {0x9a872071,0x0a06,0x11d1,{0x90,0xb7,0x00,0xa0,0x24,0xce,0x27,0x44}};
+extern "C" const GUID __declspec(selectany) CLSID_Application =
+    {0x9a872070,0x0a06,0x11d1,{0x90,0xb7,0x00,0xa0,0x24,0xce,0x27,0x44}};
+
+//
+// Wrapper method implementations
+//
+
+#include "labview.tli"
+
+} // namespace LabVIEW
+
+#pragma pack(pop)

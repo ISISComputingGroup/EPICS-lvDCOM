@@ -34,7 +34,9 @@
 #include <epicsThread.h>
 #include <epicsExit.h>
 
-#import "LabVIEW.tlb" named_guids
+//#import "LabVIEW.tlb" named_guids
+// The above statement generates labview.tlh and labview.tli
+#include "labview.tlh"
 
 #include <msxml2.h>
 

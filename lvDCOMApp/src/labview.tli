@@ -1,0 +1,1432 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 10.00.40219.01 (ca0d89d1).
+//
+// c:\development\epics\isis\lvdcom\lvdcomapp\src\o.windows-x64-debug\labview.tli
+//
+// Wrapper implementations for Win32 type library LabVIEW.tlb
+// compiler-generated file created 03/22/13 at 15:10:36 - DO NOT EDIT!
+
+#pragma once
+
+//
+// dispinterface Generic wrapper method implementations
+//
+
+inline long Generic::GetClassID ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x6327800, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline GenericPtr Generic::GetOwner ( ) {
+    struct Generic * _result = 0;
+    _com_dispatch_method(this, 0x6327801, DISPATCH_PROPERTYGET, VT_DISPATCH, (void*)&_result, NULL);
+    return GenericPtr(_result, false);
+}
+
+inline VirtualInstrumentPtr Generic::GetOwningVI ( ) {
+    struct VirtualInstrument * _result = 0;
+    _com_dispatch_method(this, 0x6327802, DISPATCH_PROPERTYGET, VT_DISPATCH, (void*)&_result, NULL);
+    return VirtualInstrumentPtr(_result, false);
+}
+
+inline _bstr_t Generic::GetClassName ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x6327803, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+//
+// dispinterface VirtualInstrument wrapper method implementations
+//
+
+inline _bstr_t VirtualInstrument::GetName ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x1f4, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline void VirtualInstrument::PutName ( _bstr_t _arg1 ) {
+    _com_dispatch_method(this, 0x1f4, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0008", (BSTR)_arg1);
+}
+
+inline _bstr_t VirtualInstrument::GetPath ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x1f5, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline _bstr_t VirtualInstrument::GetDescription ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x1f6, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline void VirtualInstrument::PutDescription ( _bstr_t _arg1 ) {
+    _com_dispatch_method(this, 0x1f6, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0008", (BSTR)_arg1);
+}
+
+inline _bstr_t VirtualInstrument::GetHistoryText ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x1f7, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPTitleBarVisible ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x1f9, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPTitleBarVisible ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x1f9, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPWinClosable ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x1fa, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPWinClosable ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x1fa, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPResizable ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x1fb, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPResizable ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x1fb, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPAllowRTPopup ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x1fc, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPAllowRTPopup ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x1fc, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPHiliteReturnButton ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x1fd, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPHiliteReturnButton ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x1fd, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPSizeToScreen ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x1fe, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPSizeToScreen ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x1fe, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPAutoCenter ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x1ff, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPAutoCenter ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x1ff, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPShowScrollBars ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x200, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPShowScrollBars ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x200, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPShowMenuBar ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x201, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPShowMenuBar ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x201, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetTBVisible ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x202, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutTBVisible ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x202, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetTBShowRunButton ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x203, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutTBShowRunButton ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x203, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetTBShowFreeRunButton ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x204, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutTBShowFreeRunButton ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x204, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetTBShowAbortButton ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x205, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutTBShowAbortButton ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x205, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetAllowDebugging ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x206, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutAllowDebugging ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x206, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetShowFPOnLoad ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x209, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutShowFPOnLoad ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x209, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetShowFPOnCall ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x20a, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutShowFPOnCall ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x20a, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetCloseFPAfterCall ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x20b, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutCloseFPAfterCall ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x20b, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetRunOnOpen ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x20c, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutRunOnOpen ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x20c, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetIsReentrant ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x20d, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutIsReentrant ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x20d, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline enum VIPriorityEnum VirtualInstrument::GetExecPriority ( ) {
+    enum VIPriorityEnum _result;
+    _com_dispatch_method(this, 0x20e, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutExecPriority ( enum VIPriorityEnum _arg1 ) {
+    _com_dispatch_method(this, 0x20e, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0003", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetHistUseDefaults ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x20f, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutHistUseDefaults ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x20f, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetHistAddCommentsAtSave ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x210, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutHistAddCommentsAtSave ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x210, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetHistPromptAtClose ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x211, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutHistPromptAtClose ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x211, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetHistPromptForCommentsAtSave ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x212, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutHistPromptForCommentsAtSave ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x212, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetHistRecordAppComments ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x213, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutHistRecordAppComments ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x213, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline _bstr_t VirtualInstrument::GetHelpDocumentTag ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x214, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline void VirtualInstrument::PutHelpDocumentTag ( _bstr_t _arg1 ) {
+    _com_dispatch_method(this, 0x214, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0008", (BSTR)_arg1);
+}
+
+inline _bstr_t VirtualInstrument::GetHelpDocumentPath ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x215, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline void VirtualInstrument::PutHelpDocumentPath ( _bstr_t _arg1 ) {
+    _com_dispatch_method(this, 0x215, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0008", (BSTR)_arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPWinOpen ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x216, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPWinOpen ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x216, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPWinIsFrontMost ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x217, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPWinIsFrontMost ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x217, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline _variant_t VirtualInstrument::GetFPWinBounds ( ) {
+    VARIANT _result;
+    VariantInit(&_result);
+    _com_dispatch_method(this, 0x218, DISPATCH_PROPERTYGET, VT_VARIANT, (void*)&_result, NULL);
+    return _variant_t(_result, false);
+}
+
+inline void VirtualInstrument::PutFPWinBounds ( const _variant_t & _arg1 ) {
+    _com_dispatch_method(this, 0x218, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000c", &_arg1);
+}
+
+inline long VirtualInstrument::GetVIModificationBitSet ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x219, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline long VirtualInstrument::GetFPModificationBitSet ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x21a, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline long VirtualInstrument::GetBDModificationBitSet ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x21b, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline long VirtualInstrument::GetCodeSize ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x21c, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline long VirtualInstrument::GetDataSize ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x21d, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline long VirtualInstrument::GetFPSize ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x21e, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline long VirtualInstrument::GetBDSize ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x21f, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline _variant_t VirtualInstrument::GetCallers ( ) {
+    VARIANT _result;
+    VariantInit(&_result);
+    _com_dispatch_method(this, 0x220, DISPATCH_PROPERTYGET, VT_VARIANT, (void*)&_result, NULL);
+    return _variant_t(_result, false);
+}
+
+inline _variant_t VirtualInstrument::GetCallees ( ) {
+    VARIANT _result;
+    VariantInit(&_result);
+    _com_dispatch_method(this, 0x221, DISPATCH_PROPERTYGET, VT_VARIANT, (void*)&_result, NULL);
+    return _variant_t(_result, false);
+}
+
+inline _bstr_t VirtualInstrument::GetLogFilePath ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x225, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline void VirtualInstrument::PutLogFilePath ( _bstr_t _arg1 ) {
+    _com_dispatch_method(this, 0x225, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0008", (BSTR)_arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetLogAtFinish ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x226, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutLogAtFinish ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x226, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetPrintLogFileAtFinish ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x227, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutPrintLogFileAtFinish ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x227, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline _variant_t VirtualInstrument::GetFPWinOrigin ( ) {
+    VARIANT _result;
+    VariantInit(&_result);
+    _com_dispatch_method(this, 0x228, DISPATCH_PROPERTYGET, VT_VARIANT, (void*)&_result, NULL);
+    return _variant_t(_result, false);
+}
+
+inline void VirtualInstrument::PutFPWinOrigin ( const _variant_t & _arg1 ) {
+    _com_dispatch_method(this, 0x228, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000c", &_arg1);
+}
+
+inline _bstr_t VirtualInstrument::GetFPWinTitle ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x229, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline void VirtualInstrument::PutFPWinTitle ( _bstr_t _arg1 ) {
+    _com_dispatch_method(this, 0x229, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0008", (BSTR)_arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetSuspendOnCall ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x22b, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutSuspendOnCall ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x22b, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline _variant_t VirtualInstrument::GetFPWinPanelBounds ( ) {
+    VARIANT _result;
+    VariantInit(&_result);
+    _com_dispatch_method(this, 0x22c, DISPATCH_PROPERTYGET, VT_VARIANT, (void*)&_result, NULL);
+    return _variant_t(_result, false);
+}
+
+inline void VirtualInstrument::PutFPWinPanelBounds ( const _variant_t & _arg1 ) {
+    _com_dispatch_method(this, 0x22c, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000c", &_arg1);
+}
+
+inline enum ExecStateEnum VirtualInstrument::GetExecState ( ) {
+    enum ExecStateEnum _result;
+    _com_dispatch_method(this, 0x22d, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetEditMode ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x22e, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutEditMode ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x22e, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline enum VIExecSysEnum VirtualInstrument::GetPreferredExecSystem ( ) {
+    enum VIExecSysEnum _result;
+    _com_dispatch_method(this, 0x22f, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutPreferredExecSystem ( enum VIExecSysEnum _arg1 ) {
+    _com_dispatch_method(this, 0x22f, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0003", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPWinCustomTitle ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x231, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPWinCustomTitle ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x231, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline enum VITypeEnum VirtualInstrument::GetVIType ( ) {
+    enum VITypeEnum _result;
+    _com_dispatch_method(this, 0x232, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline long VirtualInstrument::GetRevisionNumber ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x234, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutRevisionNumber ( long _arg1 ) {
+    _com_dispatch_method(this, 0x234, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0003", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPKeepWinProps ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x23f, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPKeepWinProps ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x23f, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline _bstr_t VirtualInstrument::GetRunTimeMenuPath ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x244, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline void VirtualInstrument::PutRunTimeMenuPath ( _bstr_t _arg1 ) {
+    _com_dispatch_method(this, 0x244, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0008", (BSTR)_arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPMinimizeable ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x247, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPMinimizeable ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x247, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetFPResizeable ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x248, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPResizeable ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x248, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetExpandWhenDroppedAsSubVI ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x249, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutExpandWhenDroppedAsSubVI ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x249, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline enum PageOrientationEnum VirtualInstrument::GetPrintingOrientation ( ) {
+    enum PageOrientationEnum _result;
+    _com_dispatch_method(this, 0x24a, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutPrintingOrientation ( enum PageOrientationEnum _arg1 ) {
+    _com_dispatch_method(this, 0x24a, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0003", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetPrintingHeaders ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x24b, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutPrintingHeaders ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x24b, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetPrintingFPScaling ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x24c, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutPrintingFPScaling ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x24c, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline _variant_t VirtualInstrument::GetPrintMargins ( ) {
+    VARIANT _result;
+    VariantInit(&_result);
+    _com_dispatch_method(this, 0x24d, DISPATCH_PROPERTYGET, VT_VARIANT, (void*)&_result, NULL);
+    return _variant_t(_result, false);
+}
+
+inline void VirtualInstrument::PutPrintMargins ( const _variant_t & _arg1 ) {
+    _com_dispatch_method(this, 0x24d, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000c", &_arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetPrintHeaderVIName ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x24e, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutPrintHeaderVIName ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x24e, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetPrintHeaderDatePrint ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x250, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutPrintHeaderDatePrint ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x250, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetPrintHeaderModifyDate ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x251, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutPrintHeaderModifyDate ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x251, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetPrintHeaderPageNumber ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x252, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutPrintHeaderPageNumber ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x252, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetPrintHeaderVIIcon ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x253, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutPrintHeaderVIIcon ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x253, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetPrintingHeaderVIPath ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x254, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutPrintingHeaderVIPath ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x254, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline enum FPBehaviorEnum VirtualInstrument::GetFPBehavior ( ) {
+    enum FPBehaviorEnum _result;
+    _com_dispatch_method(this, 0x259, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPBehavior ( enum FPBehaviorEnum _arg1 ) {
+    _com_dispatch_method(this, 0x259, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0003", _arg1);
+}
+
+inline enum FPStateEnum VirtualInstrument::GetFPState ( ) {
+    enum FPStateEnum _result;
+    _com_dispatch_method(this, 0x260, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutFPState ( enum FPStateEnum _arg1 ) {
+    _com_dispatch_method(this, 0x260, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0003", _arg1);
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetPrintingBDScaling ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x262, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void VirtualInstrument::PutPrintingBDScaling ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x262, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline long VirtualInstrument::Get_CPTM_CRC ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x266, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline long VirtualInstrument::Get_FPWinOSWindow ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x267, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline long VirtualInstrument::Get_BDWinOSWindow ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x268, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline VARIANT_BOOL VirtualInstrument::GetIsProbe ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x26a, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline HRESULT VirtualInstrument::ExportVIStrings ( _bstr_t stringFile, VARIANT_BOOL interactive, _bstr_t logFile, VARIANT_BOOL captions, VARIANT_BOOL diagram ) {
+    return _com_dispatch_method(this, 0x3e8, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008\x000b\x0008\x000b\x000b", (BSTR)stringFile, interactive, (BSTR)logFile, captions, diagram);
+}
+
+inline HRESULT VirtualInstrument::ImportVIStrings ( _bstr_t stringFile, VARIANT_BOOL interactive, _bstr_t logFile ) {
+    return _com_dispatch_method(this, 0x3e9, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008\x000b\x0008", (BSTR)stringFile, interactive, (BSTR)logFile);
+}
+
+inline HRESULT VirtualInstrument::SaveInstrument ( _bstr_t viPath, VARIANT_BOOL saveACopy, VARIANT_BOOL withoutDiagram ) {
+    return _com_dispatch_method(this, 0x3ea, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008\x000b\x000b", (BSTR)viPath, saveACopy, withoutDiagram);
+}
+
+inline HRESULT VirtualInstrument::Abort ( ) {
+    return _com_dispatch_method(this, 0x3ec, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
+}
+
+inline HRESULT VirtualInstrument::PrintVIToPrinter ( enum PrintFormatEnum format, VARIANT_BOOL scalePanel, VARIANT_BOOL scaleDiagram, VARIANT_BOOL pageHeaders, VARIANT_BOOL pageBreaks, VARIANT_BOOL sectionHeaders ) {
+    return _com_dispatch_method(this, 0x3ed, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0003\x000b\x000b\x000b\x000b\x000b", format, scalePanel, scaleDiagram, pageHeaders, pageBreaks, sectionHeaders);
+}
+
+inline HRESULT VirtualInstrument::PrintVIToHTML ( _bstr_t htmlFilePath, VARIANT_BOOL append, enum PrintFormatEnum format, enum HTMLImageFormatEnum imageFormat, long imageDepth, _bstr_t imageDirectory ) {
+    return _com_dispatch_method(this, 0x3ee, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008\x000b\x0003\x0003\x0003\x0008", (BSTR)htmlFilePath, append, format, imageFormat, imageDepth, (BSTR)imageDirectory);
+}
+
+inline HRESULT VirtualInstrument::PrintVIToRTF ( _bstr_t rtfFilePath, VARIANT_BOOL append, enum PrintFormatEnum format, long imageFormat, long imageDepth, _bstr_t imageDirectory, VARIANT_BOOL helpFormat ) {
+    return _com_dispatch_method(this, 0x3ef, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008\x000b\x0003\x0003\x0003\x0008\x000b", (BSTR)rtfFilePath, append, format, imageFormat, imageDepth, (BSTR)imageDirectory, helpFormat);
+}
+
+inline HRESULT VirtualInstrument::PrintVIToText ( _bstr_t textFilePath, VARIANT_BOOL append, enum PrintFormatEnum format ) {
+    return _com_dispatch_method(this, 0x3f0, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008\x000b\x0003", (BSTR)textFilePath, append, format);
+}
+
+inline HRESULT VirtualInstrument::MakeCurValueDefault ( ) {
+    return _com_dispatch_method(this, 0x3f3, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
+}
+
+inline HRESULT VirtualInstrument::ReinitializeAllToDefault ( ) {
+    return _com_dispatch_method(this, 0x3f4, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
+}
+
+inline _variant_t VirtualInstrument::GetControlValue ( _bstr_t controlName ) {
+    VARIANT _result;
+    VariantInit(&_result);
+    _com_dispatch_method(this, 0x3f5, DISPATCH_METHOD, VT_VARIANT, (void*)&_result, 
+        L"\x0008", (BSTR)controlName);
+    return _variant_t(_result, false);
+}
+
+inline HRESULT VirtualInstrument::SetControlValue ( _bstr_t controlName, const _variant_t & value ) {
+    return _com_dispatch_method(this, 0x3f6, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008\x000c", (BSTR)controlName, &value);
+}
+
+inline HRESULT VirtualInstrument::Call ( VARIANT * paramNames, VARIANT * paramVals ) {
+    return _com_dispatch_method(this, 0x3f7, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x480c\x480c", paramNames, paramVals);
+}
+
+inline HRESULT VirtualInstrument::GetPanelImage ( VARIANT_BOOL visibleOnly, long imgDepth, VARIANT * img, VARIANT * colors, VARIANT * bounds ) {
+    return _com_dispatch_method(this, 0x3f8, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x000b\x0003\x480c\x480c\x480c", visibleOnly, imgDepth, img, colors, bounds);
+}
+
+inline HRESULT VirtualInstrument::Run ( VARIANT_BOOL async ) {
+    return _com_dispatch_method(this, 0x3f9, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x000b", async);
+}
+
+inline HRESULT VirtualInstrument::Revert ( ) {
+    return _com_dispatch_method(this, 0x3fa, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
+}
+
+inline HRESULT VirtualInstrument::PrintPanel ( VARIANT_BOOL entirePanel ) {
+    return _com_dispatch_method(this, 0x3fb, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x000b", entirePanel);
+}
+
+inline enum VILockStateEnum VirtualInstrument::GetLockState ( VARIANT_BOOL * pwdInCache ) {
+    enum VILockStateEnum _result;
+    _com_dispatch_method(this, 0x3fd, DISPATCH_METHOD, VT_I4, (void*)&_result, 
+        L"\x400b", pwdInCache);
+    return _result;
+}
+
+inline HRESULT VirtualInstrument::SetLockState ( enum VILockStateEnum lockState, VARIANT_BOOL interactive, _bstr_t password, VARIANT_BOOL putInCache ) {
+    return _com_dispatch_method(this, 0x3fe, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0003\x000b\x0008\x000b", lockState, interactive, (BSTR)password, putInCache);
+}
+
+inline HRESULT VirtualInstrument::SaveForPrevious ( _bstr_t viPath, BSTR * warnings ) {
+    return _com_dispatch_method(this, 0x400, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008\x4008", (BSTR)viPath, warnings);
+}
+
+inline HRESULT VirtualInstrument::Call2 ( VARIANT * paramNames, VARIANT * paramVals, VARIANT_BOOL openFP, VARIANT_BOOL CloseFPAfterCall, VARIANT_BOOL SuspendOnCall, VARIANT_BOOL bringAppToFront ) {
+    return _com_dispatch_method(this, 0x406, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x400c\x400c\x000b\x000b\x000b\x000b", paramNames, paramVals, openFP, CloseFPAfterCall, SuspendOnCall, bringAppToFront);
+}
+
+inline HRESULT VirtualInstrument::SetVIIcon ( _bstr_t imageFile ) {
+    return _com_dispatch_method(this, 0x407, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008", (BSTR)imageFile);
+}
+
+inline HRESULT VirtualInstrument::SaveRunTimeMenu ( _bstr_t filePath ) {
+    return _com_dispatch_method(this, 0x413, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008", (BSTR)filePath);
+}
+
+inline HRESULT VirtualInstrument::OldOpenFrontPanel ( VARIANT_BOOL Activate, enum FPStateEnum State ) {
+    return _com_dispatch_method(this, 0x424, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x000b\x0003", Activate, State);
+}
+
+inline HRESULT VirtualInstrument::CloseFrontPanel ( ) {
+    return _com_dispatch_method(this, 0x425, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
+}
+
+inline HRESULT VirtualInstrument::OpenFrontPanel ( VARIANT_BOOL Activate, enum FPStateEnum State ) {
+    return _com_dispatch_method(this, 0x438, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x000b\x0003", Activate, State);
+}
+
+//
+// dispinterface _Application wrapper method implementations
+//
+
+inline _bstr_t _Application::GetAppName ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x0, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline _bstr_t _Application::GetUserName ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x1, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline void _Application::PutUserName ( _bstr_t _arg1 ) {
+    _com_dispatch_method(this, 0x1, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0008", (BSTR)_arg1);
+}
+
+inline _bstr_t _Application::GetVersion ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x2, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline enum AppKindEnum _Application::GetAppKind ( ) {
+    enum AppKindEnum _result;
+    _com_dispatch_method(this, 0x3, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline enum AppTargOSEnum _Application::GetAppTargetOS ( ) {
+    enum AppTargOSEnum _result;
+    _com_dispatch_method(this, 0x4, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline enum AppTargCPUEnum _Application::GetAppTargetCPU ( ) {
+    enum AppTargCPUEnum _result;
+    _com_dispatch_method(this, 0x5, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline _bstr_t _Application::GetOSName ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x6, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline _bstr_t _Application::GetOSVersion ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x7, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline _variant_t _Application::GetExportedVIs ( ) {
+    VARIANT _result;
+    VariantInit(&_result);
+    _com_dispatch_method(this, 0x8, DISPATCH_PROPERTYGET, VT_VARIANT, (void*)&_result, NULL);
+    return _variant_t(_result, false);
+}
+
+inline long _Application::GetPrintSetupFileWrapText ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x9, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupFileWrapText ( long _arg1 ) {
+    _com_dispatch_method(this, 0x9, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0003", _arg1);
+}
+
+inline long _Application::GetPrintSetupPNGCompressLevel ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0xa, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupPNGCompressLevel ( long _arg1 ) {
+    _com_dispatch_method(this, 0xa, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0003", _arg1);
+}
+
+inline long _Application::GetPrintSetupJPEGQuality ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0xb, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupJPEGQuality ( long _arg1 ) {
+    _com_dispatch_method(this, 0xb, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0003", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomConnector ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0xc, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomConnector ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0xc, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomDescription ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0xd, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomDescription ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0xd, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomPanel ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0xe, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomPanel ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0xe, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomPanelBorder ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0xf, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomPanelBorder ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0xf, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomControls ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x10, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomControls ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x10, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomControlDesc ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x11, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomControlDesc ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x11, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomControlTypes ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x12, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomControlTypes ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x12, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomDiagram ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x13, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomDiagram ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x13, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomDiagramHidden ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x14, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomDiagramHidden ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x14, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomDiagramRepeat ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x15, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomDiagramRepeat ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x15, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomSubVIs ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x16, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomSubVIs ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x16, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomHierarchy ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x17, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomHierarchy ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x17, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomHistory ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x18, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomHistory ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x18, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline _bstr_t _Application::GetApplicationDirectory ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x19, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline _variant_t _Application::GetAllVIsInMemory ( ) {
+    VARIANT _result;
+    VariantInit(&_result);
+    _com_dispatch_method(this, 0x1c, DISPATCH_PROPERTYGET, VT_VARIANT, (void*)&_result, NULL);
+    return _variant_t(_result, false);
+}
+
+inline VARIANT_BOOL _Application::GetAutomaticClose ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x23, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutAutomaticClose ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x23, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline long _Application::Get_ParentWindowForDialogs ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x36, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::Put_ParentWindowForDialogs ( long _arg1 ) {
+    _com_dispatch_method(this, 0x36, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0003", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetShowFPTipStrips ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x3f, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutShowFPTipStrips ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x3f, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline VARIANT_BOOL _Application::GetPrintingColorDepth ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x48, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintingColorDepth ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x48, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline _bstr_t _Application::GetPrintDefaultPrinter ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x49, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline void _Application::PutPrintDefaultPrinter ( _bstr_t _arg1 ) {
+    _com_dispatch_method(this, 0x49, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0008", (BSTR)_arg1);
+}
+
+inline enum PrintMethodsEnum _Application::GetPrintMethod ( ) {
+    enum PrintMethodsEnum _result;
+    _com_dispatch_method(this, 0x4a, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintMethod ( enum PrintMethodsEnum _arg1 ) {
+    _com_dispatch_method(this, 0x4a, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0003", _arg1);
+}
+
+inline _variant_t _Application::GetPrintersAvailable ( ) {
+    VARIANT _result;
+    VariantInit(&_result);
+    _com_dispatch_method(this, 0x4b, DISPATCH_PROPERTYGET, VT_VARIANT, (void*)&_result, NULL);
+    return _variant_t(_result, false);
+}
+
+inline _variant_t _Application::GetCmdArgs ( ) {
+    VARIANT _result;
+    VariantInit(&_result);
+    _com_dispatch_method(this, 0x4f, DISPATCH_PROPERTYGET, VT_VARIANT, (void*)&_result, NULL);
+    return _variant_t(_result, false);
+}
+
+inline long _Application::Get_ProcessID ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x50, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline _bstr_t _Application::GetAppDefltDataLoc ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x57, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline VARIANT_BOOL _Application::GetRTHostConnected ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x5a, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline VARIANT_BOOL _Application::GetPrintSetupCustomExpressVIConfigInfo ( ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x5c, DISPATCH_PROPERTYGET, VT_BOOL, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutPrintSetupCustomExpressVIConfigInfo ( VARIANT_BOOL _arg1 ) {
+    _com_dispatch_method(this, 0x5c, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x000b", _arg1);
+}
+
+inline long _Application::GetVIServerPort ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x5d, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::PutVIServerPort ( long _arg1 ) {
+    _com_dispatch_method(this, 0x5d, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0003", _arg1);
+}
+
+inline _bstr_t _Application::GetLanguage ( ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x63, DISPATCH_PROPERTYGET, VT_BSTR, (void*)&_result, NULL);
+    return _bstr_t(_result, false);
+}
+
+inline long _Application::Get_WindowForPanelOrigin ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x64, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline void _Application::Put_WindowForPanelOrigin ( long _arg1 ) {
+    _com_dispatch_method(this, 0x64, DISPATCH_PROPERTYPUT, VT_EMPTY, NULL, 
+        L"\x0003", _arg1);
+}
+
+inline long _Application::Get_ModuleHandle ( ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x65, DISPATCH_PROPERTYGET, VT_I4, (void*)&_result, NULL);
+    return _result;
+}
+
+inline VirtualInstrumentPtr _Application::GetVIReference ( _bstr_t viPath, _bstr_t password, VARIANT_BOOL resvForCall, long options ) {
+    struct VirtualInstrument * _result = 0;
+    _com_dispatch_method(this, 0x7d4, DISPATCH_METHOD, VT_DISPATCH, (void*)&_result, 
+        L"\x0008\x0008\x000b\x0003", (BSTR)viPath, (BSTR)password, resvForCall, options);
+    return VirtualInstrumentPtr(_result, false);
+}
+
+inline HRESULT _Application::MassCompile ( _bstr_t directory, _bstr_t logFile, VARIANT_BOOL appendLog, long viCacheSize, VARIANT_BOOL reloadLVSBs ) {
+    return _com_dispatch_method(this, 0x7d5, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008\x0008\x000b\x0003\x000b", (BSTR)directory, (BSTR)logFile, appendLog, viCacheSize, reloadLVSBs);
+}
+
+inline HRESULT _Application::Quit ( ) {
+    return _com_dispatch_method(this, 0x7dd, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
+}
+
+inline HRESULT _Application::BringToFront ( ) {
+    return _com_dispatch_method(this, 0x7de, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
+}
+
+inline HRESULT _Application::DisconnectFromSlave ( ) {
+    return _com_dispatch_method(this, 0x7e3, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
+}
+
+inline long _Application::_CompareTypes ( const _variant_t & typeDesc1, const _variant_t & typeDesc2, short options ) {
+    long _result = 0;
+    _com_dispatch_method(this, 0x7ec, DISPATCH_METHOD, VT_I4, (void*)&_result, 
+        L"\x000c\x000c\x0002", &typeDesc1, &typeDesc2, options);
+    return _result;
+}
+
+inline HRESULT _Application::CheckConnection ( ) {
+    return _com_dispatch_method(this, 0x7f7, DISPATCH_METHOD, VT_EMPTY, NULL, NULL);
+}
+
+inline HRESULT _Application::ConnInfo ( long pingDelay, long * prevPingDelay, long pingTimeout, long * prevPingTimeout ) {
+    return _com_dispatch_method(this, 0x7f8, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0003\x4003\x0003\x4003", pingDelay, prevPingDelay, pingTimeout, prevPingTimeout);
+}
+
+inline _bstr_t _Application::GetVIVersion ( _bstr_t viPath, long * VersNum ) {
+    BSTR _result = 0;
+    _com_dispatch_method(this, 0x7f9, DISPATCH_METHOD, VT_BSTR, (void*)&_result, 
+        L"\x0008\x4003", (BSTR)viPath, VersNum);
+    return _bstr_t(_result, false);
+}
+
+inline VARIANT_BOOL _Application::_DropControlOrFunction ( _bstr_t ctlFuncName ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x7fa, DISPATCH_METHOD, VT_BOOL, (void*)&_result, 
+        L"\x0008", (BSTR)ctlFuncName);
+    return _result;
+}
+
+inline HRESULT _Application::BrowseDataSocket ( _bstr_t Prompt, BSTR * SelectedURL ) {
+    return _com_dispatch_method(this, 0x7fb, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008\x4008", (BSTR)Prompt, SelectedURL);
+}
+
+inline HRESULT _Application::ResolveSymbolicPath ( _bstr_t SymbolicPath, BSTR * ActualPath ) {
+    return _com_dispatch_method(this, 0x7fc, DISPATCH_METHOD, VT_EMPTY, NULL, 
+        L"\x0008\x4008", (BSTR)SymbolicPath, ActualPath);
+}
+
+inline VARIANT_BOOL _Application::_HilitePalMenuItem ( _bstr_t funcname, const _variant_t & Position ) {
+    VARIANT_BOOL _result = 0;
+    _com_dispatch_method(this, 0x7fd, DISPATCH_METHOD, VT_BOOL, (void*)&_result, 
+        L"\x0008\x080c", (BSTR)funcname, &Position);
+    return _result;
+}
+
+inline _variant_t _Application::_CreateLVClsInst ( long ClassID ) {
+    VARIANT _result;
+    VariantInit(&_result);
+    _com_dispatch_method(this, 0x809, DISPATCH_METHOD, VT_VARIANT, (void*)&_result, 
+        L"\x0003", ClassID);
+    return _variant_t(_result, false);
+}
+
+inline _variant_t _Application::_GetPalMenuInfo ( _bstr_t palMenuPath ) {
+    VARIANT _result;
+    VariantInit(&_result);
+    _com_dispatch_method(this, 0x80e, DISPATCH_METHOD, VT_VARIANT, (void*)&_result, 
+        L"\x0008", (BSTR)palMenuPath);
+    return _variant_t(_result, false);
+}
