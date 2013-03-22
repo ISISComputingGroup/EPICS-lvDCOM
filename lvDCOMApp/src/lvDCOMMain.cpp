@@ -15,6 +15,7 @@ The introduction
 
 \example example_lvinput.xml
 
+\htmlinclude README.txt
 
 */
 int main(int argc, char *argv[])
