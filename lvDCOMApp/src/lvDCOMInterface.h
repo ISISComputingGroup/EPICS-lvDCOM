@@ -35,12 +35,12 @@
 #include <epicsExit.h>
 
 //#import "LabVIEW.tlb" named_guids
-// The above statement generates labview.tlh and labview.tli
+// The above statement would generate labview.tlh and labview.tli but we include pre-built versions here
 #include "labview.tlh"
 
 #include <msxml2.h>
 
-// TinyXPath
+// TinyXPath, we tried this but it did not work, so use msxml as we will always be on Windows
 //#include <xpath_processor.h>  
 //#include <xpath_static.h>  
 
@@ -73,6 +73,7 @@ public:
 	template<typename T> void getLabviewValue(const char* param, T* value);
 	template<typename T> void getLabviewValue(const char* param, T* value, size_t nElements, size_t& nIn);
 	~lvDCOMInterface() { if (m_pxmldom != NULL) { m_pxmldom->Release(); m_pxmldom = 0; } }
+
 private:
 	std::string m_configSection;  ///< section of \a configFile to load information from
 	std::string m_host;

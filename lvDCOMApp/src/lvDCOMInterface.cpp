@@ -164,7 +164,7 @@ bool lvDCOMInterface::doXPATHbool_old(const std::string& xpath)
 	return res;
 }
 
-#endif
+#endif /* #if 0 */
 
 std::string lvDCOMInterface::doPath(const std::string& xpath)
 {

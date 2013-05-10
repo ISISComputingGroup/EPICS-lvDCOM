@@ -1,11 +1,11 @@
-record(ao, "CON1")
+record(ao, "$(P)CON1")
 {
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn(ex1,0,0)cont1")
    field(PREC, "3")
 }
 
-record(ai, "IND1")
+record(ai, "$(P)IND1")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn(ex1,0,0)ind1")
@@ -13,7 +13,7 @@ record(ai, "IND1")
    field(SCAN, ".1 second")
 }
 
-record(waveform, "FLTARRAY")
+record(waveform, "$(P)FLTARRAY")
 {
    field(DTYP, "asynFloat64ArrayIn")
    field(INP,  "@asyn(ex1,0,0)arrayind1")
@@ -23,14 +23,14 @@ record(waveform, "FLTARRAY")
    field(FTVL, "DOUBLE")
 }
 
-record(stringin, "STR")
+record(stringin, "$(P)STR")
 {
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn(ex1,0,0)strcont1")
    field(SCAN, ".1 second")
 }
 
-record(stringout, "STRW")
+record(stringout, "$(P)STRW")
 {
    field(DTYP, "asynOctetWrite")
    field(OUT,  "@asyn(ex1,0,0)strcont1")
