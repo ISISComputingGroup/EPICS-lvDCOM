@@ -103,13 +103,19 @@ bool lvDCOMInterface::doXPATHbool(const std::string& xpath)
 		if (SUCCEEDED(hr))
 		{
 			bool_str = CW2CT(bstrValue);
-			if ( (bool_str.size() == 0) || (bool_str[0] == 'f') || (bool_str[0] == 'F') || (atol(bool_str.c_str()) == 0) )
+			if (bool_str.size() == 0)
 			{
 				res = false;
 			}
-			else
+			// allow true / yes / non_zero_number
+			// note: atol() returns 0 for non numeric strings, so OK in a test for "true"
+			else if ( (bool_str[0] == 't') || (bool_str[0] == 'T') || (bool_str[0] == 'y') || (bool_str[0] == 'Y') || (atol(bool_str.c_str()) != 0) )
 			{
 				res = true;
+			}
+			else
+			{
+				res = false;
 			}
 			SysFreeString(bstrValue);
 		}
