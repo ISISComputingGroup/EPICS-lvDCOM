@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    ########### SVN repository information ###################
+    # $LastChangedDate$
+    # $LastChangedBy$
+    # $LastChangedRevision$
+    # $HeadURL$
+    ########### SVN repository information ###################
+	
+	@author Freddie Akeroyd, STFC ISIS Facility, UK
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://epics.isis.rl.ac.uk/lvDCOMinput/1.0"
+	xmlns="http://epics.isis.rl.ac.uk/lvDCOMinput/1.0"
+	elementFormDefault="qualified">
+  <xs:element name="lvinput">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="extint"/>
+        <xs:element ref="section"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="extint">
+    <xs:complexType>
+      <xs:attribute name="path" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="section">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="vi"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="vi">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="param"/>
+      </xs:sequence>
+      <xs:attribute name="path" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="param">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="read"/>
+        <xs:element minOccurs="0" ref="set"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+      <xs:attribute name="type" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="read">
+    <xs:complexType>
+      <xs:attribute name="method" use="required" type="xs:NCName"/>
+      <xs:attribute name="pre_button"/>
+      <xs:attribute name="pre_button_delay" type="xs:integer"/>
+      <xs:attribute name="pre_button_wait" type="xs:boolean"/>
+      <xs:attribute name="target" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="set">
+    <xs:complexType>
+      <xs:attribute name="extint" use="required" type="xs:boolean"/>
+      <xs:attribute name="method" use="required" type="xs:NCName"/>
+      <xs:attribute name="post_button"/>
+      <xs:attribute name="post_button_wait" type="xs:boolean"/>
+      <xs:attribute name="target" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
