@@ -11,7 +11,7 @@
 
 	@author Freddie Akeroyd, STFC ISIS Facility, UK
 	
-	-->
+-->
 <xsl:stylesheet
     version="1.0"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -37,18 +37,61 @@
    
    <xsl:template match="lvdcom:param">
       <xsl:variable name="asyn_param" select="@name" />
-      <xsl:variable name="asyn_type" select="@type" />
-	  
-record(ao, "$(P)<xsl:value-of select="$asyn_param"/>")
+      <xsl:variable name="asyn_type">
+	  <xsl:call-template name="convertToAsynType">
+	  <xsl:with-param name="vartype" select="@type" />
+	  </xsl:call-template>
+	</xsl:variable>
+	<xsl:choose>
+	   <xsl:when test="@type = 'string'">
+record(stringin, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
-   field(DTYP, "asynFloat64<xsl:value-of select="$asyn_type"/>")
-   field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
-   field(PREC, "3")
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>Read")
+    field(INP,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(SCAN, ".1 second")
+    field(SCAN, ".1 second")
 }
 
-   </xsl:template>
-   
+record(stringout, "$(P)<xsl:value-of select="$asyn_param"/>")
+{
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>Write")
+    field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+}
+
+</xsl:when>	
+<xsl:otherwise>
+record(ai, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
+{
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>")
+    field(INP,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(PREC, "3")
+    field(SCAN, ".1 second")
+}
+
+record(ao, "$(P)<xsl:value-of select="$asyn_param"/>")
+{
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>")
+    field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(PREC, "3")
+}
+
+</xsl:otherwise>
+</xsl:choose>
+  </xsl:template>
+
+   <xsl:template name="convertToAsynType">
+	<xsl:param name="vartype" />
+	<xsl:choose>
+		<xsl:when test="$vartype = 'int32'">asynInt32</xsl:when>		
+		<xsl:when test="$vartype = 'float64'">asynFloat64</xsl:when>		
+	   <xsl:when test="$vartype = 'string'">asynOctet</xsl:when>		
+		<xsl:otherwise>invalid</xsl:otherwise>
+	</xsl:choose>
+	
+</xsl:template>
+
 </xsl:stylesheet>
+<!-- asynFloat64ArrayIn  -->
 <!--
    /CONTENT/CONTROL/@type    Numeric(ID=80)  String(ID=81)  Array(ID=82) Boolean(ID=79)    Cluster    "Radio Buttons" "Ring" "Listbox" "Enum" "Type Definition"
 	/CONTENT/CONTROL/@name

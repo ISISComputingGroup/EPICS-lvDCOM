@@ -47,11 +47,17 @@
 	</xsl:template>
 
    <xsl:template match="CONTROL">
-        <xsl:variable name="control_type" select="@type" />
+        <xsl:variable name="control_type">  
+   	<xsl:call-template name="convertLVType">
+   		<xsl:with-param name="vartype" select="@type" />
+   	</xsl:call-template>
+        </xsl:variable>
         <xsl:variable name="control_id" select="@ID" />
         <xsl:variable name="control_name" select="@name" />
+   	    <xsl:variable name="param_name" select="translate($control_name,' ', '_')" />
+   	<xsl:if test="$control_type != 'invalid'">
 		<xsl:element name="param">
-		<xsl:attribute name="name"><xsl:value-of select="$control_name"/></xsl:attribute>  
+		<xsl:attribute name="name"><xsl:value-of select="$param_name"/></xsl:attribute>  
 		<xsl:attribute name="type"><xsl:value-of select="$control_type"/></xsl:attribute> 
 		<xsl:element name="read">
 		    <xsl:attribute name="method">GCV</xsl:attribute>  
@@ -63,8 +69,22 @@
 		        <xsl:attribute name="target"><xsl:value-of select="$control_name"/></xsl:attribute> 
 		    </xsl:element>
 		</xsl:element>
+   	</xsl:if>
 	</xsl:template>
    
+
+<xsl:template name="convertLVType">
+	<xsl:param name="vartype" />
+	<xsl:choose>
+		<xsl:when test="$vartype = 'Numeric'">float64</xsl:when>		
+		<xsl:when test="$vartype = 'String'">string</xsl:when>		
+		<xsl:when test="$vartype = 'Boolean'">int32</xsl:when>		
+		<xsl:when test="$vartype = 'Enum'">int32</xsl:when>		
+		<xsl:when test="$vartype = 'Ring'">string</xsl:when>		
+		<xsl:otherwise>invalid</xsl:otherwise>
+	</xsl:choose>
+</xsl:template>
+
 </xsl:stylesheet>
 
 <!--
