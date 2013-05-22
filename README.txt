@@ -8,6 +8,7 @@ to modify the Vi themselves. Features of the program are:
 	"MyApp" here then you would specify "MyApp.Application" as the progid parameter to lvDCOMConfigure() in your IOC st.cmd file 
 * Can (optionally) automatically start and/or stop Vis on IOC startup/shutdown
 * Can communicate with remote computers using standard DCOM authentication or supplIed username + password
+* can handle additional logic e.g. automatically push a button either before doing a read of after doing a set
 </PRE>
 <!--
     @author Freddie Akeroyd, STFC ISIS facility, UK (freddie.akeroyd at stfc.ac.uk)

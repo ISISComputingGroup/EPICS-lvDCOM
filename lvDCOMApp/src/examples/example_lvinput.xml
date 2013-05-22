@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- <?xml-stylesheet type="text/xsl" href="lvinput_format.xsl" ?> -->
+
 <!--
     Example lvDCOM driver configuration file, loaded at IOC boot time in st.cmd via e.g.
 	
@@ -11,7 +13,11 @@
     $LastChangedDate$:  
     $HeadURL$:
 -->
-<lvinput>
+<lvinput 
+  xmlns="http://epics.isis.rl.ac.uk/lvDCOMinput/1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://epics.isis.rl.ac.uk/lvDCOMinput/1.0 ../lvDCOMinput.xsd">
+
    <!--
         the exint Vi is an ISIS Vi that is used as a proxy Vi for "set" operations when extint="true" is specified below.
 		If your labview front panels are not "labview event driven" then you do not need to worry about this.
@@ -54,8 +60,21 @@
         <read method="GCV" target="Some Array" />  
         <!--set method="SCV" extint="false" target="Some Array" /--> 
 	  </param>
+	  <!-- optionally push a button control either after a set or before a read
+	       {pre,post}_button
+	       {pre,post}_button_wait    controls whether you should wait for the button to "pop back" before continuing (i.e. false -> true -> false sequence)
+		   {pre,post}_button_delay   is a delay (ms) to wait after pushing button before doing a read 
+      -->		   
+	  <param name="cont2" type="float64"> 
+        <read method="GCV" target="Some Control" />  
+        <set method="SCV" extint="false" target="Some Control" post_button="Some Button" post_button_wait="true" /> 
+	  </param>
 
-	</vi>
+      <param name="ind2" type="int32"> 
+        <read method="GCV" target="Some Indicator" pre_button="Some Button" pre_button_wait="true" pre_button_delay="10" />
+        <!--set method="SCV" extint="false" target="Some Indicator" /-->
+      </param>
+  </vi>
 	 
   </section>
   

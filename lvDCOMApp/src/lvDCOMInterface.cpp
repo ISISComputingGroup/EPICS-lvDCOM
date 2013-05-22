@@ -23,12 +23,15 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 #include "lvDCOMInterface.h"
 #include "variant_utils.h"
 
 #include <macLib.h>
 #include <epicsGuard.h>
+
+#define MAX_PATH_LEN 256
 
 static epicsThreadOnceId onceId = EPICS_THREAD_ONCE_INIT;
 
@@ -46,6 +49,7 @@ void __stdcall _com_raise_error(HRESULT hr, IErrorInfo* perrinfo)
     throw COMexception(message, hr);
 }
 
+// return "" if no value at path
 std::string lvDCOMInterface::doXPATH(const std::string& xpath)
 {
 	if (m_pxmldom == NULL)
@@ -72,10 +76,10 @@ std::string lvDCOMInterface::doXPATH(const std::string& xpath)
 		}
 		pNode->Release();
 	}
-	else
-	{
-		throw std::runtime_error("doXPATH: cannot find " + xpath);
-	}
+//	else
+//	{
+//		throw std::runtime_error("doXPATH: cannot find " + xpath);
+//	}
 	m_xpath_map[xpath] = S_res;
 	return S_res;
 }
@@ -121,10 +125,10 @@ bool lvDCOMInterface::doXPATHbool(const std::string& xpath)
 		}
 		pNode->Release();
 	}
-	else
-	{
-		throw std::runtime_error("doXPATHbool: cannot find " + xpath);
-	}
+//	else
+//	{
+//		throw std::runtime_error("doXPATHbool: cannot find " + xpath);
+//	}
 	m_xpath_bool_map[xpath] = res;
 	return res;
 }
@@ -178,13 +182,7 @@ std::string lvDCOMInterface::doPath(const std::string& xpath)
 	char* exp_str = macEnvExpand(S_res.c_str());
 	S_res = exp_str;
 	free(exp_str);
-	for(int i=0; i<S_res.size(); ++i)
-	{
-	    if (S_res[i] == '/')
-		{
-			S_res[i] = '\\';
-		}
-	}
+	std::replace(S_res.begin(), S_res.end(), '/', '\\');
 	return S_res;
 }
 
@@ -334,7 +332,7 @@ void lvDCOMInterface::stopVis(bool only_ones_we_started)
 long lvDCOMInterface::nParams()
 {
 	long n = 0;
-	char control_name_xpath[256];
+	char control_name_xpath[MAX_PATH_LEN];
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param", m_configSection.c_str());
 	IXMLDOMNodeList* pXMLDomNodeList = NULL;
 	HRESULT hr = m_pxmldom->selectNodes(_bstr_t(control_name_xpath), &pXMLDomNodeList);
@@ -349,7 +347,7 @@ long lvDCOMInterface::nParams()
 void lvDCOMInterface::getParams(std::map<std::string,std::string>& res)
 {
 	res.clear();
-	char control_name_xpath[256];
+	char control_name_xpath[MAX_PATH_LEN];
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param", m_configSection.c_str());
 	IXMLDOMNodeList* pXMLDomNodeList = NULL;
 	HRESULT hr = m_pxmldom->selectNodes(_bstr_t(control_name_xpath), &pXMLDomNodeList);
@@ -549,7 +547,7 @@ void lvDCOMInterface::getLabviewValue(const char* param, std::string* value)
 		throw std::runtime_error("getLabviewValue failed (NULL)");
 	}
 	CComVariant v;
-	char vi_name_xpath[256], control_name_xpath[256];
+	char vi_name_xpath[MAX_PATH_LEN], control_name_xpath[MAX_PATH_LEN];
 	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
@@ -573,7 +571,7 @@ void lvDCOMInterface::getLabviewValue(const char* param, T* value, size_t nEleme
 		throw std::runtime_error("getLabviewValue failed (NULL)");
 	}
 	CComVariant v;
-	char vi_name_xpath[256], control_name_xpath[256];
+	char vi_name_xpath[MAX_PATH_LEN], control_name_xpath[MAX_PATH_LEN];
 	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
@@ -601,7 +599,7 @@ void lvDCOMInterface::getLabviewValue(const char* param, T* value)
 		throw std::runtime_error("getLabviewValue failed (NULL)");
 	}
 	CComVariant v;
-	char vi_name_xpath[256], control_name_xpath[256];
+	char vi_name_xpath[MAX_PATH_LEN], control_name_xpath[MAX_PATH_LEN];
 	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
@@ -630,45 +628,116 @@ void lvDCOMInterface::getLabviewValue(BSTR vi_name, BSTR control_name, VARIANT* 
 	}
 }
 
+class StringItem 
+{
+	CComBSTR m_bstr;
+	public:
+    StringItem(lvDCOMInterface* dcom, const char* xpath, const char* config_section, const char* param, bool filepath = false)
+	{
+	    char base_xpath[MAX_PATH_LEN];
+		_snprintf(base_xpath, sizeof(base_xpath), xpath, config_section, param);
+		if (filepath)
+		{
+			m_bstr = dcom->doPath(base_xpath).c_str();
+		}
+		else
+		{
+			m_bstr = dcom->doXPATH(base_xpath).c_str();
+		}
+	};
+	const CComBSTR& bstr() { return m_bstr; }
+	size_t size() { return m_bstr.Length(); }
+	operator BSTR() { return m_bstr; }
+};
+
+class BoolItem 
+{
+	bool m_value;
+	public:
+    BoolItem(lvDCOMInterface* dcom, const char* xpath, const char* config_section, const char* param)
+	{
+	    char base_xpath[MAX_PATH_LEN];
+		_snprintf(base_xpath, sizeof(base_xpath), xpath, config_section, param);
+		m_value = dcom->doXPATHbool(base_xpath);
+	};
+	operator bool() { return m_value; }
+};
+
 template <>
 void lvDCOMInterface::setLabviewValue(const char* param, const std::string& value)
 {
 	CComVariant v(value.c_str()), results;
-	char vi_name_xpath[256], control_name_xpath[256], use_extint_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@target", m_configSection.c_str(), param);
-	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@extint", m_configSection.c_str(), param);
-	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
-	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
-	bool use_ext = doXPATHbool(use_extint_xpath); 
+    StringItem vi_name(this, "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str(), "", true);
+    StringItem control_name(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@target", m_configSection.c_str(), param);
+	StringItem post_button(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@post_button", m_configSection.c_str(), param);
+	BoolItem post_button_wait(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@post_button_wait", m_configSection.c_str(), param);
+	BoolItem use_ext(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@extint", m_configSection.c_str(), param);
 	if (use_ext)
 	{
 		setLabviewValueExt(vi_name, control_name, v, &results);	
+		if (post_button.size() > 0)
+		{
+			setLabviewValueExt(vi_name, post_button, v, &results);	
+		}
 	}
 	else
 	{
 		setLabviewValue(vi_name, control_name, v);	
+		if (post_button.size() > 0)
+		{
+			setLabviewValue(vi_name, post_button, v);	
+		}
+	}
+	if (post_button_wait && (post_button.size() > 0) )
+	{
+		waitForLabviewBoolean(vi_name, post_button, false);	
 	}
 }
+
+void lvDCOMInterface::waitForLabviewBoolean(BSTR vi_name, BSTR control_name, bool value)
+{
+	CComVariant v;
+	bool done = false;
+	while(!done)
+	{
+		getLabviewValue(vi_name, control_name, &v);
+		if ( v.ChangeType(VT_BOOL) == S_OK )
+		{
+		    done = ( v.boolVal == (value ? VARIANT_TRUE : VARIANT_FALSE) );
+			v.Clear();
+		}
+		epicsThreadSleep(0.1);
+	}	
+}	
 
 template <typename T>
 void lvDCOMInterface::setLabviewValue(const char* param, const T& value)
 {
 	CComVariant v(value), results;
-	char vi_name_xpath[256], control_name_xpath[256], use_extint_xpath[256];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
-	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@target", m_configSection.c_str(), param);
-	_snprintf(use_extint_xpath, sizeof(use_extint_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@extint", m_configSection.c_str(), param);
-	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
-	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
-	bool use_ext = doXPATHbool(use_extint_xpath); 
+    StringItem vi_name(this, "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str(), "", true);
+    StringItem control_name(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@target", m_configSection.c_str(), param);
+	StringItem post_button(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@post_button", m_configSection.c_str(), param);
+	BoolItem post_button_wait(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@post_button_wait", m_configSection.c_str(), param);
+	BoolItem use_ext(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@extint", m_configSection.c_str(), param);
 	if (use_ext)
 	{
 		setLabviewValueExt(vi_name, control_name, v, &results);	
+		if (post_button.size() > 0)
+		{
+			setLabviewValueExt(vi_name, post_button, v, &results);	
+		}
 	}
 	else
 	{
 		setLabviewValue(vi_name, control_name, v);	
+		if (post_button.size() > 0)
+		{
+			setLabviewValue(vi_name, post_button, v);	
+		}
+	}
+	if (post_button_wait && (post_button.size() > 0) )
+	{
+		waitForLabviewBoolean(vi_name, post_button, false);	
 	}
 }
 

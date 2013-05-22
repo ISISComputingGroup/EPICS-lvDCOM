@@ -73,6 +73,9 @@ public:
 	template<typename T> void getLabviewValue(const char* param, T* value);
 	template<typename T> void getLabviewValue(const char* param, T* value, size_t nElements, size_t& nIn);
 	~lvDCOMInterface() { if (m_pxmldom != NULL) { m_pxmldom->Release(); m_pxmldom = 0; } }
+	std::string doPath(const std::string& xpath);
+	std::string doXPATH(const std::string& xpath);
+	bool doXPATHbool(const std::string& xpath);
 
 private:
 	std::string m_configSection;  ///< section of \a configFile to load information from
@@ -95,15 +98,13 @@ private:
 	std::map<std::string,bool> m_xpath_bool_map;
 
 	void DomFromCOM();
-	std::string doPath(const std::string& xpath);
-	std::string doXPATH(const std::string& xpath);
-	bool doXPATHbool(const std::string& xpath);
 	void getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr &vi);
 	void createViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr &vi);
 	void getLabviewValue(BSTR vi_name, BSTR control_name, VARIANT* value);
 	void setLabviewValue(BSTR vi_name, BSTR control_name, const VARIANT& value);
 	void setLabviewValueExt(BSTR vi_name, BSTR control_name, const VARIANT& value, VARIANT* results);
 	void callLabview(BSTR vi_name, VARIANT& names, VARIANT& values, VARIANT_BOOL reentrant, VARIANT* results);
+	void waitForLabviewBoolean(BSTR vi_name, BSTR control_name, bool value);
 	COAUTHIDENTITY* createIdentity(const std::string& user, const std::string& domain, const std::string& pass);
 	HRESULT setIdentity(COAUTHIDENTITY* pidentity, IUnknown* pUnk);
 	static void epicsExitFunc(void* arg);

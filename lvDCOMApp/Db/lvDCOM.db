@@ -5,6 +5,13 @@ record(ao, "$(P)CON1")
    field(PREC, "3")
 }
 
+record(ao, "$(P)CON2")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn(ex1,0,0)cont2")
+   field(PREC, "3")
+}
+
 record(ai, "$(P)IND1")
 {
    field(DTYP, "asynInt32")
