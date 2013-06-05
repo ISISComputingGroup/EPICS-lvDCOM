@@ -107,7 +107,7 @@ record(ao, "$(P)<xsl:value-of select="$asyn_param"/>")
 	        }
 	        
 	    </xsl:when>
-	    <xsl:when test="@type = 'ring'">
+	    <xsl:when test="@type = 'ring' or @type = 'enum'">
 	        record(mbbi, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 	        {
 	        field(DTYP, "<xsl:value-of select="$asyn_type"/>")
