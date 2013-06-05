@@ -133,19 +133,20 @@ record(ao, "$(P)<xsl:value-of select="$asyn_param"/>")
   </xsl:template>
 
     <xsl:template name="allmb">
-       <xsl:call-template name="mb"><xsl:with-param name="prefix">ZR</xsl:with-param><xsl:with-param name="value">0</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="mb"><xsl:with-param name="prefix">ON</xsl:with-param><xsl:with-param name="value">1</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="mb"><xsl:with-param name="prefix">TW</xsl:with-param><xsl:with-param name="value">2</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="mb"><xsl:with-param name="prefix">TH</xsl:with-param><xsl:with-param name="value">3</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="mb"><xsl:with-param name="prefix">FR</xsl:with-param><xsl:with-param name="value">4</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">ZR</xsl:with-param><xsl:with-param name="pos">1</xsl:with-param></xsl:call-template>
+        <xsl:call-template name="mb"><xsl:with-param name="prefix">ON</xsl:with-param><xsl:with-param name="pos">2</xsl:with-param></xsl:call-template>
+        <xsl:call-template name="mb"><xsl:with-param name="prefix">TW</xsl:with-param><xsl:with-param name="pos">3</xsl:with-param></xsl:call-template>
+        <xsl:call-template name="mb"><xsl:with-param name="prefix">TH</xsl:with-param><xsl:with-param name="pos">4</xsl:with-param></xsl:call-template>
+        <xsl:call-template name="mb"><xsl:with-param name="prefix">FR</xsl:with-param><xsl:with-param name="pos">5</xsl:with-param></xsl:call-template>
     </xsl:template>
 
     <xsl:template name="mb">
         <xsl:param name="prefix" />
-        <xsl:param name="value" />
-        <xsl:if test="lvdcom:items/lvdcom:item[@value=$value]">
-        field(<xsl:value-of select="$prefix"/>VL, <xsl:value-of select="$value"/>)
-        field(<xsl:value-of select="$prefix"/>ST, "<xsl:value-of select="lvdcom:items/lvdcom:item[@value=$value]/@name"/>")
+        <xsl:param name="pos" />
+        <xsl:variable name="node" select="lvdcom:items/lvdcom:item[position()=$pos]" />
+        <xsl:if test="$node">
+            field(<xsl:value-of select="$prefix"/>VL, <xsl:value-of select="$node/@value"/>)
+        field(<xsl:value-of select="$prefix"/>ST, "<xsl:value-of select="$node/@name"/>")
         </xsl:if>
     </xsl:template>
 
