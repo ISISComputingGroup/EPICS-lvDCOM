@@ -259,6 +259,7 @@ lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFi
 	{
 		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
 	}
+	std::cerr << "Loaded config file \"" << configFile << "\"" << std::endl;
   	m_extint = doPath("/lvinput/extint/@path").c_str();
 	epicsAtExit(epicsExitFunc, this);
 	if (m_progid.size() > 0)
@@ -272,7 +273,7 @@ lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFi
 	{
 		m_clsid = LabVIEW::CLSID_Application;
 		wchar_t* progid_str = NULL;
-		if (ProgIDFromCLSID(m_clsid, &progid_str) == S_OK)
+		if ( ProgIDFromCLSID(m_clsid, &progid_str) == S_OK )
 		{
 			m_progid = CW2CT(progid_str);
 			CoTaskMemFree(progid_str);
@@ -283,9 +284,15 @@ lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFi
 		}
 	}
 	wchar_t* clsid_str = NULL;
-	StringFromCLSID(m_clsid, &clsid_str);
-	std::cerr << "Using ProgID \"" << m_progid << "\" CLSID " << CW2CT(clsid_str) << std::endl;
-	CoTaskMemFree(clsid_str);
+	if ( StringFromCLSID(m_clsid, &clsid_str) == S_OK )
+	{
+		std::cerr << "Using ProgID \"" << m_progid << "\" CLSID " << CW2CT(clsid_str) << std::endl;
+		CoTaskMemFree(clsid_str);
+	}
+	else
+	{
+		std::cerr << "StringFromCLSID() failed" << std::endl;
+	}
 }
 
 void lvDCOMInterface::epicsExitFunc(void* arg)

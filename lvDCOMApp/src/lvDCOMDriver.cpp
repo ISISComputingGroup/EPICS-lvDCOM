@@ -243,7 +243,7 @@ lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* dcomint, const char *portName)
 		{
             createParam(it->first.c_str(), asynParamFloat64, &i);
 		}
-		else if (it->second == "int32")
+		else if (it->second == "int32" || it->second == "enum" || it->second == "ring" || it->second == "boolean")
 		{
             createParam(it->first.c_str(), asynParamInt32, &i);
 		}
@@ -293,8 +293,17 @@ int lvDCOMConfigure(const char *portName, const char* configSection, const char 
 	try
 	{
 		lvDCOMInterface* dcomint = new lvDCOMInterface(configSection, configFile, host, options, progid, username, password);
-		new lvDCOMDriver(dcomint, portName);
-		return(asynSuccess);
+		if (dcomint != NULL)
+		{
+			new lvDCOMDriver(dcomint, portName);
+			return(asynSuccess);
+		}
+		else
+		{
+			std::cerr << "lvDCOMConfigure failed (NULL)" << std::endl;
+			return(asynError);
+		}
+			
 	}
 	catch(const std::exception& ex)
 	{
