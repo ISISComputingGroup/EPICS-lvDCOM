@@ -272,16 +272,19 @@ lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFi
 	{
 		m_clsid = LabVIEW::CLSID_Application;
 		wchar_t* progid_str = NULL;
-		if (ProgIDFromCLSID(m_clsid, &progid_str) != S_OK)
+		if (ProgIDFromCLSID(m_clsid, &progid_str) == S_OK)
 		{
-			throw std::runtime_error("Cannot find progId " + m_progid);
+			m_progid = CW2CT(progid_str);
+			CoTaskMemFree(progid_str);
 		}
-		m_progid = CW2CT(progid_str);
-		CoTaskMemFree(progid_str);
+		else
+		{
+			m_progid = "LabVIEW.Application";
+		}
 	}
 	wchar_t* clsid_str = NULL;
 	StringFromCLSID(m_clsid, &clsid_str);
-	std::cerr << "Using ProgID \"" << m_progid << "\" clsid " << CW2CT(clsid_str) << std::endl;
+	std::cerr << "Using ProgID \"" << m_progid << "\" CLSID " << CW2CT(clsid_str) << std::endl;
 	CoTaskMemFree(clsid_str);
 }
 
