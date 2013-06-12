@@ -43,10 +43,10 @@ lvDCOM_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #pdb += lvDCOM.pdb generateConfig.pdb
 
-PROD = generateConfig
-generateConfig_SRCS += generateConfig.cpp
-generateConfig_LIBS += lvDCOMSupport
-generateConfig_SYS_LIBS_WIN32 += msxml2
+#PROD = generateConfig
+#generateConfig_SRCS += generateConfig.cpp
+#generateConfig_LIBS += lvDCOMSupport
+#generateConfig_SYS_LIBS_WIN32 += msxml2
 
 #=============================
 
