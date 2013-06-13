@@ -48,14 +48,14 @@
 record(stringin, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>Read")
-    field(INP,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(INP,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
     field(SCAN, ".1 second")
 }
 
 record(stringout, "$(P)<xsl:value-of select="$asyn_param"/>")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>Write")
-    field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(OUT,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
 }
 
 </xsl:when>	
@@ -63,14 +63,14 @@ record(stringout, "$(P)<xsl:value-of select="$asyn_param"/>")
 record(longin, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>Read")
-    field(INP,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(INP,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
     field(SCAN, ".1 second")
 }
 	        
 record(longout, "$(P)<xsl:value-of select="$asyn_param"/>")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>Write")
-    field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(OUT,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
 }
 
 </xsl:when>
@@ -78,7 +78,7 @@ record(longout, "$(P)<xsl:value-of select="$asyn_param"/>")
 record(ai, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-    field(INP,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(INP,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
     field(PREC, "3")
     field(SCAN, ".1 second")
 }
@@ -86,27 +86,33 @@ record(ai, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 record(ao, "$(P)<xsl:value-of select="$asyn_param"/>")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-    field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(OUT,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
     field(PREC, "3")
 }
 
 </xsl:when>
 <xsl:when test="@type = 'boolean'">
+    <xsl:variable name="zname">
+        <xsl:call-template name="formatMBString"><xsl:with-param name="value" select="lvdcom:items/lvdcom:item[@value=0]/@name"></xsl:with-param></xsl:call-template>
+    </xsl:variable>
+    <xsl:variable name="oname">
+        <xsl:call-template name="formatMBString"><xsl:with-param name="value" select="lvdcom:items/lvdcom:item[@value=1]/@name"></xsl:with-param></xsl:call-template>
+    </xsl:variable>
 record(bi, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-    field(INP,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(INP,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
     field(SCAN, ".1 second")
-    field(ZNAM, "<xsl:value-of select="lvdcom:items/lvdcom:item[@value=0]/@name"/>")
-    field(ONAM, "<xsl:value-of select="lvdcom:items/lvdcom:item[@value=1]/@name"/>")
+    field(ZNAM, "<xsl:value-of select="$zname"/>")
+    field(ONAM, "<xsl:value-of select="$oname"/>")
 }
 
 record(bo, "$(P)<xsl:value-of select="$asyn_param"/>")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-    field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
-    field(ZNAM, "<xsl:value-of select="lvdcom:items/lvdcom:item[@value=0]/@name"/>")
-    field(ONAM, "<xsl:value-of select="lvdcom:items/lvdcom:item[@value=1]/@name"/>")
+    field(OUT,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(ZNAM, "<xsl:value-of select="$zname"/>")
+    field(ONAM, "<xsl:value-of select="$oname"/>")
 }
 
 </xsl:when>
@@ -114,7 +120,7 @@ record(bo, "$(P)<xsl:value-of select="$asyn_param"/>")
 record(mbbi, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-    field(INP,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(INP,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
     field(SCAN, ".1 second")
 <xsl:call-template name="allmb" />
 }
@@ -122,7 +128,7 @@ record(mbbi, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 record(mbbo, "$(P)<xsl:value-of select="$asyn_param"/>")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-    field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(OUT,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
 <xsl:call-template name="allmb" />
 }
 
@@ -136,6 +142,26 @@ record(mbbo, "$(P)<xsl:value-of select="$asyn_param"/>")
 </xsl:choose>
 
     </xsl:template>
+
+    <!-- record length in mbbi/mbbo is 26 chars = 25 + \0 -->
+    <xsl:template name="formatMBString">  
+        <xsl:param name="value" />
+        <xsl:choose>
+            <xsl:when test="string-length($value) &lt; 26">
+                <xsl:value-of select="$value"/>
+            </xsl:when>
+            <xsl:when test="string-length(normalize-space($value)) &lt; 26">
+                <xsl:value-of select="normalize-space($value)"/>
+            </xsl:when>
+            <xsl:when test="string-length(translate($value, ' ', '')) &lt; 26">
+                <xsl:value-of select="translate($value, ' ', '')"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="substring(translate($value, ' ', ''), 1, 25)"/>               
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    
 
     <xsl:template name="allmb">
        <xsl:call-template name="mb"><xsl:with-param name="prefix">ZR</xsl:with-param><xsl:with-param name="pos">1</xsl:with-param></xsl:call-template>
@@ -161,8 +187,11 @@ record(mbbo, "$(P)<xsl:value-of select="$asyn_param"/>")
         <xsl:param name="pos" />
         <xsl:variable name="node" select="lvdcom:items/lvdcom:item[position()=$pos]" />
         <xsl:if test="$node">
+            <xsl:variable name="tname">
+                <xsl:call-template name="formatMBString"><xsl:with-param name="value" select="$node/@name"></xsl:with-param></xsl:call-template>
+            </xsl:variable>
     field(<xsl:value-of select="$prefix"/>VL, <xsl:value-of select="$node/@value"/>)
-    field(<xsl:value-of select="$prefix"/>ST, "<xsl:value-of select="$node/@name"/>")
+    field(<xsl:value-of select="$prefix"/>ST, "<xsl:value-of select="$tname"/>")
         </xsl:if>
     </xsl:template>
 

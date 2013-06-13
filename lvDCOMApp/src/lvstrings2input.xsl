@@ -33,7 +33,7 @@
 				<xsl:attribute name="path">c:/LabVIEW Modules/Common/External Interface/External Interface.llb/External Interface - Set Value.vi</xsl:attribute> 
 			</xsl:element>
 			<xsl:element name="section" >
-				<xsl:attribute name="name">example</xsl:attribute> 
+				<xsl:attribute name="name">frontpanel</xsl:attribute> 
 				<xsl:element name="vi">
 					<xsl:attribute name="path"><xsl:value-of select="$vi_name"/></xsl:attribute> 
 					<xsl:apply-templates select="CONTENT" />
