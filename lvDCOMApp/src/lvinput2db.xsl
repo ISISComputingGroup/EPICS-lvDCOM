@@ -42,8 +42,9 @@
 	  <xsl:with-param name="vartype" select="@type" />
 	  </xsl:call-template>
 	</xsl:variable>
-	<xsl:choose>
-	   <xsl:when test="@type = 'string'">
+
+<xsl:choose>
+<xsl:when test="@type = 'string'">
 record(stringin, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>Read")
@@ -58,21 +59,22 @@ record(stringout, "$(P)<xsl:value-of select="$asyn_param"/>")
 }
 
 </xsl:when>	
-	    <xsl:when test="@type = 'int32'">
-	        record(longin, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
-	        {
-	        field(DTYP, "<xsl:value-of select="$asyn_type"/>Read")
-	        field(INP,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
-	        field(SCAN, ".1 second")
-	        }
+<xsl:when test="@type = 'int32'">
+record(longin, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
+{
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>Read")
+    field(INP,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(SCAN, ".1 second")
+}
 	        
-	        record(longout, "$(P)<xsl:value-of select="$asyn_param"/>")
-	        {
-	        field(DTYP, "<xsl:value-of select="$asyn_type"/>Write")
-	        field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
-	        }
-	        </xsl:when>
-	    <xsl:when test="@type = 'float64'">
+record(longout, "$(P)<xsl:value-of select="$asyn_param"/>")
+{
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>Write")
+    field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+}
+
+</xsl:when>
+<xsl:when test="@type = 'float64'">
 record(ai, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>")
@@ -87,57 +89,71 @@ record(ao, "$(P)<xsl:value-of select="$asyn_param"/>")
     field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
     field(PREC, "3")
 }
+
 </xsl:when>
-	    <xsl:when test="@type = 'boolean'">
-	        record(bi, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
-	        {
-	        field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-	        field(INP,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
-	        field(SCAN, ".1 second")
-	        field(ZNAM, "<xsl:value-of select="lvdcom:items/lvdcom:item[@value=0]/@name"/>")
-	        field(ONAM, "<xsl:value-of select="lvdcom:items/lvdcom:item[@value=1]/@name"/>")
-	        }
-	        
-	        record(bo, "$(P)<xsl:value-of select="$asyn_param"/>")
-	        {
-	        field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-	        field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
-	        field(ZNAM, "<xsl:value-of select="lvdcom:items/lvdcom:item[@value=0]/@name"/>")
-	        field(ONAM, "<xsl:value-of select="lvdcom:items/lvdcom:item[@value=1]/@name"/>")
-	        }
-	        
-	    </xsl:when>
-	    <xsl:when test="@type = 'ring' or @type = 'enum'">
-	        record(mbbi, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
-	        {
-	        field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-	        field(INP,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
-	        field(SCAN, ".1 second")
-	        <xsl:call-template name="allmb" />
-	        }
-	        
-	        record(mbbo, "$(P)<xsl:value-of select="$asyn_param"/>")
-	        {
-	        field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-	        field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
-	        <xsl:call-template name="allmb" />
-	        }
-	        
-	    </xsl:when>
-	    <xsl:otherwise>
+<xsl:when test="@type = 'boolean'">
+record(bi, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
+{
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>")
+    field(INP,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(SCAN, ".1 second")
+    field(ZNAM, "<xsl:value-of select="lvdcom:items/lvdcom:item[@value=0]/@name"/>")
+    field(ONAM, "<xsl:value-of select="lvdcom:items/lvdcom:item[@value=1]/@name"/>")
+}
+
+record(bo, "$(P)<xsl:value-of select="$asyn_param"/>")
+{
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>")
+    field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(ZNAM, "<xsl:value-of select="lvdcom:items/lvdcom:item[@value=0]/@name"/>")
+    field(ONAM, "<xsl:value-of select="lvdcom:items/lvdcom:item[@value=1]/@name"/>")
+}
+
+</xsl:when>
+<xsl:when test="@type = 'ring' or @type = 'enum'">
+record(mbbi, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
+{
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>")
+    field(INP,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(SCAN, ".1 second")
+<xsl:call-template name="allmb" />
+}
+
+record(mbbo, "$(P)<xsl:value-of select="$asyn_param"/>")
+{
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>")
+    field(OUT,  "@asyn(ex1,0,0)<xsl:value-of select="$asyn_param"/>")
+<xsl:call-template name="allmb" />
+}
+
+</xsl:when>
+<xsl:otherwise>
 #
-# ERROR type <xsl:value-of select="@type"/> is invalid 
+# ERROR type <xsl:value-of select="@type"/> is invalid
 #
+
 </xsl:otherwise>
-	</xsl:choose>
-  </xsl:template>
+</xsl:choose>
+
+    </xsl:template>
 
     <xsl:template name="allmb">
        <xsl:call-template name="mb"><xsl:with-param name="prefix">ZR</xsl:with-param><xsl:with-param name="pos">1</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="mb"><xsl:with-param name="prefix">ON</xsl:with-param><xsl:with-param name="pos">2</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="mb"><xsl:with-param name="prefix">TW</xsl:with-param><xsl:with-param name="pos">3</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="mb"><xsl:with-param name="prefix">TH</xsl:with-param><xsl:with-param name="pos">4</xsl:with-param></xsl:call-template>
-        <xsl:call-template name="mb"><xsl:with-param name="prefix">FR</xsl:with-param><xsl:with-param name="pos">5</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">ON</xsl:with-param><xsl:with-param name="pos">2</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">TW</xsl:with-param><xsl:with-param name="pos">3</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">TH</xsl:with-param><xsl:with-param name="pos">4</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">FR</xsl:with-param><xsl:with-param name="pos">5</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">FV</xsl:with-param><xsl:with-param name="pos">6</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">SX</xsl:with-param><xsl:with-param name="pos">7</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">SV</xsl:with-param><xsl:with-param name="pos">8</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">EI</xsl:with-param><xsl:with-param name="pos">9</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">NI</xsl:with-param><xsl:with-param name="pos">10</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">TE</xsl:with-param><xsl:with-param name="pos">11</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">EL</xsl:with-param><xsl:with-param name="pos">12</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">TV</xsl:with-param><xsl:with-param name="pos">13</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">TT</xsl:with-param><xsl:with-param name="pos">14</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">FT</xsl:with-param><xsl:with-param name="pos">15</xsl:with-param></xsl:call-template>
+       <xsl:call-template name="mb"><xsl:with-param name="prefix">FF</xsl:with-param><xsl:with-param name="pos">16</xsl:with-param></xsl:call-template>
     </xsl:template>
 
     <xsl:template name="mb">
@@ -145,20 +161,20 @@ record(ao, "$(P)<xsl:value-of select="$asyn_param"/>")
         <xsl:param name="pos" />
         <xsl:variable name="node" select="lvdcom:items/lvdcom:item[position()=$pos]" />
         <xsl:if test="$node">
-            field(<xsl:value-of select="$prefix"/>VL, <xsl:value-of select="$node/@value"/>)
-        field(<xsl:value-of select="$prefix"/>ST, "<xsl:value-of select="$node/@name"/>")
+    field(<xsl:value-of select="$prefix"/>VL, <xsl:value-of select="$node/@value"/>)
+    field(<xsl:value-of select="$prefix"/>ST, "<xsl:value-of select="$node/@name"/>")
         </xsl:if>
     </xsl:template>
 
     <xsl:template name="convertToAsynType">
 	<xsl:param name="vartype" />
 	<xsl:choose>
-	    <xsl:when test="$vartype = 'int32'">asynInt32</xsl:when>		
-	    <xsl:when test="$vartype = 'enum'">asynInt32</xsl:when>		
-	    <xsl:when test="$vartype = 'ring'">asynInt32</xsl:when>		
-	    <xsl:when test="$vartype = 'boolean'">asynInt32</xsl:when>		
-	    <xsl:when test="$vartype = 'float64'">asynFloat64</xsl:when>		
-	   <xsl:when test="$vartype = 'string'">asynOctet</xsl:when>		
+        <xsl:when test="$vartype = 'int32'">asynInt32</xsl:when>
+        <xsl:when test="$vartype = 'enum'">asynInt32</xsl:when>
+        <xsl:when test="$vartype = 'ring'">asynInt32</xsl:when>
+        <xsl:when test="$vartype = 'boolean'">asynInt32</xsl:when>
+        <xsl:when test="$vartype = 'float64'">asynFloat64</xsl:when>
+        <xsl:when test="$vartype = 'string'">asynOctet</xsl:when>
 		<xsl:otherwise>invalid</xsl:otherwise>
 	</xsl:choose>
 	
