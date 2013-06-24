@@ -35,18 +35,19 @@
 
 static epicsThreadOnceId onceId = EPICS_THREAD_ONCE_INIT;
 
-static void initCOM(void*)
-{
-	CoInitializeEx(NULL, COINIT_MULTITHREADED);
-}
-
 /// The Microsoft ATL _com_error is not derived from std::exception hence this bit of code to throw our own COMexception() instead
-void __stdcall _com_raise_error(HRESULT hr, IErrorInfo* perrinfo) 
+static void __stdcall my_com_raise_error(HRESULT hr, IErrorInfo* perrinfo) 
 {
 	_com_error com_error(hr, perrinfo);
 //	std::string message = "(" + com_error.Source() + ") " + com_error.Description();
 	std::string message = com_error.Description();  // for LabVIEW generated messages, Description() already includes Source()
     throw COMexception(message, hr);
+}
+
+static void initCOM(void*)
+{
+	CoInitializeEx(NULL, COINIT_MULTITHREADED);
+	_set_com_error_handler(my_com_raise_error);    // replace default _com_raise_error
 }
 
 // return "" if no value at path

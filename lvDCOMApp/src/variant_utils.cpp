@@ -31,6 +31,15 @@ std::string COMexception::com_message(const std::string& message, HRESULT hr)
 	return oss.str();
 }
 
+	
+std::string Win32StructuredException::win32_message(unsigned int code, EXCEPTION_POINTERS * pExp)
+{
+		char buffer[256];
+		_snprintf(buffer, sizeof(buffer), "Win32StructuredException code 0x%x pExpCode 0x%x pExpAddress %p", code, pExp->ExceptionRecord->ExceptionCode, pExp->ExceptionRecord->ExceptionAddress);
+		buffer[sizeof(buffer)-1] = '\0';
+		return std::string(buffer);
+}
+
 // 0 on success, -1 on error
 
 int allocateArrayVariant(VARIANT* v, VARTYPE v_type, int* dims_array, int ndims)

@@ -27,7 +27,7 @@ private:
     template<typename T> asynStatus readValue(asynUser *pasynUser, const char* functionName, T* value);
     template<typename T> asynStatus readArray(asynUser *pasynUser, const char* functionName, T *value, size_t nElements, size_t *nIn);
 
-	static void lvDCOMTask(void* arg) { lvDCOMDriver* driver = (lvDCOMDriver*)arg; }	
+	static void lvDCOMTask(void* arg);
 };
 
 #endif /* LVDCOMDRIVER_H */

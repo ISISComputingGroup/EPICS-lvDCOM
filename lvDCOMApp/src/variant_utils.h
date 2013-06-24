@@ -14,6 +14,17 @@ private:
 	static std::string com_message(const std::string& message, HRESULT hr);
 };
 
+/// need to be compiled with /EHa if you want to use this via _set_se_translator()
+/// note that _set_se_translator() needs to be called per thread
+class Win32StructuredException : public std::runtime_error
+{
+public:
+	explicit Win32StructuredException(const std::string& message) : std::runtime_error(message) { }
+	explicit Win32StructuredException(unsigned int code, EXCEPTION_POINTERS *pExp) : std::runtime_error(win32_message(code, pExp)) { }
+private:
+	static std::string win32_message(unsigned int code, EXCEPTION_POINTERS * pExp);
+};
+
 int allocateArrayVariant(VARIANT* v, VARTYPE v_type, int* dims_array, int ndims);
 
 int accessArrayVariant(VARIANT* v, float** values);

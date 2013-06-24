@@ -10,6 +10,8 @@ include $(TOP)/configure/CONFIG
 #USR_CXXFLAGS += /Zi
 #USR_LDFLAGS += /DEBUG
 
+USR_CXXFLAGS += /EHa
+
 #=============================
 # Build the IOC support library
 

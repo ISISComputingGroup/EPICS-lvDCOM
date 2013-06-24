@@ -20,8 +20,20 @@
 
 #include "lvDCOMInterface.h"
 #include "convertToString.h"
+#include "variant_utils.h"
 
 static const char *driverName="lvDCOMDriver";
+
+static void seTransFunction(unsigned int u, EXCEPTION_POINTERS* pExp)
+{
+	throw Win32StructuredException(u, pExp);
+}
+
+/// this needs to be called per thread
+static void registerStructuredExceptionHandler()
+{
+	_set_se_translator(seTransFunction);
+}
 
 template<typename T>
 asynStatus lvDCOMDriver::writeValue(asynUser *pasynUser, const char* functionName, T value)
@@ -29,6 +41,7 @@ asynStatus lvDCOMDriver::writeValue(asynUser *pasynUser, const char* functionNam
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     const char *paramName = NULL;
+	registerStructuredExceptionHandler();
 	getParamName(function, &paramName);
 	try
 	{
@@ -57,6 +70,7 @@ asynStatus lvDCOMDriver::readValue(asynUser *pasynUser, const char* functionName
 	int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     const char *paramName = NULL;
+	registerStructuredExceptionHandler();
 	getParamName(function, &paramName);
 	try
 	{
@@ -85,6 +99,7 @@ asynStatus lvDCOMDriver::readArray(asynUser *pasynUser, const char* functionName
   int function = pasynUser->reason;
   asynStatus status = asynSuccess;
   const char *paramName = NULL;
+	registerStructuredExceptionHandler();
 	getParamName(function, &paramName);
 
 	try
@@ -145,6 +160,7 @@ asynStatus lvDCOMDriver::readOctet(asynUser *pasynUser, char *value, size_t maxC
 	int status=0;
 	const char *functionName = "readOctet";
     const char *paramName = NULL;
+	registerStructuredExceptionHandler();
 	getParamName(function, &paramName);
 	std::string value_s;
 	try
@@ -190,6 +206,7 @@ asynStatus lvDCOMDriver::writeOctet(asynUser *pasynUser, const char *value, size
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     const char *paramName = NULL;
+	registerStructuredExceptionHandler();
 	getParamName(function, &paramName);
     const char* functionName = "writeOctet";
 	std::string value_s(value, maxChars);
@@ -276,6 +293,13 @@ lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* dcomint, const char *portName)
     }
 }
 
+void lvDCOMDriver::lvDCOMTask(void* arg) 
+{ 
+	lvDCOMDriver* driver = (lvDCOMDriver*)arg; 	
+	registerStructuredExceptionHandler();
+}
+
+
 extern "C" {
 
 /// EPICS iocsh callable function to call constructor of lvDCOMInterface().
@@ -290,6 +314,7 @@ extern "C" {
 int lvDCOMConfigure(const char *portName, const char* configSection, const char *configFile, const char *host, int options, 
 					const char* progid, const char* username, const char* password)
 {
+	registerStructuredExceptionHandler();
 	try
 	{
 		lvDCOMInterface* dcomint = new lvDCOMInterface(configSection, configFile, host, options, progid, username, password);
