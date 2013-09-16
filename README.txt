@@ -22,6 +22,8 @@ The syntax of the XML configuration file is described in the "examples" subdirec
 This procedure will also attempt to map LabVIEW rings/enums into EPICS MBBI/MBBO records, but as some of the value information is not available in 
 the LabVIEW export process the results may need to be adjusted.
 
+See the doc/html directory for further documentation 
+
 === Requirements ===
 
 sed and xsltproc are required to generate an initial configuration file from the "exported strings" of a LabVIEW front panel.

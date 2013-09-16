@@ -23,9 +23,9 @@
 \section into_sec Introduction
 The introduction
 
-\example example_lvinput.xml
+\include README.txt
 
-\htmlinclude README.txt
+\example example_lvinput.xml
 
 */
 int main(int argc, char *argv[])
