@@ -7,11 +7,13 @@
 	# $HeadURL$
 	########### SVN repository information ###################
 	
-	Usage: xsltproc lvstrings2input.xsl lvexport.xml > lvinput.xml
+	Usage: xsltproc lvstrings2input.xsl lvstrings.xml > lvinput.xml
 	
-	lvexport.xml is the output of ExportVIStrings() from LabVIEW, but has also 
-	been processed by the fix_xml.cmd  script	(as the raw output is not true XML)
+	lvstrings.xml is the output of ExportVIStrings() from LabVIEW, but has also 
+	been processed by the  fix_xml.cmd  script (as the raw output of ExportVIStrings() is not valid XML)
+	To run ExportVIStrings() interactively, go to "Tools -> Advanced -> Export Strings..." from the LabVIEW VI menu bar
 	
+	@file lvstrings2input.xsl Process output of LabVIEW ExportVIStrings() to generate an XML configuration file for lvDCOM
 	@author Freddie Akeroyd, STFC ISIS Facility, UK
 -->
 <xsl:stylesheet

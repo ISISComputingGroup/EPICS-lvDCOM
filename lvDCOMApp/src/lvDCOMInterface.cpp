@@ -1,3 +1,13 @@
+/*************************************************************************\ 
+* Copyright (c) 2013 Science and Technology Facilities Council (STFC), GB. 
+* All rights reverved. 
+* This file is distributed subject to a Software License Agreement found 
+* in the file LICENSE.txt that is included with this distribution. 
+\*************************************************************************/ 
+
+/// @file lvDCOMInterface.cpp
+/// @author Freddie Akeroyd, STFC ISIS Facility, GB
+
 #include <stdio.h>
 
 //#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers

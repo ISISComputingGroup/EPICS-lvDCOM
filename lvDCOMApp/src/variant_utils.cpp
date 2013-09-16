@@ -1,6 +1,12 @@
+/*************************************************************************\ 
+* Copyright (c) 2013 Science and Technology Facilities Council (STFC), GB. 
+* All rights reverved. 
+* This file is distributed subject to a Software License Agreement found 
+* in the file LICENSE.txt that is included with this distribution. 
+\*************************************************************************/ 
+
 /// @file variant_utils.cpp 
 /// @author Freddie Akeroyd, STFC ISIS Facility, GB
-/// Copyright &copy; 2008-9 ISIS Rutherford Appleton Laboratory & NScD Oak Ridge National Laboratory
 
 //#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 

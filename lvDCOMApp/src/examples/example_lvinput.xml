@@ -2,16 +2,19 @@
 <!-- <?xml-stylesheet type="text/xsl" href="lvinput_format.xsl" ?> -->
 
 <!--
-    Example lvDCOM driver configuration file, loaded at IOC boot time in st.cmd via e.g.
+    @file example_lvinput.xml Example lvDCOM driver configuration file, loaded at IOC boot time in st.cmd via e.g.
 	
 	    lvDCOMConfigure("ex1", "example", "$(TOP)/lvDCOMApp/src/examples/example_lvinput.xml", "", 6)
 
     @author Freddie Akeroyd, STFC ISIS facility, UK (freddie.akeroyd at stfc.ac.uk)
-
+	
     $LastChangedRevision$: 
     $LastChangedBy$: 
     $LastChangedDate$:  
     $HeadURL$:
+	
+	Note: you can generate an initial version of one of these configuartioon files, and associated EPICS DB records,
+	      using the spllied xslt files - see README.txt for details
 -->
 <lvinput 
   xmlns="http://epics.isis.rl.ac.uk/lvDCOMinput/1.0"
@@ -22,16 +25,16 @@
         the exint Vi is an ISIS Vi that is used as a proxy Vi for "set" operations when extint="true" is specified below.
 		If your labview front panels are not "labview event driven" then you do not need to worry about this.
 		If, however, they are (i.e. you would require the "signalling" version of the setControlValue() method) then contact
-		ISIS computing group
+		ISIS computing group via "freddie.akeroyd at stfc.ac.uk"
 		
-		path is parsed using EPICS macEnvExpand() and so can contain epics environment variables
+		path is parsed using EPICS macEnvExpand() and so can contain EPICS environment variables
    -->
    <extint path="c:/LabVIEW Modules old/Common/External Interface/External Interface.llb/External Interface - Set Value.vi" />
    
-   <!-- this will be mapped (via lvDCOMConfigure()) to an asyn driver port name that can then be specified in an epics record -->
+   <!-- this name will be mapped (via lvDCOMConfigure()) to an asyn driver port name that can then be specified in an EPICS record -->
    <section name="example"> 
 
-    <!-- path to LabVIEW vi file we are using, which is parsed using EPICS macEnvExpand() and so can contain epics environment variables -->
+    <!-- path to LabVIEW vi file we are using, which is parsed using EPICS macEnvExpand() and so can contain EPICS environment variables -->
     <vi path="$(TOP)/lvDCOMApp/src/examples/example.vi"> 
 
 	<!--
@@ -39,7 +42,7 @@
                   and <read> items specify the name of the appropriate control/indicator on the LabVIEW Vi to access for these
                   operations. The "method" attribute controls the underlying method by which the new value is communicated, 
 				  currently only "GCV" for reads (use DCOM exposed getControlValue()) and "SCV" for sets (use DCOM exposed setControlValue()) 
-				  are supported. The meaning and use of the extint attribute has been covered earlier.
+				  are supported. The meaning and use of the extint attribute has been covered earlier above.
 	  -->
 	  <param name="cont1" type="float64"> 
         <read method="GCV" target="Some Control" />  

@@ -7,8 +7,11 @@
     # $HeadURL$
     ########### SVN repository information ###################
 
-    Usage: xsltproc lvinput2db.xsl lvexportstrings.xml > epics_records.db
+    Usage: xsltproc lvinput2db.xsl lvinput.xml > epics_records.db
 
+	lvinput.xml is the output of a prior run of lvstrings2input.xsl
+	
+	@file lvinput2db.xsl Process a lvDCOM XML configuration file to generate EPICS DB records
 	@author Freddie Akeroyd, STFC ISIS Facility, UK
 	
 -->

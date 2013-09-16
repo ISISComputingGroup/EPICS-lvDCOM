@@ -1,7 +1,15 @@
+/*************************************************************************\ 
+* Copyright (c) 2013 Science and Technology Facilities Council (STFC), GB. 
+* All rights reverved. 
+* This file is distributed subject to a Software License Agreement found 
+* in the file LICENSE.txt that is included with this distribution. 
+\*************************************************************************/ 
+
+/// @file lvDCOMInterface.h header for #lvDCOMInterface class. 
+/// @author Freddie Akeroyd, STFC ISIS Facility, GB
+
 #ifndef LV_DCOM_INTERFACE_H
 #define LV_DCOM_INTERFACE_H
-
-/// \file lvDCOMInterface.h header for #lvDCOMInterface class.
 
 #include <stdio.h>
 

@@ -1,9 +1,19 @@
+/*************************************************************************\ 
+* Copyright (c) 2013 Science and Technology Facilities Council (STFC), GB. 
+* All rights reverved. 
+* This file is distributed subject to a Software License Agreement found 
+* in the file LICENSE.txt that is included with this distribution. 
+\*************************************************************************/ 
+
+/// @file convertToString.cpp 
+/// @author Freddie Akeroyd, STFC ISIS Facility, GB
+
 #include <string>
 #include "convertToString.h"
 
 #ifdef _WIN32
 #define snprintf _snprintf
-#endif
+#endif /* _WIN32 */
 
 template<typename T>
 std::string convertToString(T t)

@@ -1,8 +1,15 @@
-#ifndef VARIANT_UTILS_H
-#define VARIANT_UTILS_H
+/*************************************************************************\ 
+* Copyright (c) 2013 Science and Technology Facilities Council (STFC), GB. 
+* All rights reverved. 
+* This file is distributed subject to a Software License Agreement found 
+* in the file LICENSE.txt that is included with this distribution. 
+\*************************************************************************/ 
+
 /// @file variant_utils.h 
 /// @author Freddie Akeroyd, STFC ISIS Facility, GB
-/// Copyright &copy; 2008-9 ISIS Rutherford Appleton Laboratory & NScD Oak Ridge National Laboratory
+
+#ifndef VARIANT_UTILS_H
+#define VARIANT_UTILS_H
 
 /// create an C++ exception from a COM HRESULT
 class COMexception : public std::runtime_error
