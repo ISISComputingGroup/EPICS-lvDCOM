@@ -32,6 +32,8 @@ EPICS_BASE=C:/development/EPICS/base/3.14.12.2
 #RULES=/path/to/epics/support/module/rules/x-y
 
 ASYN=$(SUPPORT)/asyn/4-18
+# the dcom driver itself doesn't need calc itself, this is just so we can load other records into it rather than running a separate IOC
+# CALC=$(SUPPORT)/calc/2-9
 AUTOSAVE=$(SUPPORT)/autosave/R5_0
 
 include $(TOP)/../../ISIS_CONFIG.$(EPICS_HOST_ARCH)
