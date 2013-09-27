@@ -41,7 +41,7 @@ See the doc directory of the distribution for further information
 
 <H2>Download</H2>
 
-lvDCOM can be downloaded from the <A HREF="http://epics.isis.stfc.ac.uk/downloads/">ISIS EPICS Downloads page</A>
+Source code and a pre-build Windows binary of lvDCOM can be downloaded from the <A HREF="http://epics.isis.stfc.ac.uk/downloads/">ISIS EPICS Downloads page</A>
 
 <H2>Requirements</H2>
 
