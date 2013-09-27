@@ -5,8 +5,12 @@
 * in the file LICENSE.txt that is included with this distribution. 
 \*************************************************************************/ 
 
-/// @file lvDCOMMain.cpp 
+/** @file lvDCOMMain.cpp 
 /// @author Freddie Akeroyd, STFC ISIS Facility, GB
+\example lvDCOM.db
+
+\example example_lvinput.xml
+*/
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -18,16 +22,6 @@
 #include "epicsExit.h"
 #include "iocsh.h"
 
-/** @mainpage lvDCOM (LabVIEW DCOM IOC)
-
-\section into_sec Introduction
-The introduction
-
-\include README.txt
-
-\example example_lvinput.xml
-
-*/
 int main(int argc, char *argv[])
 {
     if(argc >= 2) {    
