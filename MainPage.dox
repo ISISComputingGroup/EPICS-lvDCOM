@@ -39,6 +39,10 @@ the LabVIEW export process the results may need to be adjusted.
 
 See the doc directory of the distribution for further information 
 
+<H2>Download</H2>
+
+lvDCOM can be downloaded from the <A HREF="http://epics.isis.stfc.ac.uk/downloads/">ISIS EPICS Downloads page</A>
+
 <H2>Requirements</H2>
 
 sed and xsltproc are required to generate an initial configuration file from the "exported strings" of a LabVIEW front panel.
