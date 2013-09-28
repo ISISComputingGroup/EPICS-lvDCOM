@@ -49,9 +49,9 @@ static epicsThreadOnceId onceId = EPICS_THREAD_ONCE_INIT;
 static void __stdcall my_com_raise_error(HRESULT hr, IErrorInfo* perrinfo) 
 {
 	_com_error com_error(hr, perrinfo);
-//	std::string message = "(" + com_error.Source() + ") " + com_error.Description();
+	//	std::string message = "(" + com_error.Source() + ") " + com_error.Description();
 	std::string message = com_error.Description();  // for LabVIEW generated messages, Description() already includes Source()
-    throw COMexception(message, hr);
+	throw COMexception(message, hr);
 }
 
 static void initCOM(void*)
@@ -75,7 +75,7 @@ std::string lvDCOMInterface::doXPATH(const std::string& xpath)
 	}
 	IXMLDOMNode *pNode = NULL;
 	std::string S_res;
-    BSTR bstrValue = NULL;
+	BSTR bstrValue = NULL;
 	HRESULT hr = m_pxmldom->selectSingleNode(_bstr_t(xpath.c_str()), &pNode);
 	if (SUCCEEDED(hr) && pNode != NULL)
 	{
@@ -87,10 +87,10 @@ std::string lvDCOMInterface::doXPATH(const std::string& xpath)
 		}
 		pNode->Release();
 	}
-//	else
-//	{
-//		throw std::runtime_error("doXPATH: cannot find " + xpath);
-//	}
+	//	else
+	//	{
+	//		throw std::runtime_error("doXPATH: cannot find " + xpath);
+	//	}
 	m_xpath_map[xpath] = S_res;
 	return S_res;
 }
@@ -109,7 +109,7 @@ bool lvDCOMInterface::doXPATHbool(const std::string& xpath)
 	}
 	IXMLDOMNode *pNode = NULL;
 	bool res = false;
-    BSTR bstrValue = NULL;
+	BSTR bstrValue = NULL;
 	std::string bool_str;
 	HRESULT hr = m_pxmldom->selectSingleNode(_bstr_t(xpath.c_str()), &pNode);
 	if (SUCCEEDED(hr) && pNode != NULL)
@@ -136,10 +136,10 @@ bool lvDCOMInterface::doXPATHbool(const std::string& xpath)
 		}
 		pNode->Release();
 	}
-//	else
-//	{
-//		throw std::runtime_error("doXPATHbool: cannot find " + xpath);
-//	}
+	//	else
+	//	{
+	//		throw std::runtime_error("doXPATHbool: cannot find " + xpath);
+	//	}
 	m_xpath_bool_map[xpath] = res;
 	return res;
 }
@@ -159,7 +159,7 @@ std::string lvDCOMInterface::doXPATH_old(const std::string& xpath)
 	}
 	m_lock.lock();
 	TinyXPath::xpath_processor xp_proc(m_root, xpath.c_str());
-//	TIXML_STRING S_res = TinyXPath::S_xpath_string(m_doc->RootElement(), xpath.c_str());
+	//	TIXML_STRING S_res = TinyXPath::S_xpath_string(m_doc->RootElement(), xpath.c_str());
 	std::string S_res = xp_proc.S_compute_xpath().c_str();
 	m_xpath_map[xpath] = S_res;
 	m_lock.unlock();
@@ -189,7 +189,7 @@ bool lvDCOMInterface::doXPATHbool_old(const std::string& xpath)
 
 std::string lvDCOMInterface::doPath(const std::string& xpath)
 {
-    std::string S_res = doXPATH(xpath);
+	std::string S_res = doXPATH(xpath);
 	char* exp_str = macEnvExpand(S_res.c_str());
 	S_res = exp_str;
 	free(exp_str);
@@ -200,17 +200,17 @@ std::string lvDCOMInterface::doPath(const std::string& xpath)
 void lvDCOMInterface::DomFromCOM()
 {
 	m_pxmldom = NULL;
-    HRESULT hr=CoCreateInstance(CLSID_DOMDocument, NULL, CLSCTX_SERVER,
-               IID_IXMLDOMDocument2, (void**)&m_pxmldom);
+	HRESULT hr=CoCreateInstance(CLSID_DOMDocument, NULL, CLSCTX_SERVER,
+		IID_IXMLDOMDocument2, (void**)&m_pxmldom);
 	if (FAILED(hr))
 	{
 		throw std::runtime_error("Cannot load DomFromCom");
 	}
 	if (m_pxmldom != NULL)
 	{
-	    m_pxmldom->put_async(VARIANT_FALSE);
-        m_pxmldom->put_validateOnParse(VARIANT_FALSE);
-	    m_pxmldom->put_resolveExternals(VARIANT_FALSE); 
+		m_pxmldom->put_async(VARIANT_FALSE);
+		m_pxmldom->put_validateOnParse(VARIANT_FALSE);
+		m_pxmldom->put_resolveExternals(VARIANT_FALSE); 
 	}
 	else
 	{
@@ -227,42 +227,42 @@ void lvDCOMInterface::DomFromCOM()
 /// \param[in] username @copydoc initArg6
 /// \param[in] password @copydoc initArg7
 lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFile, const char* host, int options, const char* progid, const char* username, const char* password) : 
-            m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(options), 
-			m_progid(progid != NULL? progid : ""), m_username(username != NULL? username : ""), m_password(password != NULL ? password : "")
+m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(options), 
+	m_progid(progid != NULL? progid : ""), m_username(username != NULL? username : ""), m_password(password != NULL ? password : "")
 {
 	epicsThreadOnce(&onceId, initCOM, NULL);
-    if (host != NULL && host[0] != '\0') 
+	if (host != NULL && host[0] != '\0') 
 	{
-	    m_host = host;
+		m_host = host;
 	}
 	else
 	{
-//		char name_buffer[MAX_COMPUTERNAME_LENGTH + 1];
-//		DWORD name_size = MAX_COMPUTERNAME_LENGTH + 1;
-//		if ( GetComputerNameEx(ComputerNameNetBIOS, name_buffer, &name_size) != 0 )
-//		{
-//			m_host = name_buffer;
-//		}
-//		else
-//		{
-//			m_host = "localhost";
-//		}			
+		//		char name_buffer[MAX_COMPUTERNAME_LENGTH + 1];
+		//		DWORD name_size = MAX_COMPUTERNAME_LENGTH + 1;
+		//		if ( GetComputerNameEx(ComputerNameNetBIOS, name_buffer, &name_size) != 0 )
+		//		{
+		//			m_host = name_buffer;
+		//		}
+		//		else
+		//		{
+		//			m_host = "localhost";
+		//		}			
 		m_host = "localhost";
 	}
-//	m_doc = new TiXmlDocument;
-//	if ( !m_doc->LoadFile(configFile) )
-//	{
-//		delete m_doc;
-//		m_doc = NULL;
-//		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
-//	}
-//	m_root = m_doc->RootElement();
+	//	m_doc = new TiXmlDocument;
+	//	if ( !m_doc->LoadFile(configFile) )
+	//	{
+	//		delete m_doc;
+	//		m_doc = NULL;
+	//		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
+	//	}
+	//	m_root = m_doc->RootElement();
 	DomFromCOM();
 	short sResult = FALSE;
 	char* configFile_expanded = macEnvExpand(configFile);
 	HRESULT hr = m_pxmldom->load(_variant_t(configFile_expanded), &sResult);
 	free(configFile_expanded);
-    if(FAILED(hr))
+	if(FAILED(hr))
 	{
 		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
 	}
@@ -271,7 +271,7 @@ lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFi
 		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
 	}
 	std::cerr << "Loaded config file \"" << configFile << "\"" << std::endl;
-  	m_extint = doPath("/lvinput/extint/@path").c_str();
+	m_extint = doPath("/lvinput/extint/@path").c_str();
 	epicsAtExit(epicsExitFunc, this);
 	if (m_progid.size() > 0)
 	{
@@ -308,7 +308,7 @@ lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFi
 
 void lvDCOMInterface::epicsExitFunc(void* arg)
 {
-    lvDCOMInterface* dcomint = static_cast<lvDCOMInterface*>(arg);
+	lvDCOMInterface* dcomint = static_cast<lvDCOMInterface*>(arg);
 	if (dcomint == NULL)
 	{
 		return;
@@ -325,10 +325,10 @@ void lvDCOMInterface::epicsExitFunc(void* arg)
 
 void lvDCOMInterface::stopVis(bool only_ones_we_started)
 {
-   for(vi_map_t::const_iterator it = m_vimap.begin(); it != m_vimap.end(); ++it)
+	for(vi_map_t::const_iterator it = m_vimap.begin(); it != m_vimap.end(); ++it)
 	{
 		LabVIEW::VirtualInstrumentPtr vi_ref = it->second.vi_ref;
-	    if ( (!only_ones_we_started || it->second.started) && (vi_ref != NULL) )
+		if ( (!only_ones_we_started || it->second.started) && (vi_ref != NULL) )
 		{
 			if (vi_ref->ExecState != LabVIEW::eIdle) // don't try to stop it if it is already stopped
 			{
@@ -411,31 +411,31 @@ COAUTHIDENTITY* lvDCOMInterface::createIdentity(const std::string& user, const s
 	{
 		return NULL;
 	}
-    COAUTHIDENTITY* pidentity = new COAUTHIDENTITY;
-    pidentity->Domain = (USHORT*)strdup(domain.c_str());
-    pidentity->DomainLength = static_cast<ULONG>(strlen((const char*)pidentity->Domain));
-    pidentity->Flags = SEC_WINNT_AUTH_IDENTITY_ANSI;
-    pidentity->Password = (USHORT*)strdup(pass.c_str());
-    pidentity->PasswordLength = static_cast<ULONG>(strlen((const char*)pidentity->Password));
-    pidentity->User = (USHORT*)strdup(user.c_str());
-    pidentity->UserLength = static_cast<ULONG>(strlen((const char*)pidentity->User));
-    return pidentity;
+	COAUTHIDENTITY* pidentity = new COAUTHIDENTITY;
+	pidentity->Domain = (USHORT*)strdup(domain.c_str());
+	pidentity->DomainLength = static_cast<ULONG>(strlen((const char*)pidentity->Domain));
+	pidentity->Flags = SEC_WINNT_AUTH_IDENTITY_ANSI;
+	pidentity->Password = (USHORT*)strdup(pass.c_str());
+	pidentity->PasswordLength = static_cast<ULONG>(strlen((const char*)pidentity->Password));
+	pidentity->User = (USHORT*)strdup(user.c_str());
+	pidentity->UserLength = static_cast<ULONG>(strlen((const char*)pidentity->User));
+	return pidentity;
 }
 
 HRESULT lvDCOMInterface::setIdentity(COAUTHIDENTITY* pidentity, IUnknown* pUnk)
 {
-    HRESULT hr;
-    if (pidentity != NULL)
-    {
-       hr = CoSetProxyBlanket(pUnk, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL, 
-            RPC_C_AUTHN_LEVEL_DEFAULT, RPC_C_IMP_LEVEL_IMPERSONATE, pidentity, EOAC_NONE);
-        if (FAILED(hr))
-        {
+	HRESULT hr;
+	if (pidentity != NULL)
+	{
+		hr = CoSetProxyBlanket(pUnk, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL, 
+			RPC_C_AUTHN_LEVEL_DEFAULT, RPC_C_IMP_LEVEL_IMPERSONATE, pidentity, EOAC_NONE);
+		if (FAILED(hr))
+		{
 			std::cerr << "setIdentity failed" << std::endl;
-            return hr;
-        }
-    }
-    return S_OK;
+			return hr;
+		}
+	}
+	return S_OK;
 }
 
 
@@ -502,11 +502,11 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 		}
 		if( FAILED( hr ) ) 
 		{
- 			throw COMexception("CoCreateInstanceEx (LabVIEW) ", hr);
+			throw COMexception("CoCreateInstanceEx (LabVIEW) ", hr);
 		} 
 		if( S_OK != mq[ 0 ].hr || NULL == mq[ 0 ].pItf ) 
 		{ 
- 			throw COMexception("CoCreateInstanceEx (LabVIEW)(mq) ", mq[ 0 ].hr);
+			throw COMexception("CoCreateInstanceEx (LabVIEW)(mq) ", mq[ 0 ].hr);
 		} 
 		setIdentity(m_pidentity, mq[ 0 ].pItf);
 		m_lv.Release();
@@ -520,7 +520,7 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 		hr = m_lv.CoCreateInstance(m_clsid, NULL, CLSCTX_LOCAL_SERVER);
 		if( FAILED( hr ) ) 
 		{
- 			throw COMexception("CoCreateInstance (LabVIEW) ", hr);
+			throw COMexception("CoCreateInstance (LabVIEW) ", hr);
 		} 
 	}
 	if (reentrant)
@@ -573,7 +573,7 @@ void lvDCOMInterface::getLabviewValue(const char* param, std::string* value)
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
-    getLabviewValue(vi_name, control_name, &v);
+	getLabviewValue(vi_name, control_name, &v);
 	if ( v.ChangeType(VT_BSTR) == S_OK )
 	{
 		*value = CW2CT(v.bstrVal);
@@ -597,7 +597,7 @@ void lvDCOMInterface::getLabviewValue(const char* param, T* value, size_t nEleme
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
-    getLabviewValue(vi_name, control_name, &v);
+	getLabviewValue(vi_name, control_name, &v);
 	if ( v.vt != (VT_ARRAY | CVarTypeInfo<T>::VT) )
 	{
 		throw std::runtime_error("getLabviewValue failed (type mismatch)");
@@ -625,7 +625,7 @@ void lvDCOMInterface::getLabviewValue(const char* param, T* value)
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
-    getLabviewValue(vi_name, control_name, &v);
+	getLabviewValue(vi_name, control_name, &v);
 	if ( v.ChangeType(CVarTypeInfo<T>::VT) == S_OK )
 	{
 		*value = v.*(CVarTypeInfo<T>::pmField);	
@@ -652,10 +652,10 @@ void lvDCOMInterface::getLabviewValue(BSTR vi_name, BSTR control_name, VARIANT* 
 class StringItem 
 {
 	CComBSTR m_bstr;
-	public:
-    StringItem(lvDCOMInterface* dcom, const char* xpath, const char* config_section, const char* param, bool filepath = false)
+public:
+	StringItem(lvDCOMInterface* dcom, const char* xpath, const char* config_section, const char* param, bool filepath = false)
 	{
-	    char base_xpath[MAX_PATH_LEN];
+		char base_xpath[MAX_PATH_LEN];
 		_snprintf(base_xpath, sizeof(base_xpath), xpath, config_section, param);
 		if (filepath)
 		{
@@ -674,10 +674,10 @@ class StringItem
 class BoolItem 
 {
 	bool m_value;
-	public:
-    BoolItem(lvDCOMInterface* dcom, const char* xpath, const char* config_section, const char* param)
+public:
+	BoolItem(lvDCOMInterface* dcom, const char* xpath, const char* config_section, const char* param)
 	{
-	    char base_xpath[MAX_PATH_LEN];
+		char base_xpath[MAX_PATH_LEN];
 		_snprintf(base_xpath, sizeof(base_xpath), xpath, config_section, param);
 		m_value = dcom->doXPATHbool(base_xpath);
 	};
@@ -688,8 +688,8 @@ template <>
 void lvDCOMInterface::setLabviewValue(const char* param, const std::string& value)
 {
 	CComVariant v(value.c_str()), results;
-    StringItem vi_name(this, "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str(), "", true);
-    StringItem control_name(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@target", m_configSection.c_str(), param);
+	StringItem vi_name(this, "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str(), "", true);
+	StringItem control_name(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@target", m_configSection.c_str(), param);
 	StringItem post_button(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@post_button", m_configSection.c_str(), param);
 	BoolItem post_button_wait(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@post_button_wait", m_configSection.c_str(), param);
 	BoolItem use_ext(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@extint", m_configSection.c_str(), param);
@@ -724,7 +724,7 @@ void lvDCOMInterface::waitForLabviewBoolean(BSTR vi_name, BSTR control_name, boo
 		getLabviewValue(vi_name, control_name, &v);
 		if ( v.ChangeType(VT_BOOL) == S_OK )
 		{
-		    done = ( v.boolVal == (value ? VARIANT_TRUE : VARIANT_FALSE) );
+			done = ( v.boolVal == (value ? VARIANT_TRUE : VARIANT_FALSE) );
 			v.Clear();
 		}
 		epicsThreadSleep(0.1);
@@ -735,8 +735,8 @@ template <typename T>
 void lvDCOMInterface::setLabviewValue(const char* param, const T& value)
 {
 	CComVariant v(value), results;
-    StringItem vi_name(this, "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str(), "", true);
-    StringItem control_name(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@target", m_configSection.c_str(), param);
+	StringItem vi_name(this, "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str(), "", true);
+	StringItem control_name(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@target", m_configSection.c_str(), param);
 	StringItem post_button(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@post_button", m_configSection.c_str(), param);
 	BoolItem post_button_wait(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@post_button_wait", m_configSection.c_str(), param);
 	BoolItem use_ext(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@extint", m_configSection.c_str(), param);
@@ -808,19 +808,19 @@ void lvDCOMInterface::setLabviewValueExt(BSTR vi_name, BSTR control_name, const 
 void lvDCOMInterface::callLabview(BSTR vi_name, VARIANT& names, VARIANT& values, VARIANT_BOOL reentrant, VARIANT* results)
 {
 	HRESULT hr = S_OK;
-		LabVIEW::VirtualInstrumentPtr vi;
-		if (reentrant)
-		{
-			getViRef(vi_name, true, vi);
-		}
-		else
-		{
-			getViRef(vi_name, false, vi);
-		}
-		hr = vi->Call(&names, &values);
-		vi.Detach();
-		CComVariant var(values);
-		var.Detach(results);
+	LabVIEW::VirtualInstrumentPtr vi;
+	if (reentrant)
+	{
+		getViRef(vi_name, true, vi);
+	}
+	else
+	{
+		getViRef(vi_name, false, vi);
+	}
+	hr = vi->Call(&names, &values);
+	vi.Detach();
+	CComVariant var(values);
+	var.Detach(results);
 	if (FAILED(hr))
 	{
 		throw std::runtime_error("CallLabviewValue failed");

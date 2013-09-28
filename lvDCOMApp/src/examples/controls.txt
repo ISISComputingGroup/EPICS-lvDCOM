@@ -1,0 +1,64 @@
+<VI syntaxVersion=11 LVversion=10008000 revision=6 name="example.vi">
+<TITLE><NO_TITLE name="example.vi"></TITLE>
+<HELP_PATH></HELP_PATH>
+<HELP_TAG></HELP_TAG>
+<RTM_PATH type="default"></RTM_PATH>
+<DESC></DESC>
+<CONTENT>
+	<GROUPER>
+		<PARTS>
+		</PARTS></GROUPER>
+	<CONTROL ID=80 type="Numeric" name="Some Control">
+		<DESC></DESC>
+		<TIP></TIP>
+		<PARTS>
+			<PART ID=82 order=0 type="Caption"><LABEL><STEXT>Some Control</STEXT></LABEL></PART>
+		</PARTS>
+	</CONTROL>
+	<CONTROL ID=80 type="Numeric" name="Some Indicator">
+		<DESC></DESC>
+		<TIP></TIP>
+		<PARTS>
+			<PART ID=82 order=0 type="Caption"><LABEL><STEXT>Some Indicator</STEXT></LABEL></PART>
+		</PARTS>
+	</CONTROL>
+	<CONTROL ID=81 type="String" name="Some String">
+		<DESC></DESC>
+		<TIP></TIP>
+		<PARTS>
+			<PART ID=11 order=0 type="Text"><LABEL><STEXT></STEXT></LABEL></PART>
+			<PART ID=82 order=0 type="Caption"><LABEL><STEXT>Some String</STEXT></LABEL></PART>
+		</PARTS>
+		<DEFAULT><SAME_AS_LABEL></DEFAULT>
+	</CONTROL>
+	<CONTROL ID=82 type="Array" name="Some Array">
+		<DESC></DESC>
+		<TIP></TIP>
+		<PARTS>
+			<PART ID=82 order=0 type="Caption"><LABEL><STEXT>Some Array</STEXT></LABEL></PART>
+		</PARTS>
+		<DEFAULT>
+			<ARRAY nElems=0>
+			</ARRAY>
+		</DEFAULT>
+		<CONTENT>
+			<CONTROL ID=80 type="Numeric" name="Numeric">
+				<DESC></DESC>
+				<TIP></TIP>
+				<PARTS>
+					<PART ID=82 order=0 type="Caption"><LABEL><STEXT>Numeric</STEXT></LABEL></PART>
+				</PARTS>
+			</CONTROL>
+		</CONTENT>
+	</CONTROL>
+	<CONTROL ID=79 type="Boolean" name="Some Button">
+		<DESC></DESC>
+		<TIP></TIP>
+		<PARTS>
+			<PART ID=82 order=0 type="Caption"><LABEL><STEXT>Some Button</STEXT></LABEL></PART>
+		</PARTS>
+	</CONTROL>
+</CONTENT>
+</VI>
+
+

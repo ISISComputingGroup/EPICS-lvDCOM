@@ -1,3 +1,5 @@
+# % macro, P, device prefix
+
 record(ao, "$(P)CON1")
 {
    field(DTYP, "asynFloat64")

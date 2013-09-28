@@ -6,10 +6,10 @@
 \*************************************************************************/ 
 
 /** @file lvDCOMMain.cpp 
-/// @author Freddie Akeroyd, STFC ISIS Facility, GB
-\example lvDCOM.db
-
-\example example_lvinput.xml
+*  @author Freddie Akeroyd, STFC ISIS Facility, GB
+*  @example lvDCOM.db
+*  @example st.cmd
+*  @example lvinput.xml
 */
 
 #include <stddef.h>
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
         epicsThreadSleep(.2);
     }
     iocsh(NULL);
-	epicsExit(EXIT_SUCCESS);  // ensures epics exit handlers are called
-	// Note that the following statement will never be executed
+    epicsExit(EXIT_SUCCESS);  // ensures epics exit handlers are called
+    // Note that the following statement will never be executed
     return 0;
 }

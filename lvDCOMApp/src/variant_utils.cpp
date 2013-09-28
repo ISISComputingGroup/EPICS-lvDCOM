@@ -37,59 +37,59 @@ std::string COMexception::com_message(const std::string& message, HRESULT hr)
 	return oss.str();
 }
 
-	
+
 std::string Win32StructuredException::win32_message(unsigned int code, EXCEPTION_POINTERS * pExp)
 {
-		char buffer[256];
-		_snprintf(buffer, sizeof(buffer), "Win32StructuredException code 0x%x pExpCode 0x%x pExpAddress %p", code, pExp->ExceptionRecord->ExceptionCode, pExp->ExceptionRecord->ExceptionAddress);
-		buffer[sizeof(buffer)-1] = '\0';
-		return std::string(buffer);
+	char buffer[256];
+	_snprintf(buffer, sizeof(buffer), "Win32StructuredException code 0x%x pExpCode 0x%x pExpAddress %p", code, pExp->ExceptionRecord->ExceptionCode, pExp->ExceptionRecord->ExceptionAddress);
+	buffer[sizeof(buffer)-1] = '\0';
+	return std::string(buffer);
 }
 
 // 0 on success, -1 on error
 
 int allocateArrayVariant(VARIANT* v, VARTYPE v_type, int* dims_array, int ndims)
 {
-			int i;
-			V_VT(v) = VT_ARRAY | v_type;
-			SAFEARRAYBOUND* sab = new SAFEARRAYBOUND[ndims];
-			if (sab == NULL)
-			{
-				return -1;
-			}
-			// safe arrays are index other way round to C
-			for(i=0; i<ndims; i++)
-			{
-				sab[i].lLbound = 1;
-				sab[i].cElements = dims_array[ndims-i-1];
-			}
-		    V_UNION(v,parray) = SafeArrayCreate(v_type, ndims, sab);
-			delete []sab;
-			if (V_UNION(v,parray) == NULL)
-			{
-				return -1;
-			}
-			return 0;
+	int i;
+	V_VT(v) = VT_ARRAY | v_type;
+	SAFEARRAYBOUND* sab = new SAFEARRAYBOUND[ndims];
+	if (sab == NULL)
+	{
+		return -1;
+	}
+	// safe arrays are index other way round to C
+	for(i=0; i<ndims; i++)
+	{
+		sab[i].lLbound = 1;
+		sab[i].cElements = dims_array[ndims-i-1];
+	}
+	V_UNION(v,parray) = SafeArrayCreate(v_type, ndims, sab);
+	delete []sab;
+	if (V_UNION(v,parray) == NULL)
+	{
+		return -1;
+	}
+	return 0;
 }
 
 
 static int accessArrayVariant(VARIANT* v, void** values, VARTYPE vt)
 {
-			VARTYPE vtt;
-			HRESULT hr;
-			*values = NULL;
-			hr = SafeArrayGetVartype(V_UNION(v,parray), &vtt);
-			if (!(vtt & vt))
-			{
-				return -1;
-			}
-			hr = SafeArrayAccessData(V_UNION(v,parray), values);
-			if ( FAILED(hr) || (*values == NULL) )
-			{
-				*values = NULL;
-				return -1;
-			}
-			return 0;
+	VARTYPE vtt;
+	HRESULT hr;
+	*values = NULL;
+	hr = SafeArrayGetVartype(V_UNION(v,parray), &vtt);
+	if (!(vtt & vt))
+	{
+		return -1;
+	}
+	hr = SafeArrayAccessData(V_UNION(v,parray), values);
+	if ( FAILED(hr) || (*values == NULL) )
+	{
+		*values = NULL;
+		return -1;
+	}
+	return 0;
 }
 
 int accessArrayVariant(VARIANT* v, float** values)
@@ -139,7 +139,7 @@ int arrayVariantLength(VARIANT* v)
 	{
 		return 0;
 	}
-    int ndims = SafeArrayGetDim(psa);
+	int ndims = SafeArrayGetDim(psa);
 	if (ndims <= 0)
 	{
 		return 0;
@@ -170,7 +170,7 @@ int arrayVariantDimensions(VARIANT* v, int dims_array[], int& ndims)
 	{
 		return -1;
 	}
-    ndims = SafeArrayGetDim(psa);
+	ndims = SafeArrayGetDim(psa);
 	long lbounds, ubounds;
 	for(int i=0; i<ndims; i++)
 	{

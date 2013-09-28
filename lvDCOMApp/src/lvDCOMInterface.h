@@ -65,7 +65,7 @@ struct ViRef
 /// In the iocBoot st.cmd file you will need to add the relevant integer enum values together and pass this single integer value.
 enum lvDCOMOptions
 {
-    viWarnIfIdle = 1, 				///< If the LabVIEW VI is idle when we connect to it, issue a warning message  
+	viWarnIfIdle = 1, 				///< If the LabVIEW VI is idle when we connect to it, issue a warning message  
 	viStartIfIdle = 2, 				///< If the LabVIEW VI is idle when we connect to it, attempt to start it
 	viStopOnExitIfStarted = 4, 		///< On IOC exit, stop any LabVIEW VIs that we started due to #viStartIfIdle being specified
 	viAlwaysStopOnExit = 8			///< On IOC exit, stop any LabVIEW VIs that we have connected to
@@ -96,8 +96,8 @@ private:
 	typedef std::map<std::wstring, ViRef> vi_map_t;
 	vi_map_t m_vimap;
 	epicsMutex m_lock;
-//	TiXmlDocument* m_doc;
-//	TiXmlElement* m_root;
+	//	TiXmlDocument* m_doc;
+	//	TiXmlElement* m_root;
 	IXMLDOMDocument2 *m_pxmldom;
 	CComBSTR m_extint;
 	CComPtr<LabVIEW::_Application> m_lv;
