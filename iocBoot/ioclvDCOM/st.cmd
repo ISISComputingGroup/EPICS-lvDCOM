@@ -1,4 +1,6 @@
-#!../../bin/windows-x64/lvdcom
+#
+# Example IOC Startup File for lvDCOM
+#
 
 < envPaths
 
@@ -20,9 +22,9 @@ cd ${TOP}/iocBoot/${IOC}
 ##
 ## the "options" argument is a combination of the following flags (as per the #lvDCOMOptions enum in lvDCOMInterface.h)
 ##    viWarnIfIdle=1, viStartIfIdle=2, viStopOnExitIfStarted=4, viAlwaysStopOnExit=8
-lvDCOMConfigure("ex1", "example", "$(TOP)/lvDCOMApp/src/examples/example_lvinput.xml", "", 6)
-#lvDCOMConfigure("ex1", "example", "$(TOP)/lvDCOMApp/src/examples/example_lvinput.xml", "", 6, "LvDCOMex.Application")
-#lvDCOMConfigure("ex1", "example", "$(TOP)/lvDCOMApp/src/examples/example_lvinput.xml", "ndxtestfaa", 6, "", "username", "password")
+lvDCOMConfigure("ex1", "example", "$(TOP)/lvDCOMApp/src/examples/lvinput.xml", "", 6)
+#lvDCOMConfigure("ex1", "example", "$(TOP)/lvDCOMApp/src/examples/lvinput.xml", "", 6, "LvDCOMex.Application")
+#lvDCOMConfigure("ex1", "example", "$(TOP)/lvDCOMApp/src/examples/lvinput.xml", "ndxtestfaa", 6, "", "username", "password")
 
 dbLoadRecords("$(TOP)/db/lvDCOM.db","P=ex1:")
 #dbLoadRecords("$(ASYN)/db/asynRecord.db","P=ex1:,R=asyn1,PORT=ex1,ADDR=0,OMAX=80,IMAX=80")

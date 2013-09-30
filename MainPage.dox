@@ -10,9 +10,10 @@ running the Microsoft Windows operating system. The program allows you to
 licence or needing to modify the VIs themselves. As the program makes use
 of DCOM, this (ActiveX) needs to be selected in the "VI Server" options.
 
-For a brief introduction see the 
-<A HREF="doc/LabVIEW%20via%20DCOM%20IOC%20EPICS%202013.pdf">following presentation</A> 
-from <A HREF="http://www.epics2013.org/">EPICS 2013 spring meeting</A>
+For a brief introduction see the
+<A HREF="http://www.epics2013.org/dms/EPICS2013/presentations/friday/Session_1/LabVIEW-via-DCOM-IOC-EPICS-2013/LabVIEW%20via%20DCOM%20IOC%20EPICS%202013.ppt">following presentation</A>
+from the <A HREF="http://www.epics2013.org/">EPICS 2013 spring meeting</A>
+(also available in doc directory of distribution)
 
 <P>
 
@@ -25,7 +26,7 @@ Features of lvDCOM are:
 	   specify an "ActiveX server name" when you build the application. If 
 	   you give, for example, "MyApp" here then you would specify 
 	   "MyApp.Application" as the progid parameter to lvDCOMConfigure() in 
-	   your IOC st.cmd file. 
+	   your @link st.cmd IOC startup file. @endlink 
   </UL>
 <LI> Can (optionally) automatically start and/or stop Vis on IOC startup/shutdown
 <LI> Can communicate with remote computers using standard DCOM authentication or 
@@ -39,7 +40,7 @@ Features of lvDCOM are:
 The lvDCOM program is an EPICS
 <A HREF="http://www.aps.anl.gov/epics/modules/soft/asyn/">Asyn driver</A> that 
 uses DCOM to communicate with LabVIEW. LabVIEW front panel items (controls and indicators) 
-are mapped to asyn driver parameters via an XML configuration file (see lvinput.xml)
+are mapped to asyn driver parameters via an XML configuration file @link lvinput.xml @endlink
 ("section" in XML file -> asyn port name), and these parameters can then be accessed 
 via the EPICs records DTYP field.
 
@@ -82,7 +83,7 @@ First get a list of the available controls/indicators on the VI via:
 <UL>
 <LI> Open VI in LabVIEW  
 <LI> Go to Tools menu, Advanced, Export Strings... and uncheck the wizard 
-     option for "block diagram strings" and save to text file e.g. <b>controls.txt</b> 
+     option for "block diagram strings" and save to text file e.g. <b>@link controls.txt @endlink</b> 
      (Note: you need write access to the VI itself to do this, so you may 
 	 need to make a local copy of the VI first)
 </UL>
@@ -99,21 +100,21 @@ read by XML utilities. Run:
 <PRE>
 fix_xml.cmd controls.txt controls.xml
 </PRE>
-to generate a <b>controls.xml</b> file. Then to generate the template 
+to generate a <b>@link controls.xml @endlink</b> file. Then to generate the template 
 XML file for LvDCOM run:
-<pre>
+<PRE>
 xsltproc lvstrings2input.xsl controls.xml > lvinput.xml
-</pre>
-you can now edit <b>lvinput.xml</b> to remove or rename items etc. An XML 
-schema definition file <b>lvDCOMinput.xsd</b> is also provided and, if 
-present in the same directory as <b>lvinput.xml</b>, should be picked up 
+</PRE>
+you can now edit <b>@link lvinput.xml @endlink</b> to remove or rename items etc. An XML 
+schema definition file <b>@link lvDCOMinput.xsd @endlink</b> is also provided and, if 
+present in the same directory as <b>@link lvinput.xml @endlink</b>, should be picked up 
 automatically by XML aware editors to make editing easier. Finally, to 
 genereate a template EPICS DB record file for this type: 
 <PRE>
 xsltproc lvinput2db.xsl lvinput.xml > epics.db
 </PRE>
 </P><P>
-The <b>fix_xml</b> and <b>xsltproc</b> commands above should not produce 
+The <b>@link fix_xml.cmd @endlink</b> and <b>xsltproc</b> commands above should not produce 
 any screen output - if they do it is probably because they encountered an 
 error parsing the file.
 </P>

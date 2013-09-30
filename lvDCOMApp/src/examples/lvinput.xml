@@ -2,9 +2,9 @@
 <!-- <?xml-stylesheet type="text/xsl" href="lvinput_format.xsl" ?> -->
 
 <!--
-    @file example_lvinput.xml Example lvDCOM driver configuration file, loaded at IOC boot time in st.cmd via e.g.
+    @file lvinput.xml Example lvDCOM driver configuration file, loaded at IOC boot time in st.cmd via e.g.
 	
-	    lvDCOMConfigure("ex1", "example", "$(TOP)/lvDCOMApp/src/examples/example_lvinput.xml", "", 6)
+	    lvDCOMConfigure("ex1", "example", "$(TOP)/lvDCOMApp/src/examples/lvinput.xml", "", 6)
 
     @author Freddie Akeroyd, STFC ISIS facility, UK (freddie.akeroyd at stfc.ac.uk)
 	
