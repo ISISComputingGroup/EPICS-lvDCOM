@@ -23,11 +23,22 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+
+  <!--
+        the exint Vi is an ISIS Vi that is used as a proxy Vi for "set" operations when extint="true" is specified below.
+		If your labview front panels are not "labview event driven" then you do not need to worry about this.
+		If, however, they are (i.e. you would require the "signalling" version of the setControlValue() method) then contact
+		ISIS computing group via "freddie.akeroyd at stfc.ac.uk"
+		
+		path is parsed using EPICS macEnvExpand() and so can contain EPICS environment variables
+   -->
   <xs:element name="extint">
     <xs:complexType>
       <xs:attribute name="path" use="required"/>
     </xs:complexType>
   </xs:element>
+
+  <!-- the section name will be mapped (via lvDCOMConfigure()) to an asyn driver port name that can then be specified in an EPICS record -->
   <xs:element name="section">
     <xs:complexType>
       <xs:sequence>
@@ -36,14 +47,23 @@
       <xs:attribute name="name" use="required" type="xs:NCName"/>
     </xs:complexType>
   </xs:element>
+
   <xs:element name="vi">
     <xs:complexType>
       <xs:sequence>
         <xs:element maxOccurs="unbounded" ref="param"/>
       </xs:sequence>
+      <!-- path to LabVIEW vi file we are using, which is parsed using EPICS macEnvExpand() and so can contain EPICS environment variables -->
       <xs:attribute name="path" use="required"/>
     </xs:complexType>
   </xs:element>
+  <!--
+	      <param> defines as asyn driver parameter that can be specified in an epics record to access data on the labview Vi. The <set>
+                  and <read> items specify the name of the appropriate control/indicator on the LabVIEW Vi to access for these
+                  operations. The "method" attribute controls the underlying method by which the new value is communicated, 
+				  currently only "GCV" for reads (use DCOM exposed getControlValue()) and "SCV" for sets (use DCOM exposed setControlValue()) 
+				  are supported. The meaning and use of the extint attribute has been covered earlier above.
+  -->
   <xs:element name="param">
     <xs:complexType>
       <xs:sequence>
@@ -54,6 +74,11 @@
       <xs:attribute name="type" use="required" type="xs:NCName"/>
     </xs:complexType>
   </xs:element>
+  <!-- optionally push a button control either after a set or before a read
+	       {pre,post}_button
+	       {pre,post}_button_wait    controls whether you should wait for the button to "pop back" before continuing (i.e. false -> true -> false sequence)
+		   {pre,post}_button_delay   is a delay (ms) to wait after pushing button before doing a read 
+  -->		   
   <xs:element name="read">
     <xs:complexType>
       <xs:attribute name="method" use="required" type="xs:NCName"/>

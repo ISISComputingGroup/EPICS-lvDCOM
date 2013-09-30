@@ -26,6 +26,8 @@ lvDCOM_SRCS += lvDCOMDriver.cpp lvDCOMInterface.cpp variant_utils.cpp convertToS
 
 lvDCOM_LIBS += asyn
 lvDCOM_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+# msxml2 is used for parsing lvinput.xml
 lvDCOM_SYS_LIBS_WIN32 += msxml2
 
 SCRIPTS += fix_xml.cmd

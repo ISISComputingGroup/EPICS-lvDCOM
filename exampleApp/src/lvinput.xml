@@ -4,7 +4,7 @@
 <!--
     @file lvinput.xml Example lvDCOM driver configuration file, loaded at IOC boot time in st.cmd via e.g.
 	
-	    lvDCOMConfigure("ex1", "example", "$(TOP)/lvDCOMApp/src/examples/lvinput.xml", "", 6)
+	    lvDCOMConfigure("ex1", "example", "$(TOP)/exampleApp/src/lvinput.xml", "", 6)
 
     @author Freddie Akeroyd, STFC ISIS facility, UK (freddie.akeroyd at stfc.ac.uk)
 	
@@ -19,7 +19,7 @@
 <lvinput 
   xmlns="http://epics.isis.rl.ac.uk/lvDCOMinput/1.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://epics.isis.rl.ac.uk/lvDCOMinput/1.0 ../lvDCOMinput.xsd">
+  xsi:schemaLocation="http://epics.isis.rl.ac.uk/lvDCOMinput/1.0 ../../lvDCOMApp/src/lvDCOMinput.xsd">
 
    <!--
         the exint Vi is an ISIS Vi that is used as a proxy Vi for "set" operations when extint="true" is specified below.
@@ -32,10 +32,10 @@
    <extint path="c:/LabVIEW Modules old/Common/External Interface/External Interface.llb/External Interface - Set Value.vi" />
    
    <!-- this name will be mapped (via lvDCOMConfigure()) to an asyn driver port name that can then be specified in an EPICS record -->
-   <section name="example"> 
+   <section name="frontpanel"> 
 
     <!-- path to LabVIEW vi file we are using, which is parsed using EPICS macEnvExpand() and so can contain EPICS environment variables -->
-    <vi path="$(TOP)/lvDCOMApp/src/examples/example.vi"> 
+    <vi path="$(TOP)/exampleApp/src/example.vi"> 
 
 	<!--
 	      <param> defines as asyn driver parameter that can be specified in an epics record to access data on the labview Vi. The <set>
