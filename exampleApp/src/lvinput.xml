@@ -4,7 +4,7 @@
 <!--
     @file lvinput.xml Example lvDCOM driver configuration file, loaded at IOC boot time in st.cmd via e.g.
 	
-	    lvDCOMConfigure("ex1", "example", "$(TOP)/exampleApp/src/lvinput.xml", "", 6)
+	    lvDCOMConfigure("ex1", "frontpanel", "$(TOP)/exampleApp/src/lvinput.xml", "", 6)
 
     @author Freddie Akeroyd, STFC ISIS facility, UK (freddie.akeroyd at stfc.ac.uk)
 	

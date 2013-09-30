@@ -44,7 +44,7 @@ PROJECT_NUMBER         =
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = An EPICS IOC to export LabVIEW values as process variables
+PROJECT_BRIEF          = "An EPICS IOC to export LabVIEW values as process variables"
 
 # With the PROJECT_LOGO tag one can specify an logo or icon that is included in
 # the documentation. The maximum height of the logo should not exceed 55 pixels
@@ -813,7 +813,8 @@ EXAMPLE_PATH           = . \
                          doc \
                          iocBoot/iocexample \
                          lvDCOMApp/src \
-                         exampleApp/Db
+                         exampleApp/Db \
+                         exampleApp/src
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp and

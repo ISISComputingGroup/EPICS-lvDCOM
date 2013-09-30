@@ -1,6 +1,6 @@
 @echo off
 REM $Id$
-REM @file fix_xml.cmd Fix the output of the LabVIEW ExportVIStrings() method (which is more like HTML 2.0 than XML!)
+REM @file fix_xml.cmd Adjust the output of the LabVIEW ExportVIStrings() method (which is more like HTML 2.0 than XML!)
 REM @author Freddie Akeroyd, STFC ISIS Facility, UK
 REM
 REM Usage:   fix_xml original_lvexport.txt lvexport.xml
