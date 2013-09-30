@@ -16,10 +16,10 @@ DBD += example.dbd
 example_DBD += base.dbd
 
 # Include dbd files from all support applications:
-#example_DBD += xxx.dbd
+example_DBD += lvDCOM.dbd
 
 # Add all the support libraries needed by this IOC
-#example_LIBS += xxx
+example_LIBS += lvDCOM asyn autosave
 
 # example_registerRecordDeviceDriver.cpp derives from example.dbd
 example_SRCS += example_registerRecordDeviceDriver.cpp
@@ -33,6 +33,8 @@ example_SRCS_vxWorks += -nil-
 
 # Finally link to the EPICS Base libraries
 example_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+example_SYS_LIBS_WIN32 += msxml2
 
 #===========================
 

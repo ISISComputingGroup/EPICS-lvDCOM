@@ -1,6 +1,9 @@
 /* exampleMain.cpp */
 /* Author:  Marty Kraimer Date:    17MAR2000 */
 
+/** @file exampleMMain.cpp IOC Example Main Program
+ *  
+ */  
 #include <stddef.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -18,6 +21,6 @@ int main(int argc,char *argv[])
         epicsThreadSleep(.2);
     }
     iocsh(NULL);
-    epicsExit(0);
+    epicsExit(EXIT_SUCCESS);
     return(0);
 }

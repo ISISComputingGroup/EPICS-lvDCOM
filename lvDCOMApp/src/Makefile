@@ -15,33 +15,18 @@ USR_CXXFLAGS += /EHa
 #=============================
 # Build the IOC support library
 
-LIBRARY_IOC += lvDCOMSupport
+LIBRARY_IOC += lvDCOM
 
-#pdb += lvDCOMSupport.pdb
+#pdb += lvDCOM.pdb
 
 DBD += lvDCOM.dbd
 
 # Compile and add the code to the support library
-lvDCOMSupport_SRCS += lvDCOMDriver.cpp lvDCOMInterface.cpp variant_utils.cpp convertToString.cpp
+lvDCOM_SRCS += lvDCOMDriver.cpp lvDCOMInterface.cpp variant_utils.cpp convertToString.cpp
 
-lvDCOMSupport_LIBS += asyn autosave
-lvDCOMSupport_LIBS += $(EPICS_BASE_IOC_LIBS)
-lvDCOMSupport_SYS_LIBS_WIN32 += msxml2
-
-#=============================
-# Build the IOC application
-
-PROD_IOC = lvDCOM
-
-# lvexport_registerRecordDeviceDriver.cpp derives from lvexport.dbd
-lvDCOM_SRCS_DEFAULT += lvDCOM_registerRecordDeviceDriver.cpp lvDCOMMain.cpp
-
-# Link in the code from the support library
-lvDCOM_LIBS += lvDCOMSupport asyn autosave
-lvDCOM_SYS_LIBS_WIN32 += msxml2
-
-# Finally link to the EPICS Base libraries
+lvDCOM_LIBS += asyn
 lvDCOM_LIBS += $(EPICS_BASE_IOC_LIBS)
+lvDCOM_SYS_LIBS_WIN32 += msxml2
 
 SCRIPTS += fix_xml.cmd
 
