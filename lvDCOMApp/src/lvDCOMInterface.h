@@ -52,6 +52,7 @@
 //#include <xpath_processor.h>  
 //#include <xpath_static.h>  
 
+/// Hold a reference to a LabVIEW VI
 struct ViRef
 {
 	LabVIEW::VirtualInstrumentPtr vi_ref;
@@ -71,7 +72,7 @@ enum lvDCOMOptions
 	viAlwaysStopOnExit = 8			///< On IOC exit, stop any LabVIEW VIs that we have connected to
 };	
 
-/// Parses an @link lvinput.xml @endlink file and provides access to the LabVIEW VI controls/indicators described within. 
+/// Manager class for LabVIEW DCOM Interaction. Parses an @link lvinput.xml @endlink file and provides access to the LabVIEW VI controls/indicators described within. 
 class lvDCOMInterface
 {
 public:

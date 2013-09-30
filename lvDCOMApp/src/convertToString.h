@@ -5,7 +5,7 @@
 * in the file LICENSE.txt that is included with this distribution. 
 \*************************************************************************/ 
 
-/// @file convertToString.h Templated number to string conversion functions.
+/// @file convertToString.h Header for templated number to string conversion functions.
 /// @author Freddie Akeroyd, STFC ISIS Facility, GB
 
 #ifndef CONVERT_TO_STRING_H

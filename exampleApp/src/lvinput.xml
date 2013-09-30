@@ -2,7 +2,7 @@
 <!-- <?xml-stylesheet type="text/xsl" href="lvinput_format.xsl" ?> -->
 
 <!--
-    @file lvinput.xml Example lvDCOM driver configuration file, loaded at IOC boot time in st.cmd via e.g.
+    @file lvinput.xml Example lvDCOM driver configuration file. Loaded at IOC boot time in @link st.cmd @endlink via e.g.
 	
 	    lvDCOMConfigure("ex1", "frontpanel", "$(TOP)/exampleApp/src/lvinput.xml", "", 6)
 

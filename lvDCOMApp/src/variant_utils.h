@@ -5,13 +5,13 @@
 * in the file LICENSE.txt that is included with this distribution. 
 \*************************************************************************/ 
 
-/// @file variant_utils.h Various COM utilities.
+/// @file variant_utils.h Header file for various COM utilities.
 /// @author Freddie Akeroyd, STFC ISIS Facility, GB
 
 #ifndef VARIANT_UTILS_H
 #define VARIANT_UTILS_H
 
-/// create an C++ exception from a COM HRESULT
+/// create an C++ exception from a COM HRESULT.
 class COMexception : public std::runtime_error
 {
 public:

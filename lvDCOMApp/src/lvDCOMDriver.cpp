@@ -317,14 +317,14 @@ extern "C" {
 	/// EPICS iocsh callable function to call constructor of lvDCOMInterface().
 	/// The function is registered via lvDCOMRegister().
 	///
-	/// \param[in] portName @copydoc initArg0
-	/// \param[in] configSection @copydoc initArg1
-	/// \param[in] configFile @copydoc initArg2
-	/// \param[in] host @copydoc initArg3
-	/// \param[in] options @copydoc initArg4
-	/// \param[in] progid @copydoc initArg5
-	/// \param[in] username @copydoc initArg6
-	/// \param[in] password @copydoc initArg7
+	/// @param[in] portName @copydoc initArg0
+	/// @param[in] configSection @copydoc initArg1
+	/// @param[in] configFile @copydoc initArg2
+	/// @param[in] host @copydoc initArg3
+	/// @param[in] options @copydoc initArg4
+	/// @param[in] progid @copydoc initArg5
+	/// @param[in] username @copydoc initArg6
+	/// @param[in] password @copydoc initArg7
 	int lvDCOMConfigure(const char *portName, const char* configSection, const char *configFile, const char *host, int options, 
 		const char* progid, const char* username, const char* password)
 	{

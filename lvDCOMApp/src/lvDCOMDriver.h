@@ -15,7 +15,7 @@
 
 class lvDCOMInterface;
 
-/// EPICS Asyn port driver
+/// EPICS Asyn port driver class. 
 class lvDCOMDriver : public asynPortDriver 
 {
 public:
