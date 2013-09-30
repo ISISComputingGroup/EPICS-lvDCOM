@@ -5,7 +5,7 @@
 * in the file LICENSE.txt that is included with this distribution. 
 \*************************************************************************/ 
 
-/// @file lvDCOMDriver.cpp
+/// @file lvDCOMDriver.cpp Implementation of #lvDCOMDriver class and lvDCOMConfigure() iocsh command
 /// @author Freddie Akeroyd, STFC ISIS Facility, GB
 
 #include <stdlib.h>
@@ -32,14 +32,16 @@
 #include "convertToString.h"
 #include "variant_utils.h"
 
-static const char *driverName="lvDCOMDriver";
+static const char *driverName="lvDCOMDriver"; ///< Name of driver for use in message printing 
 
+/// Function to translate a Win32 structured exception into a standard C++ exception. 
+/// This is registered via registerStructuredExceptionHandler()
 static void seTransFunction(unsigned int u, EXCEPTION_POINTERS* pExp)
 {
 	throw Win32StructuredException(u, pExp);
 }
 
-/// this needs to be called per thread
+/// Register a handler for Win32 strcutured exceptions. This needs to be done on a per thread basis.
 static void registerStructuredExceptionHandler()
 {
 	_set_se_translator(seTransFunction);
@@ -243,9 +245,9 @@ asynStatus lvDCOMDriver::writeOctet(asynUser *pasynUser, const char *value, size
 	}
 }
 
-
 /// Constructor for the lvDCOMDriver class.
-/// Calls constructor for the asynPortDriver base class.
+/// Calls constructor for the asynPortDriver base class and sets up driver parameters.
+///
 /// \param[in] dcomint DCOM interface pointer created by lvDCOMConfigure()
 /// \param[in] portName @copydoc initArg0
 lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* dcomint, const char *portName) 
@@ -313,6 +315,8 @@ void lvDCOMDriver::lvDCOMTask(void* arg)
 extern "C" {
 
 	/// EPICS iocsh callable function to call constructor of lvDCOMInterface().
+	/// The function is registered via lvDCOMRegister().
+	///
 	/// \param[in] portName @copydoc initArg0
 	/// \param[in] configSection @copydoc initArg1
 	/// \param[in] configFile @copydoc initArg2
@@ -373,7 +377,8 @@ extern "C" {
 	{
 		lvDCOMConfigure(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].ival, args[5].sval, args[6].sval, args[7].sval);
 	}
-
+	
+	/// Register new commands with EPICS IOC shell
 	static void lvDCOMRegister(void)
 	{
 		iocshRegister(&initFuncDef, initCallFunc);

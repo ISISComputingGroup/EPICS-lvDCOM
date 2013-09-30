@@ -5,7 +5,7 @@
 * in the file LICENSE.txt that is included with this distribution. 
 \*************************************************************************/ 
 
-/// @file variant_utils.h 
+/// @file variant_utils.h Various COM utilities.
 /// @author Freddie Akeroyd, STFC ISIS Facility, GB
 
 #ifndef VARIANT_UTILS_H
@@ -21,8 +21,9 @@ private:
 	static std::string com_message(const std::string& message, HRESULT hr);
 };
 
-/// need to be compiled with /EHa if you want to use this via _set_se_translator()
-/// note that _set_se_translator() needs to be called per thread
+/// An STL exception describing a Win32 Structured Exception. 
+/// Code needs to be compiled with /EHa if you wish to use this via _set_se_translator().
+/// Note that _set_se_translator() needs to be called on a per thread basis
 class Win32StructuredException : public std::runtime_error
 {
 public:

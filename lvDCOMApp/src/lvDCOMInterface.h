@@ -43,7 +43,7 @@
 #include <epicsExit.h>
 
 //#import "LabVIEW.tlb" named_guids
-// The above statement would generate labview.tlh and labview.tli but we include pre-built versions here
+// The above statement would generate labview.tlh and labview.tli from an installed copy of LabVIEW, but we include pre-built versions in the source
 #include "labview.tlh"
 
 #include <msxml2.h>
@@ -62,7 +62,7 @@ struct ViRef
 };
 
 /// Options that can be passed from EPICS iocsh via #lvDCOMConfigure command.
-/// In the iocBoot st.cmd file you will need to add the relevant integer enum values together and pass this single integer value.
+/// In the iocBoot @link st.cmd @endlink file you will need to add the relevant integer enum values together and pass this single integer value.
 enum lvDCOMOptions
 {
 	viWarnIfIdle = 1, 				///< If the LabVIEW VI is idle when we connect to it, issue a warning message  
@@ -71,6 +71,7 @@ enum lvDCOMOptions
 	viAlwaysStopOnExit = 8			///< On IOC exit, stop any LabVIEW VIs that we have connected to
 };	
 
+/// Parses an @link lvinput.xml @endlink file and provides access to the LabVIEW VI controls/indicators described within. 
 class lvDCOMInterface
 {
 public:

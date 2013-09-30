@@ -5,7 +5,7 @@
 * in the file LICENSE.txt that is included with this distribution. 
 \*************************************************************************/ 
 
-/// @file variant_utils.cpp 
+/// @file variant_utils.cpp Various COM utilities.
 /// @author Freddie Akeroyd, STFC ISIS Facility, GB
 
 //#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers

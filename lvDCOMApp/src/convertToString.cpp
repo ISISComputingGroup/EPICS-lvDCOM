@@ -5,7 +5,7 @@
 * in the file LICENSE.txt that is included with this distribution. 
 \*************************************************************************/ 
 
-/// @file convertToString.cpp 
+/// @file convertToString.cpp Templated number to string conversion functions.
 /// @author Freddie Akeroyd, STFC ISIS Facility, GB
 
 #include <string>
@@ -15,6 +15,7 @@
 #define snprintf _snprintf
 #endif /* _WIN32 */
 
+/// Convert a numeric type to a string.
 template<typename T>
 std::string convertToString(T t)
 {

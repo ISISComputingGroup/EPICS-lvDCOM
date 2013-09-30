@@ -5,7 +5,7 @@
 * in the file LICENSE.txt that is included with this distribution. 
 \*************************************************************************/ 
 
-/// @file lvDCOMDriver.h
+/// @file lvDCOMDriver.h Header for #lvDCOMDriver class.
 /// @author Freddie Akeroyd, STFC ISIS Facility, GB
 
 #ifndef LVDCOMDRIVER_H
@@ -15,6 +15,7 @@
 
 class lvDCOMInterface;
 
+/// EPICS Asyn port driver
 class lvDCOMDriver : public asynPortDriver 
 {
 public:

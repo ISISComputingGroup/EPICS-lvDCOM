@@ -5,7 +5,7 @@
 * in the file LICENSE.txt that is included with this distribution. 
 \*************************************************************************/ 
 
-/// @file lvDCOMInterface.cpp
+/// @file lvDCOMInterface.cpp Implementation of #lvDCOMInterface class.
 /// @author Freddie Akeroyd, STFC ISIS Facility, GB
 
 ///  @example example.db
