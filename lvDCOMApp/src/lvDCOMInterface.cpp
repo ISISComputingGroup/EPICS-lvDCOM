@@ -19,7 +19,7 @@
 ///  @example lvinput.xml
 ///  An lvDOM configuration file, loaded via lvDCOMConfigure() from @link st.cmd @endlink. An initial version can be generated 
 ///  from @link controls.xml @endlink via the XSLT stylesheet @link lvstrings2input.xsl @endlink. This configuration file can also be used to 
-///  generate an initial set of EPICS DB records @link exmaple.db @endlink via the XSLT stylesheet @link lvinput2db.xsl @endlink 
+///  generate an initial set of EPICS DB records @link example.db @endlink via the XSLT stylesheet @link lvinput2db.xsl @endlink 
 
 ///  @example controls.txt
 ///  Output of LabVIEW ExportVIStrings for example.vi - will next be processed by @link fix_xml.cmd @endlink to generate @link controls.xml @endlink
@@ -859,6 +859,8 @@ void lvDCOMInterface::callLabview(BSTR vi_name, VARIANT& names, VARIANT& values,
 	}
 }
 
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
+
 template void lvDCOMInterface::setLabviewValue(const char* param, const double& value);
 template void lvDCOMInterface::setLabviewValue(const char* param, const int& value);
 
@@ -866,4 +868,7 @@ template void lvDCOMInterface::getLabviewValue(const char* param, double* value)
 template void lvDCOMInterface::getLabviewValue(const char* param, int* value);
 
 template void lvDCOMInterface::getLabviewValue(const char* param, double* value, size_t nElements, size_t& nIn);
+
 template void lvDCOMInterface::getLabviewValue(const char* param, int* value, size_t nElements, size_t& nIn);
+
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */

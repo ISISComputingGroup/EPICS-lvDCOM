@@ -1945,7 +1945,8 @@ INCLUDE_FILE_PATTERNS  =
 # recursively expanded use the := operator instead of the = operator.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-PREDEFINED             = "STDMETHODIMP=HRESULT " \
+PREDEFINED             = DOXYGEN_SHOULD_SKIP_THIS \
+			 "STDMETHODIMP=HRESULT " \
                          "DECLARE_INTERFACE(name)=class name" \
                          "STDMETHOD(result,name)=virtual result name" \
                          "PURE= = 0" \
