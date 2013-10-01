@@ -17,13 +17,16 @@
 ///  loads @link example.db @endlink to export these LabVIEW values as process variables.
 
 ///  @example lvinput.xml
-///  An lvDOM configuration file, loaded via lvDCOMConfigure() from @link st.cmd @endlink. An initial version can be generated from @link controls.xml @endlink via the XSLT stylesheet @link lvstrings2input.xsl @endlink
+///  An lvDOM configuration file, loaded via lvDCOMConfigure() from @link st.cmd @endlink. An initial version can be generated 
+///  from @link controls.xml @endlink via the XSLT stylesheet @link lvstrings2input.xsl @endlink. This configuration file can also be used to 
+///  generate an initial set of EPICS DB records @link exmaple.db @endlink via the XSLT stylesheet @link lvinput2db.xsl @endlink 
 
 ///  @example controls.txt
-///  Output of LabVIEW ExportVIStrings for example.vi
+///  Output of LabVIEW ExportVIStrings for example.vi - will next be processed by @link fix_xml.cmd @endlink to generate @link controls.xml @endlink
 
 ///  @example controls.xml
-///  Output of running @link fix_xml.cmd @endlink on @link controls.txt @endlink
+///  Output of running @link fix_xml.cmd @endlink on @link controls.txt @endlink - will next be used to generate @link lvinput.xml @endlink
+///  via the XSLT stylesheet @link lvstrings2input.xsl @endlink  
 
 ///  @example fix_xml.cmd
 ///  Command file to adjust output of LabVIEW ExportVIStrings to allow parsing by XML utilities (@link controls.txt @endlink -> @link controls.xml @endlink)
@@ -32,7 +35,7 @@
 ///  XML schema file for @link lvinput.xml @endlink
 
 ///  @example lvinput2db.xsl
-///  XSLT stylesheet to generate an initial EPICS db file from an @link lvinput.xml @endlink file
+///  XSLT stylesheet to generate an initial EPICS db file @link example.db @endlink from an @link lvinput.xml @endlink file
 
 ///  @example lvstrings2input.xsl
 ///  XSLT stylesheet to generate an initial @link lvinput.xml @endlink file from a @link controls.xml @endlink file

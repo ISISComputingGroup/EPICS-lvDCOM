@@ -27,8 +27,8 @@ Features of lvDCOM are:
 	   "MyApp.Application" as the progid parameter to lvDCOMConfigure() in 
 	   your @link st.cmd IOC startup file. @endlink 
   </UL>
-<LI> Can (optionally) automatically start and/or stop Vis on IOC startup/shutdown
-<LI> Can communicate with remote computers using standard DCOM authentication or 
+<LI> Can (optionally) automatically start and/or stop VIs on IOC startup/shutdown (see #lvDCOMOptions)
+<LI> Can communicate with remote Windows PCs using standard DCOM authentication or 
      a supplied username + password
 <LI> Can handle additional front panel logic e.g. automatically push a button either 
      before doing a read from, of after doing a write to, a variable
@@ -101,18 +101,18 @@ We first need a list of the available controls/indicators on the VI via:
 
 <P>
 
-For the next couple fo steps you need both the xsltproc and sed programs in 
+For the next couple of steps you need both the xsltproc and sed programs in 
 your PATH - see requirements section above
 
 </P><P>
 
-First we need to correct the XML like output from LabVIEW so it can be 
-read by XML utilities. Run:
+First we need to adjust the "exported strings" from LabVIEW so it can be 
+read by XML utilities, via:
 <PRE>
 fix_xml.cmd controls.txt controls.xml
 </PRE>
-to generate a <b>@link controls.xml @endlink</b> file. Then to generate the template 
-XML file for LvDCOM run:
+which generates a <b>@link controls.xml @endlink</b> file. Then to generate the initial 
+LvDCOM input file run:
 <PRE>
 xsltproc lvstrings2input.xsl controls.xml > lvinput.xml
 </PRE>
@@ -120,11 +120,12 @@ you can now edit <b>@link lvinput.xml @endlink</b> to remove or rename items etc
 schema definition file <b>@link lvDCOMinput.xsd @endlink</b> is also provided and, if 
 present in the same directory as <b>@link lvinput.xml @endlink</b>, should be picked up 
 automatically by XML aware editors to make editing easier. Finally, to 
-genereate a template EPICS DB record file for this type: 
+generate an initial EPICS DB record file run: 
 <PRE>
-xsltproc lvinput2db.xsl lvinput.xml > epics.db
+xsltproc lvinput2db.xsl lvinput.xml > example.db
 </PRE>
 </P><P>
+As before, <b>@link example.db @endlink</b> can then be adjusted as appropriate. 
 The <b>@link fix_xml.cmd @endlink</b> and <b>xsltproc</b> commands above should not produce 
 any screen output - if they do it is probably because they encountered an 
 error parsing the file.
@@ -132,7 +133,8 @@ error parsing the file.
 
 <H2>Support</H2>
 
-If you need further help, or discover any problems, plesae contact me (freddie.akeroyd at stfc.ac.uk)
+If you need further help, or discover any problems, or have any suggestions for
+new features/improvements, please contact me (freddie.akeroyd at stfc.ac.uk)
 
 <H2>License</H2>
 
