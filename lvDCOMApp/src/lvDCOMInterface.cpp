@@ -261,6 +261,7 @@ void lvDCOMInterface::DomFromCOM()
 lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFile, const char* host, int options, const char* progid, const char* username, const char* password) : 
 m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(options), 
 	m_progid(progid != NULL? progid : ""), m_username(username != NULL? username : ""), m_password(password != NULL ? password : "")
+	
 {
 	epicsThreadOnce(&onceId, initCOM, NULL);
 	if (host != NULL && host[0] != '\0') 
@@ -292,17 +293,18 @@ m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(op
 	DomFromCOM();
 	short sResult = FALSE;
 	char* configFile_expanded = macEnvExpand(configFile);
+	m_configFile = configFile_expanded;
 	HRESULT hr = m_pxmldom->load(_variant_t(configFile_expanded), &sResult);
 	free(configFile_expanded);
 	if(FAILED(hr))
 	{
-		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
+		throw std::runtime_error("Cannot load \"" + m_configFile + "\" (expanded from \"" + std::string(configFile) + "\"): load failure");
 	}
 	if (sResult != VARIANT_TRUE)
 	{
-		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
+		throw std::runtime_error("Cannot load \"" + m_configFile + "\" (expanded from \"" + std::string(configFile) + "\"): load failure");
 	}
-	std::cerr << "Loaded config file \"" << configFile << "\"" << std::endl;
+	std::cerr << "Loaded config file \"" << m_configFile << "\" (expanded from \"" << configFile << "\")" << std::endl;
 	m_extint = doPath("/lvinput/extint/@path").c_str();
 	epicsAtExit(epicsExitFunc, this);
 	if (m_progid.size() > 0)
@@ -856,6 +858,35 @@ void lvDCOMInterface::callLabview(BSTR vi_name, VARIANT& names, VARIANT& values,
 	if (FAILED(hr))
 	{
 		throw std::runtime_error("CallLabviewValue failed");
+	}
+}
+
+/// Helper for EPICS driver report function
+void lvDCOMInterface::report(FILE* fp, int details)
+{
+	fprintf(fp, "XML ConfigFile: \"%s\"\n", m_configFile.c_str());
+	fprintf(fp, "XML ConfigFile section: \"%s\"\n", m_configSection.c_str());
+	fprintf(fp, "lvDCOMConfigure() Options: %d\n", m_options);
+	fprintf(fp, "DCOM Target ProgID: \"%s\"\n", m_progid.c_str());
+	fprintf(fp, "DCOM Target Host: \"%s\"\n", m_host.c_str());
+	fprintf(fp, "DCOM Target Username: \"%s\"\n", m_username.c_str());
+//	fprintf(fp, "Password: %s\n", m_password.c_str());
+	std::string vi_name;
+	for(vi_map_t::const_iterator it = m_vimap.begin(); it != m_vimap.end(); ++it)
+	{
+		vi_name = CW2CT(it->first.c_str());
+		fprintf(fp, "LabVIEW VI: \"%s\"\n", vi_name.c_str());
+	}
+	if (details > 0)
+	{
+		for(std::map<std::string,std::string>::const_iterator it = m_xpath_map.begin(); it != m_xpath_map.end(); ++it)
+		{
+			fprintf(fp, "Config XPath: \"%s\" = \"%s\"\n", it->first.c_str(), it->second.c_str());
+		}
+		for(std::map<std::string,bool>::const_iterator it = m_xpath_bool_map.begin(); it != m_xpath_bool_map.end(); ++it)
+		{
+			fprintf(fp, "Config XPath: \"%s\" = %s\n", it->first.c_str(), (it->second ? "true" : "false") );
+		}
 	}
 }
 

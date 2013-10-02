@@ -86,9 +86,11 @@ public:
 	std::string doPath(const std::string& xpath);
 	std::string doXPATH(const std::string& xpath);
 	bool doXPATHbool(const std::string& xpath);
+	void report(FILE* fp, int details);
 
 private:
 	std::string m_configSection;  ///< section of \a configFile to load information from
+	std::string m_configFile;   
 	std::string m_host;
 	std::string m_progid;
 	CLSID m_clsid;

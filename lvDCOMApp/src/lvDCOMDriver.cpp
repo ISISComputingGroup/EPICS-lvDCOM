@@ -23,6 +23,7 @@
 #include <epicsTimer.h>
 #include <epicsMutex.h>
 #include <epicsEvent.h>
+#include <errlog.h>
 #include <iocsh.h>
 
 #include "lvDCOMDriver.h"
@@ -245,6 +246,22 @@ asynStatus lvDCOMDriver::writeOctet(asynUser *pasynUser, const char *value, size
 	}
 }
 
+/// EPICS driver report function
+void lvDCOMDriver::report(FILE* fp, int details)
+{
+//	fprintf(fp, "lvDCOM report\n");
+	if (m_lvdcom != NULL)
+	{
+		m_lvdcom->report(fp, details);
+	}
+	else
+	{
+		fprintf(fp, "DCOM pointer is NULL\n");
+	}
+	asynPortDriver::report(fp, details);
+}
+
+
 /// Constructor for the lvDCOMDriver class.
 /// Calls constructor for the asynPortDriver base class and sets up driver parameters.
 ///
@@ -290,7 +307,8 @@ lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* dcomint, const char *portName)
 		}
 		else
 		{
-			std::cerr << driverName << ":" << functionName << ": unknown type " << it->second << " for parameter " << it->first << std::endl;
+			errlogSevPrintf(errlogMajor, "%s:%s: unknown type %s for parameter %s\n", driverName, functionName, it->second.c_str(), it->first.c_str());
+//			std::cerr << driverName << ":" << functionName << ": unknown type " << it->second << " for parameter " << it->first << std::endl;
 		}
 	}
 
@@ -339,14 +357,14 @@ extern "C" {
 			}
 			else
 			{
-				std::cerr << "lvDCOMConfigure failed (NULL)" << std::endl;
+				errlogSevPrintf(errlogFatal, "lvDCOMConfigure failed (NULL)\n");
 				return(asynError);
 			}
 
 		}
 		catch(const std::exception& ex)
 		{
-			std::cerr << "lvDCOMConfigure failed: " << ex.what() << std::endl;
+			errlogSevPrintf(errlogFatal, "lvDCOMConfigure failed: %s\n", ex.what());
 			return(asynError);
 		}
 	}
