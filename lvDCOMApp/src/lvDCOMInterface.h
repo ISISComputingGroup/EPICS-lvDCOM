@@ -66,10 +66,10 @@ struct ViRef
 /// In the iocBoot @link st.cmd @endlink file you will need to add the relevant integer enum values together and pass this single integer value.
 enum lvDCOMOptions
 {
-	viWarnIfIdle = 1, 				///< If the LabVIEW VI is idle when we connect to it, issue a warning message  
-	viStartIfIdle = 2, 				///< If the LabVIEW VI is idle when we connect to it, attempt to start it
-	viStopOnExitIfStarted = 4, 		///< On IOC exit, stop any LabVIEW VIs that we started due to #viStartIfIdle being specified
-	viAlwaysStopOnExit = 8			///< On IOC exit, stop any LabVIEW VIs that we have connected to
+	viWarnIfIdle = 1, 				///< (1) If the LabVIEW VI is idle when we connect to it, issue a warning message  
+	viStartIfIdle = 2, 				///< (2) If the LabVIEW VI is idle when we connect to it, attempt to start it
+	viStopOnExitIfStarted = 4, 		///< (4) On IOC exit, stop any LabVIEW VIs that we started due to #viStartIfIdle being specified
+	viAlwaysStopOnExit = 8			///< (8) On IOC exit, stop any LabVIEW VIs that we have connected to
 };	
 
 /// Manager class for LabVIEW DCOM Interaction. Parses an @link lvinput.xml @endlink file and provides access to the LabVIEW VI controls/indicators described within. 
