@@ -1,12 +1,11 @@
 <HTML>
-/** @mainpage lvDCOM (LabVIEW DCOM EPICS IOC)
+/** @mainpage lvDCOM (LabVIEW DCOM EPICS Support Module)
 
-lvDCOM is an <A HREF="http://www.aps.anl.gov/epics/">EPICS</A> IOC 
+lvDCOM is an <A HREF="http://www.aps.anl.gov/epics/">EPICS</A> support module   
 that exports front panel variables from National Instruments LabVIEW software applications 
 as EPICS process variables on computers running the Microsoft Windows operating system. 
-The program allows you to "EPICS enable" LabVIEW applications without needing to either 
-purchase a LabVIEW DSC module licence or modify the 
-Virtual Instruments (VIs) internals. As the program makes use
+The program allows you to rapidly "EPICS enable" LabVIEW applications as it is not
+necessary to modify a Virtual Instruments (VIs) internals. As the program makes use
 of DCOM, this (ActiveX) needs to be selected in the "VI Server" options of LabVIEW,
 but this is the only required change to a VI.
 
@@ -37,8 +36,8 @@ Features of lvDCOM are:
 <LI> Can (optionally) automatically start and/or stop VIs on IOC startup/shutdown (see #lvDCOMOptions)
 <LI> Can communicate with remote Windows PCs using standard DCOM authentication or 
      a supplied username + password
-<LI> Can handle additional front panel logic e.g. automatically push a button either 
-     before doing a read from, of after doing a write to, a variable
+<LI> Can handle additional front panel logic e.g. automatically push a front panel button either 
+     before doing a read from, of after doing a write to, another front panel variable
 </UL>
 
 </P><P>
@@ -72,9 +71,9 @@ Source code and a pre-build Windows binary of lvDCOM can be downloaded from the
 
 <P>
 
-It is not necessary to rebuild lvDCOM to create a new IOC to talk to a different
+It is not necessary to create a new lvDCOM IOC to talk to a different
 set of VIs. Everything is configured from @link st.cmd @endlink via @link lvinput.xml @endlink
-and so the same executable could be re-used. The @link lvinput.xml @endlink file supports
+and so the same executable can be re-used. The @link lvinput.xml @endlink file supports
 multiple VI definition section and so can also be shared between IOCs.     
 </P>
 
@@ -87,7 +86,7 @@ and http://gnuwin32.sourceforge.net/packages/libxslt.htm
 
 <P>
 
-Building the lvDCOM IOC from source requires the full version of the 
+Building lvDCOM from source requires the full version of the 
 Microsoft Visual Studio C++ compiler 
 (<A HREF="http://en.wikipedia.org/wiki/Active_Template_Library">ATL</A> 
 is used for DCOM and that is not available
@@ -153,35 +152,14 @@ as detailed in the included LICENSE.txt file.
 
 <P>
 
-When distributed in binary form, the lvDCOM driver is linked against both 
-the EPICS BASE and the ASYN driver software. These works are covered by 
-licences in the enclosed LICENSE_EPICS_BASE.txt and LICENSE_ASYN.txt files 
-respectively and the following copyright notices:
+When distributed in binary form, lvDCOM will have been linked against both 
+the <A HREF="http://www.aps.anl.gov/epics/base/">EPICS BASE</A> and the 
+<A HREF="http://www.aps.anl.gov/epics/modules/soft/asyn/">ASYN driver</A> software. 
+These works are covered by 
+licences detailed in the LICENSE_EPICS_BASE.txt and LICENSE_ASYN.txt files 
+contained within the distribution.
 
 </P>
-
-<H3>EPICS BASE Copyright</H3>
-
-<PRE>
-Copyright (c) 1991-2011 UChicago Argonne LLC.
-Copyright (c) 1991-2006 The Regents of the University of California.
-Copyright (c) 2006-2011. Los Alamos National Security, LLC. Some of this
-material was produced under U.S. Government contract DE-AC52-06NA25396
-for Los Alamos National Laboratory (LANL), which is operated by Los Alamos
-National Security, LLC for the U.S. Department of Energy.
-</PRE>
-
-<H3>Asyn Driver Copyright</H3>
-
-<PRE>
-Copyright (c) 2002 University of Chicago, The Regents of the
-University of California, and Berliner Elektronenspeicherring
-Gesellschaft fuer Synchrotronstrahlung m.b.H. (BESSY) All rights
-reserved.
-
-Copyright (c) 2004 by Danfysik and Cosylab (Danfysik has funded the work
-performed by Cosylab).
-</PRE>
 
 */
 
