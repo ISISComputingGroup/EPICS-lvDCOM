@@ -81,9 +81,10 @@ multiple VI definition section and so can also be shared between IOCs.
 <H2>Requirements</H2>
 
 The sed and xsltproc programs are required to generate an initial configuration 
-file from the "exported strings" of a LabVIEW front panel. Binaries for these are 
+file from the "exported strings" of a LabVIEW front panel. Windows binaries for these are 
 available from http://gnuwin32.sourceforge.net/packages/sed.htm 
-and http://gnuwin32.sourceforge.net/packages/libxslt.htm
+and http://gnuwin32.sourceforge.net/packages/libxslt.htm, alternatively these
+steps could be carried out on a Linux computer and the results transferred back to Windows. 
 
 <P>
 
@@ -146,15 +147,15 @@ error parsing the file.
 </P>
 
 <H2>Remote Connection</H2>
-If you are running an lvDCOM IOC and LabVIEW on different computers, then you will probably need to
-configure some additional options on the target (LabVIEW) computer via the <b>dcomcnfg</b> command.
+If you wish to run an lvDCOM IOC and LabVIEW on different computers, then you will probably need to
+configure some additional DCOM options on the target (LabVIEW) computer via the <b>dcomcnfg</b> command.
 Typical LabVIEW.Application DCOM options to modify would be:
 <UL>
 <LI>On the Security tab, depending on the username you connect with
 <LI>On the Identity tab, depending on how the target machine is configured/used
 </UL> 
 If you find that your DCOM settings are being ignored (e.g. a second instance of LabVIEW is started when
-one is already running locally and "Interactive User" has been specified in the "Identity" tab) then
+one is already running locally despite "Interactive User" been specified in the "Identity" tab) then
 it may be that the LabVIEW <b>AppId</b> is missing from one part of the Windows registry. In this
 case you should check your LabVIEW installation and/or consult a Windows registry/DCOM expert. Feel free
 to contact me too (see Support below) as it may be the same problem we had, I haven't detailed the fix
@@ -174,12 +175,38 @@ as detailed in the included LICENSE.txt file.
 
 <P>
 
-When distributed in binary form, lvDCOM will have been linked against both 
-the <A HREF="http://www.aps.anl.gov/epics/base/">EPICS BASE</A> and the 
-<A HREF="http://www.aps.anl.gov/epics/modules/soft/asyn/">ASYN driver</A> software. 
+When distributed in binary form, lvDCOM will have been linked against  
+the <A HREF="http://www.aps.anl.gov/epics/base/">EPICS BASE</A>,
+<A HREF="http://www.aps.anl.gov/bcda/synApps/autosave/autosave.html">autosave</A>  
+and <A HREF="http://www.aps.anl.gov/epics/modules/soft/asyn/">ASYN driver</A> software. 
 These works are covered by 
-licences detailed in the LICENSE_EPICS_BASE.txt and LICENSE_ASYN.txt files 
-contained within the distribution.
+licences detailed in the LICENSE_EPICS_BASE.txt, LICENSE_AUTOSAVE.txt 
+and LICENSE_ASYN.txt files contained within the distribution and the following
+copyright notices:
+<H3>EPICS BASE</H3>
+<PRE>
+Copyright (c) 1991-2011 UChicago Argonne LLC.
+Copyright (c) 1991-2006 The Regents of the University of California.
+Copyright (c) 2006-2011. Los Alamos National Security, LLC. Some of this
+material was produced under U.S. Government contract DE-AC52-06NA25396
+for Los Alamos National Laboratory (LANL), which is operated by Los Alamos
+National Security, LLC for the U.S. Department of Energy.
+</PRE> 
+<H3>AUTOSAVE</H3>
+<PRE>
+Copyright (c) 2005 University of Chicago and the Regents of the University of 
+California. All rights reserved.
+</PRE> 
+<H3>ASYN DRIVER</H3>
+<PRE>
+Copyright (c) 2002 University of Chicago, The Regents of the
+University of California, and Berliner Elektronenspeicherring
+Gesellschaft fuer Synchrotronstrahlung m.b.H. (BESSY) All rights
+reserved.
+
+Copyright (c) 2004 by Danfysik and Cosylab (Danfysik has funded the work
+performed by Cosylab).
+</PRE> 
 
 </P>
 
