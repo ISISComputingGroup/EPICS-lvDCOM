@@ -5,8 +5,8 @@ lvDCOM is an <A HREF="http://www.aps.anl.gov/epics/">EPICS</A> support module
 that can exports front panel variables from National Instruments LabVIEW software applications 
 as EPICS process variables on computers running the Microsoft Windows operating system. The 
 program allows you to rapidly "EPICS enable" existing LabVIEW applications as it is not
-necessary to modify a Virtual Instruments (VIs) internals, so it could be used to conveniently 
-wrap third party applications. As the program uses DCOM for communication, this (ActiveX) needs 
+necessary to modify Virtual Instrument (VI) internals, so it could be used to conveniently 
+wrap e.g. manufacturer supplied applications. As the program uses DCOM for communication, this (ActiveX) needs 
 to be selected in the "VI Server" options of LabVIEW, but this is the only required change to a VI.
 
 <P>
