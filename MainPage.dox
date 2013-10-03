@@ -18,7 +18,7 @@ from the <A HREF="http://www.epics2013.org/">EPICS 2013 spring meeting</A>
 
 </P><P>
 
-lvDCOM allows LabVIEW variables to be accessed by EPICS aware tools, if you wish to instead display EPICS process variables on LabVIEW front panels then <A HREF="http://www-csr.bessy.de/control/SoftDist/CA_Lab/">CA Lab</A> is what you need.
+lvDCOM allows LabVIEW variables to be accessed by EPICS aware tools, if you wish to instead display EPICS process variables on LabVIEW front panels then <A HREF="http://www-csr.bessy.de/control/SoftDist/CA_Lab/">CA Lab</A> is the program to use.
 
 </P>
 
@@ -35,7 +35,7 @@ Features of lvDCOM are:
   </UL>
 <LI> Can (optionally) automatically start and/or stop VIs on IOC startup/shutdown (see #lvDCOMOptions)
 <LI> Can communicate with remote Windows PCs using standard DCOM authentication or 
-     a supplied username + password
+     a supplied (in @link st.cmd @endlink) username + password
 <LI> Can handle additional front panel logic e.g. automatically push a front panel button either 
      before doing a read from, of after doing a write to, another front panel variable
 </UL>
@@ -45,9 +45,9 @@ Features of lvDCOM are:
 The lvDCOM software is an EPICS
 <A HREF="http://www.aps.anl.gov/epics/modules/soft/asyn/">Asyn driver</A> that 
 uses DCOM to communicate with LabVIEW. LabVIEW front panel items (controls and indicators) 
-are mapped to asyn driver parameters via an XML configuration file @link lvinput.xml @endlink
-("section" in the XML file -> asyn port name), and these parameters can then be accessed 
-via the EPICS DB record DTYP field.
+are mapped to asyn driver parameters via an XML configuration file @link lvinput.xml @endlink,
+each "section" in the XML file is accessed via a specified asyn "port name". These driver parameters 
+can then be linked to process variables via @link example.db @endlink.
 
 </P><P>
 
@@ -62,7 +62,7 @@ may need to be adjusted before use.
 
 </P>
 
-See the doc directory of the distribution for further information 
+See the doc directory of the distribution for further information.
 
 <H2>Download</H2>
 
@@ -97,35 +97,35 @@ Microsoft tools/libraries to be installed.
 </P><P>
 
 To build from source, unpack the ZIP file, adjust configure/RELEASE 
-in the usual way to reflect your setup, then make
+in the usual way to reflect your setup, then type make.
 
 </P>
 
 <H3>Automatically generate XML configuration and EPICS DB files</H3>
 
-We first need a list of the available controls/indicators on the VI via:
+We first need to obtain a list of the available controls/indicators on the VI via:
 <UL>
-<LI> Open VI in LabVIEW  
+<LI> Open VI in LabVIEW
 <LI> Go to Tools menu, Advanced, Export Strings... and uncheck the wizard 
-     option for "block diagram strings" and save to a text file e.g. <b>@link controls.txt @endlink</b> 
-     (Note: you need write access to the VI itself to do this, so you may 
-	 need to make a local copy of the VI first)
+     option for "block diagram strings" and save the export results to a text file e.g. <b>@link controls.txt @endlink</b> 
+     (Note: you may need write access to the VI itself to do this, so might have 
+	 to make a local copy of the VI first)
 </UL>
 
 <P>
 
 For the next couple of steps you need both the xsltproc and sed programs in 
-your PATH - see requirements section above
+your PATH - see requirements section above.
 
 </P><P>
 
-First we need to adjust the "exported strings" from LabVIEW so it can be 
+First we need to adjust the "exported strings" from LabVIEW so they can be 
 read by XML utilities, via:
 <PRE>
 fix_xml.cmd controls.txt controls.xml
 </PRE>
 which generates a <b>@link controls.xml @endlink</b> file. Then to generate the initial 
-LvDCOM input file run:
+LvDCOM XML input file run:
 <PRE>
 xsltproc lvstrings2input.xsl controls.xml > lvinput.xml
 </PRE>
@@ -133,7 +133,7 @@ you can now edit <b>@link lvinput.xml @endlink</b> to remove or rename items etc
 schema definition file <b>@link lvDCOMinput.xsd @endlink</b> is also provided and, if 
 present in the same directory as <b>@link lvinput.xml @endlink</b>, should be picked up 
 automatically by XML aware editors to make editing easier. Finally, to 
-generate an initial EPICS DB record file run: 
+generate an initial EPICS DB file run: 
 <PRE>
 xsltproc lvinput2db.xsl lvinput.xml > example.db
 </PRE>
@@ -144,10 +144,26 @@ any screen output - if they do it is probably because they encountered an
 error parsing the file.
 </P>
 
+<H2>Remote Connection</H2>
+If you are running an lvDCOM IOC and LabVIEW on different computers, then you will probably need to
+configure some additional options on the target (LabVIEW) computer via the <b>dcomcnfg</b> command.
+Typical LabVIEW.Application DCOM options to modify would be:
+<UL>
+<LI>On the Secuiry tab, depending on the username you connect with
+<LI>On the Identity tab, depending on how the target machine is configured/used
+</UL> 
+If you find that your DCOM settings are being ignored (e.g. a second instance of LabVIEW is started when
+one is already running locally and "Interactive User" has been specified in the "Identity" tab) then
+it may be that the LabVIEW <b>AppId</b> is missing from one part of the Windows registry. In this
+case you should check your LabVIEW installation and/or consult a Windows registry/DCOM expert. Feel free
+to contact me too (see Support below) as it may be the same problem we had, I haven't detailed the fix
+here as it might not be appropriate for all cases and modifying the Windows registry needs to be 
+undertaken with care.
+
 <H2>Support</H2>
 
 If you need further help, or discover any problems, or have any suggestions for
-new features/improvements, please contact me (freddie.akeroyd at stfc.ac.uk)
+new features/improvements, please contact Freddie Akeroyd (freddie.akeroyd@stfc.ac.uk)
 
 <H2>License</H2>
 

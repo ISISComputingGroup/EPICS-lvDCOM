@@ -246,7 +246,7 @@ asynStatus lvDCOMDriver::writeOctet(asynUser *pasynUser, const char *value, size
 	}
 }
 
-/// EPICS driver report function
+/// EPICS driver report function for iocsh dbior command
 void lvDCOMDriver::report(FILE* fp, int details)
 {
 //	fprintf(fp, "lvDCOM report\n");
@@ -323,6 +323,7 @@ lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* dcomint, const char *portName)
 	}
 }
 
+/// @todo Might use this for background polling if implementing I/O Intr scanning
 void lvDCOMDriver::lvDCOMTask(void* arg) 
 { 
 	lvDCOMDriver* driver = (lvDCOMDriver*)arg; 	
@@ -372,13 +373,13 @@ extern "C" {
 	// EPICS iocsh shell commands 
 
 	static const iocshArg initArg0 = { "portName", iocshArgString};			///< The name of the asyn driver port we will create
-	static const iocshArg initArg1 = { "configSection", iocshArgString};	///< section of configFile #initArg2 to use to configure this asyn port
-	static const iocshArg initArg2 = { "configFile", iocshArgString};		///< XML file to load configuration information from
+	static const iocshArg initArg1 = { "configSection", iocshArgString};	///< section name of \a configFile to use to configure this asyn port
+	static const iocshArg initArg2 = { "configFile", iocshArgString};		///< Name of input XML file to load configuration information from
 	static const iocshArg initArg3 = { "host", iocshArgString};				///< host name where LabVIEW is running ("" for localhost) 
 	static const iocshArg initArg4 = { "options", iocshArgInt};			    ///< options as per #lvDCOMOptions enum
 	static const iocshArg initArg5 = { "progid", iocshArgString};			///< (optional) DCOM ProgID (required if connecting to a compiled LabVIEW application)
-	static const iocshArg initArg6 = { "username", iocshArgString};			///< (optional) remote username for host #initArg3
-	static const iocshArg initArg7 = { "password", iocshArgString};			///< (optional) remote password for username #initArg6 on host #initArg3
+	static const iocshArg initArg6 = { "username", iocshArgString};			///< (optional) remote username for \a host
+	static const iocshArg initArg7 = { "password", iocshArgString};			///< (optional) remote password for \a username on \a host
 
 	static const iocshArg * const initArgs[] = { &initArg0,
 		&initArg1,

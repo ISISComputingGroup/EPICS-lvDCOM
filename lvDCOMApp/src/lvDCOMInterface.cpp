@@ -336,7 +336,7 @@ m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(op
 	}
 	else
 	{
-		std::cerr << "StringFromCLSID() failed" << std::endl;
+		std::cerr << "Using ProgID \"" << m_progid << "\" but StringFromCLSID() failed" << std::endl;
 	}
 }
 
