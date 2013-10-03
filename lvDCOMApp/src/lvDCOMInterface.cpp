@@ -9,7 +9,10 @@
 /// @author Freddie Akeroyd, STFC ISIS Facility, GB
 
 ///  @example example.db
-///  Example EPICS db file for use with example.vi - an initial version can be generated from @link lvinput.xml @endlink via the XSLT stylesheet @link lvinput2db.xsl @endlink
+///  Example EPICS db file for use with example.vi - an initial version can be generated from @link lvinput.xml @endlink via the 
+///  XSLT stylesheet @link lvinput2db.xsl @endlink. For the records below the asyn port \b ex1 will have been mapped to 
+///  the \b frontpanel section of @link lvinput.xml @endlink via the lvDCOMConfigure() command in @link st.cmd @endlink and
+///  individual driver parameters such as \b cont1 will correspond to param nodes in @link lvinput.xml @endlink.
 
 ///  @example st.cmd 
 ///  Example IOC Startup File. Calls lvDCOMConfigure() with appropriate arguments and #lvDCOMOptions to map the 
@@ -17,7 +20,9 @@
 ///  loads @link example.db @endlink to export these LabVIEW values as process variables.
 
 ///  @example lvinput.xml
-///  An lvDOM configuration file, loaded via lvDCOMConfigure() from @link st.cmd @endlink. An initial version can be generated 
+///  An lvDOM configuration file, loaded via lvDCOMConfigure() from @link st.cmd @endlink. This file specifies the mapping from
+///  Asyn port name and associated driver parameters (used in @link example.db @endlink) -> LabVIEW front panel control/indicator.
+///  An initial version of this file can be generated 
 ///  from @link controls.xml @endlink via the XSLT stylesheet @link lvstrings2input.xsl @endlink. This configuration file can also be used to 
 ///  generate an initial set of EPICS DB records @link example.db @endlink via the XSLT stylesheet @link lvinput2db.xsl @endlink 
 

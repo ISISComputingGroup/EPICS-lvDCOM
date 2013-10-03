@@ -3,8 +3,8 @@
 
 lvDCOM is an <A HREF="http://www.aps.anl.gov/epics/">EPICS</A> support module   
 that can exports front panel variables from National Instruments LabVIEW software applications 
-as EPICS process variables on computers running the Microsoft Windows operating system. 
-The program allows you to rapidly "EPICS enable" existing LabVIEW applications as it is not
+as EPICS process variables on computers running the Microsoft Windows operating system. The 
+program allows you to rapidly "EPICS enable" existing LabVIEW applications as it is not
 necessary to modify a Virtual Instruments (VIs) internals, so it could be used to conveniently 
 wrap third party applications. As the program uses DCOM for communication, this (ActiveX) needs 
 to be selected in the "VI Server" options of LabVIEW, but this is the only required change to a VI.
@@ -12,13 +12,14 @@ to be selected in the "VI Server" options of LabVIEW, but this is the only requi
 <P>
 
 For a brief introduction to lvDCOM see the
-<A HREF="http://www.epics2013.org/dms/EPICS2013/presentations/friday/Session_1/LabVIEW-via-DCOM-IOC-EPICS-2013/LabVIEW%20via%20DCOM%20IOC%20EPICS%202013.ppt">following presentation</A>
-from the <A HREF="http://www.epics2013.org/">EPICS 2013 spring meeting</A>
-(also available as PDF in doc directory of distribution)
+<A HREF="http://www.epics2013.org/dms/EPICS2013/presentations/friday/Session_1/LabVIEW-via-DCOM-IOC-EPICS-2013/LabVIEW%20via%20DCOM%20IOC%20EPICS%202013.ppt">following presentation
+from the EPICS 2013 spring meeting</A> (also available as PDF in doc directory of distribution)
 
 </P><P>
 
-lvDCOM allows LabVIEW variables to be accessed by EPICS aware tools, if you wish to instead display EPICS process variables on LabVIEW front panels then <A HREF="http://www-csr.bessy.de/control/SoftDist/CA_Lab/">CA Lab</A> is the program to use.
+lvDCOM allows LabVIEW variables to be accessed by EPICS aware tools, if you wish to instead display 
+existing EPICS process variables on LabVIEW front panels then 
+<A HREF="http://www-csr.bessy.de/control/SoftDist/CA_Lab/">CA Lab</A> is the program to use.
 
 </P>
 
@@ -46,7 +47,7 @@ The lvDCOM software is an EPICS
 <A HREF="http://www.aps.anl.gov/epics/modules/soft/asyn/">Asyn driver</A> that 
 uses DCOM to communicate with LabVIEW. LabVIEW front panel items (controls and indicators) 
 are mapped to asyn driver parameters via an XML configuration file @link lvinput.xml @endlink,
-each "section" in the XML file is accessed via a specified asyn "port name". These driver parameters 
+each "section" in the XML file being accessed via a specified asyn "port name". These driver parameters 
 can then be linked to process variables via @link example.db @endlink.
 
 </P><P>
@@ -149,7 +150,7 @@ If you are running an lvDCOM IOC and LabVIEW on different computers, then you wi
 configure some additional options on the target (LabVIEW) computer via the <b>dcomcnfg</b> command.
 Typical LabVIEW.Application DCOM options to modify would be:
 <UL>
-<LI>On the Secuiry tab, depending on the username you connect with
+<LI>On the Security tab, depending on the username you connect with
 <LI>On the Identity tab, depending on how the target machine is configured/used
 </UL> 
 If you find that your DCOM settings are being ignored (e.g. a second instance of LabVIEW is started when
