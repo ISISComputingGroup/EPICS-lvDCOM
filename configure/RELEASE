@@ -27,13 +27,15 @@ TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
 # EPICS_BASE usually appears last so other apps can override stuff:
 EPICS_BASE=C:/development/EPICS/base/3.14.12.2
 
+SUPPORT=C:/development/EPICS/support
+
 # Set RULES here if you want to take build rules from somewhere
 # other than EPICS_BASE:
 #RULES=/path/to/epics/support/module/rules/x-y
 
 ASYN=$(SUPPORT)/asyn/4-18
-# the dcom driver itself doesn't need calc itself, this is just so we can load other records into it rather than running a separate IOC
-# CALC=$(SUPPORT)/calc/2-9
+
 AUTOSAVE=$(SUPPORT)/autosave/R5_0
 
+# override definitions of EPICS_BASE and SUPPORT 
 include $(TOP)/../../ISIS_CONFIG.$(EPICS_HOST_ARCH)

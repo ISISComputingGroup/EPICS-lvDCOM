@@ -94,6 +94,11 @@ in the express compiler version). A pre-built win32 lvDCOM binary can, however,
 be downloaded from http://epics.isis.stfc.ac.uk/ and this does not require any additional 
 Microsoft tools/libraries to be installed.
 
+</P><P>
+
+To build from source, unpack the ZIP file, adjust configure/RELEASE 
+in the usual way to reflect your setup, then make
+
 </P>
 
 <H3>Automatically generate XML configuration and EPICS DB files</H3>
