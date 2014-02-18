@@ -87,7 +87,8 @@ static void __stdcall my_com_raise_error(HRESULT hr, IErrorInfo* perrinfo)
 {
 	_com_error com_error(hr, perrinfo);
 	//	std::string message = "(" + com_error.Source() + ") " + com_error.Description();
-	std::string message = com_error.Description();  // for LabVIEW generated messages, Description() already includes Source()
+    _bstr_t desc = com_error.Description();
+	std::string message = (desc.GetBSTR() != NULL ? desc : "");  // for LabVIEW generated messages, Description() already includes Source()
 	throw COMexception(message, hr);
 }
 
