@@ -34,7 +34,7 @@ SUPPORT=C:/development/EPICS/support
 #RULES=/path/to/epics/support/module/rules/x-y
 
 ASYN=$(SUPPORT)/asyn/4-22
-
+ONCRPC=$(SUPPORT)/oncrpc/2
 AUTOSAVE=$(SUPPORT)/autosave/R5_0
 
 # override definitions of EPICS_BASE and SUPPORT 
