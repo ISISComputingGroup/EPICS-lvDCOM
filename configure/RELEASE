@@ -35,7 +35,7 @@ SUPPORT=C:/development/EPICS/support
 
 ASYN=$(SUPPORT)/asyn/4-22
 ONCRPC=$(SUPPORT)/oncrpc/2
-AUTOSAVE=$(SUPPORT)/autosave/R5_0
+AUTOSAVE=$(SUPPORT)/autosave/R5_4_2
 
 # override definitions of EPICS_BASE and SUPPORT 
 include $(TOP)/../../ISIS_CONFIG.$(EPICS_HOST_ARCH)
