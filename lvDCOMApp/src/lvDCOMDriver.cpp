@@ -372,8 +372,8 @@ extern "C" {
 
 	// EPICS iocsh shell commands 
 
-	static const iocshArg initArg0 = { "portName", iocshArgString};			///< The name of the asyn driver port we will create
-	static const iocshArg initArg1 = { "configSection", iocshArgString};	///< section name of \a configFile to use to configure this asyn port
+	static const iocshArg initArg0 = { "portName", iocshArgString};			///< A name for the asyn driver instance we will create - used to refer to it from EPICS DB files
+	static const iocshArg initArg1 = { "configSection", iocshArgString};	///< section name of \a configFile we will load settings from
 	static const iocshArg initArg2 = { "configFile", iocshArgString};		///< Path to the XML input file to load configuration information from
 	static const iocshArg initArg3 = { "host", iocshArgString};				///< host name where LabVIEW is running ("" for localhost) 
 	static const iocshArg initArg4 = { "options", iocshArgInt};			    ///< options as per #lvDCOMOptions enum

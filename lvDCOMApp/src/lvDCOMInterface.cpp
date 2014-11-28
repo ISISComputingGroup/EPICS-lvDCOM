@@ -304,13 +304,13 @@ m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(op
 	free(configFile_expanded);
 	if(FAILED(hr))
 	{
-		throw std::runtime_error("Cannot load \"" + m_configFile + "\" (expanded from \"" + std::string(configFile) + "\"): load failure");
+		throw std::runtime_error("Cannot load XML \"" + m_configFile + "\" (expanded from \"" + std::string(configFile) + "\"): load failure");
 	}
 	if (sResult != VARIANT_TRUE)
 	{
-		throw std::runtime_error("Cannot load \"" + m_configFile + "\" (expanded from \"" + std::string(configFile) + "\"): load failure");
+		throw std::runtime_error("Cannot load XML \"" + m_configFile + "\" (expanded from \"" + std::string(configFile) + "\"): load failure");
 	}
-	std::cerr << "Loaded config file \"" << m_configFile << "\" (expanded from \"" << configFile << "\")" << std::endl;
+	std::cerr << "Loaded XML config file \"" << m_configFile << "\" (expanded from \"" << configFile << "\")" << std::endl;
 	m_extint = doPath("/lvinput/extint/@path").c_str();
 	epicsAtExit(epicsExitFunc, this);
 	if (m_progid.size() > 0)

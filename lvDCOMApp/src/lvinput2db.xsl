@@ -51,14 +51,14 @@
 record(stringin, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>Read")
-    field(INP,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(INP,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
     field(SCAN, ".1 second")
 }
 
 record(stringout, "$(P)<xsl:value-of select="$asyn_param"/>")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>Write")
-    field(OUT,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(OUT,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
 }
 
 </xsl:when>	
@@ -66,14 +66,14 @@ record(stringout, "$(P)<xsl:value-of select="$asyn_param"/>")
 record(longin, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>Read")
-    field(INP,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(INP,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
     field(SCAN, ".1 second")
 }
 	        
 record(longout, "$(P)<xsl:value-of select="$asyn_param"/>")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>Write")
-    field(OUT,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(OUT,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
 }
 
 </xsl:when>
@@ -81,7 +81,7 @@ record(longout, "$(P)<xsl:value-of select="$asyn_param"/>")
 record(ai, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-    field(INP,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(INP,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
     field(PREC, "3")
     field(SCAN, ".1 second")
 }
@@ -89,7 +89,7 @@ record(ai, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 record(ao, "$(P)<xsl:value-of select="$asyn_param"/>")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-    field(OUT,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(OUT,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
     field(PREC, "3")
 }
 
@@ -104,7 +104,7 @@ record(ao, "$(P)<xsl:value-of select="$asyn_param"/>")
 record(bi, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-    field(INP,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(INP,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
     field(SCAN, ".1 second")
     field(ZNAM, "<xsl:value-of select="$zname"/>")
     field(ONAM, "<xsl:value-of select="$oname"/>")
@@ -113,7 +113,7 @@ record(bi, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 record(bo, "$(P)<xsl:value-of select="$asyn_param"/>")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-    field(OUT,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(OUT,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
     field(ZNAM, "<xsl:value-of select="$zname"/>")
     field(ONAM, "<xsl:value-of select="$oname"/>")
 }
@@ -123,7 +123,7 @@ record(bo, "$(P)<xsl:value-of select="$asyn_param"/>")
 record(mbbi, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-    field(INP,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(INP,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
     field(SCAN, ".1 second")
 <xsl:call-template name="allmb" />
 }
@@ -131,7 +131,7 @@ record(mbbi, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 record(mbbo, "$(P)<xsl:value-of select="$asyn_param"/>")
 {
     field(DTYP, "<xsl:value-of select="$asyn_type"/>")
-    field(OUT,  "@asyn(frontpanel,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(OUT,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
 <xsl:call-template name="allmb" />
 }
 

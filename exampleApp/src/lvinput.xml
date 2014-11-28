@@ -13,8 +13,8 @@
     $LastChangedDate$:  
     $HeadURL$:
 	
-	Note: you can generate an initial version of one of these configuartioon files, and associated EPICS DB records,
-	      using the spllied xslt files - see README.txt for details
+	Note: you can generate an initial version of one of these configuartion files, and associated EPICS DB records,
+	      using the supplied xslt files - see README.txt for details
 -->
 <lvinput 
   xmlns="http://epics.isis.rl.ac.uk/lvDCOMinput/1.0"
@@ -22,14 +22,14 @@
   xsi:schemaLocation="http://epics.isis.rl.ac.uk/lvDCOMinput/1.0 ../../lvDCOMApp/src/lvDCOMinput.xsd">
 
    <!--
-        the exint Vi is an ISIS Vi that is used as a proxy Vi for "set" operations when extint="true" is specified below.
+        the exint Vi is an ISIS Vi that is used as a proxy for "set" operations when extint="true" is specified below.
 		If your labview front panels are not "labview event driven" then you do not need to worry about this.
-		If, however, they are (i.e. you would require the "signalling" version of the setControlValue() method) then contact
-		ISIS computing group via "freddie.akeroyd at stfc.ac.uk"
-		
-		path is parsed using EPICS macEnvExpand() and so can contain EPICS environment variables
+		If, however, they are (i.e. you would require the "signalling" version of the setControlValue() method) then you
+		need to set the extint attribute to "true" on the relevant <set /> tags
+				
+		The path is parsed using EPICS macEnvExpand() and so can contain EPICS environment variables
    -->
-   <extint path="c:/LabVIEW Modules old/Common/External Interface/External Interface.llb/External Interface - Set Value.vi" />
+   <extint path="$(TOP)/lvDCOMApp/src/extint/Main/Library/External Interface - Set Value.vi" />
    
    <!-- this name will be mapped (via lvDCOMConfigure()) to an asyn driver port name that can then be specified in an EPICS record -->
    <section name="frontpanel"> 
@@ -43,10 +43,13 @@
                   operations. The "method" attribute controls the underlying method by which the new value is communicated, 
 				  currently only "GCV" for reads (use DCOM exposed getControlValue()) and "SCV" for sets (use DCOM exposed setControlValue()) 
 				  are supported. The meaning and use of the extint attribute has been covered earlier above.
+				  
+				  If you need a LabVIEW event triggered when the control is written to, use extint="true" with <set />, 
+				  otherwise use extint="false"
 	  -->
 	  <param name="cont1" type="float64"> 
         <read method="GCV" target="Some Control" />  
-        <set method="SCV" extint="false" target="Some Control" /> 
+        <set method="SCV" extint="true" target="Some Control" /> 
 	  </param>
 	
       <param name="ind1" type="int32"> 
@@ -70,7 +73,7 @@
       -->		   
 	  <param name="cont2" type="float64"> 
         <read method="GCV" target="Some Control" />  
-        <set method="SCV" extint="false" target="Some Control" post_button="Some Button" post_button_wait="true" /> 
+        <set method="SCV" extint="true" target="Some Control" post_button="Some Button" post_button_wait="true" /> 
 	  </param>
 
       <param name="ind2" type="int32"> 

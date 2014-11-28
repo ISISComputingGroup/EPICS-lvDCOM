@@ -32,7 +32,7 @@
 			<xsl:attribute name="xmlns">http://epics.isis.rl.ac.uk/lvDCOMinput/1.0</xsl:attribute>
 			<xsl:attribute name="xsi:schemaLocation">http://epics.isis.rl.ac.uk/lvDCOMinput/1.0 lvDCOMinput.xsd</xsl:attribute>
 			<xsl:element name="extint">
-				<xsl:attribute name="path">c:/LabVIEW Modules/Common/External Interface/External Interface.llb/External Interface - Set Value.vi</xsl:attribute> 
+				<xsl:attribute name="path">$(TOP)/lvDCOMApp/src/extint/Main/Library/External Interface - Set Value.vi</xsl:attribute> 
 			</xsl:element>
 			<xsl:element name="section" >
 				<xsl:attribute name="name">frontpanel</xsl:attribute> 
