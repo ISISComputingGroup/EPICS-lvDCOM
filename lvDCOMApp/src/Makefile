@@ -30,7 +30,7 @@ lvDCOM_LIBS += $(EPICS_BASE_IOC_LIBS)
 # msxml2 is used for parsing lvinput.xml
 lvDCOM_SYS_LIBS_WIN32 += msxml2
 
-SCRIPTS += fix_xml.cmd
+SCRIPTS += fix_xml.cmd fix_xml.sh
 
 #=============================
 
