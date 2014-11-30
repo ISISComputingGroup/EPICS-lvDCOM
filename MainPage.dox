@@ -92,11 +92,11 @@ available from http://gnuwin32.sourceforge.net/packages/sed.htm
 and http://gnuwin32.sourceforge.net/packages/libxslt.htm, alternatively these
 steps could be carried out on a Linux computer and the results transferred back to Windows.
 A Linux specific @link fix_xml.sh @endlink is provided to help with this, but you may 
-need to adjust line endings (<CR> <-> <CR><LF>) on some of the input/output files. For this you
+need to adjust line endings (&lt;CR&gt; &lt;-&gt; &lt;CR&gt;&lt;LF&gt;) on some of the input/output files. For this you
 can use the dos2unix and unix2dos programs or some of the following sed commands on Linux:
 <PRE>
-sed -e 's/$/\r/' unix_file > windows_file     # unix2dos equivalent
-sed -e 's/\r$//' windows_file > unix_file     # dos2unix equivalent
+sed -e 's/$/\r/' unix_file &gt; windows_file     # unix2dos equivalent
+sed -e 's/\r$//' windows_file &gt; unix_file     # dos2unix equivalent
 sed -i -e 's/$/\r/' unix2windows_file         # unix2dos -o (in place conversion) equivalent
 sed -i -e 's/\r$//' windows2unix_file         # dos2unix -o (in place conversion) equivalent
 </PRE>
