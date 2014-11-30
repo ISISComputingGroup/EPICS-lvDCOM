@@ -67,6 +67,7 @@
   <xs:element name="param">
     <xs:complexType>
       <xs:sequence>
+        <xs:element minOccurs="0" ref="items"/>
         <xs:element ref="read"/>
         <xs:element minOccurs="0" ref="set"/>
       </xs:sequence>
@@ -96,5 +97,18 @@
       <xs:attribute name="post_button_wait" type="xs:boolean"/>
       <xs:attribute name="target" use="required"/>
     </xs:complexType>
+  </xs:element>
+  <xs:element name="items">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="item" maxOccurs="unbounded"/>
+       </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="item">
+    <xs:complexType>
+      <xs:attribute name="name" use="required"/>
+      <xs:attribute name="value" use="required"/>
+    </xs:complexType>    
   </xs:element>
 </xs:schema>
