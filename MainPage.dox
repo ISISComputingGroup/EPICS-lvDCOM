@@ -185,6 +185,12 @@ to contact me too (see Support below) as it may be the same problem we had, I ha
 here as it might not be appropriate for all cases and modifying the Windows registry needs to be 
 undertaken with care.
 
+<H2>Note on LabVIEW projects</H2>
+If the Vi you are using is part of a LabVIEW project, then you may need to be aware of "Application Instances".
+If you open the Vi via project explorer and then run lvDCOM, you will find that you
+can read values OK but writes seem to be "ignored". The write will actually have gone to a separate "instance".
+See the National Instruments "Working with Application Instances" documentation for further details.   
+
 <H2>Support</H2>
 
 If you need further help, or discover any problems, or have any suggestions for
