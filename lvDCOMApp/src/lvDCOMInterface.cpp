@@ -607,12 +607,20 @@ void lvDCOMInterface::getLabviewValue(const char* param, std::string* value)
 	{
 		throw std::runtime_error("getLabviewValue failed (NULL)");
 	}
+	if (param == NULL || *param == '\0')
+	{
+		throw std::runtime_error("getLabviewValue: param is NULL");
+	}
 	CComVariant v;
 	char vi_name_xpath[MAX_PATH_LEN], control_name_xpath[MAX_PATH_LEN];
 	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
+	if (vi_name.Length() == 0 || control_name.Length() == 0)
+	{
+		throw std::runtime_error("getLabviewValue: vi or control is NULL");
+	}
 	getLabviewValue(vi_name, control_name, &v);
 	if ( v.ChangeType(VT_BSTR) == S_OK )
 	{
@@ -631,12 +639,20 @@ void lvDCOMInterface::getLabviewValue(const char* param, T* value, size_t nEleme
 	{
 		throw std::runtime_error("getLabviewValue failed (NULL)");
 	}
+	if (param == NULL || *param == '\0')
+	{
+		throw std::runtime_error("getLabviewValue: param is NULL");
+	}
 	CComVariant v;
 	char vi_name_xpath[MAX_PATH_LEN], control_name_xpath[MAX_PATH_LEN];
 	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
+	if (vi_name.Length() == 0 || control_name.Length() == 0)
+	{
+		throw std::runtime_error("getLabviewValue: vi or control is NULL");
+	}
 	getLabviewValue(vi_name, control_name, &v);
 	if ( v.vt != (VT_ARRAY | CVarTypeInfo<T>::VT) )
 	{
@@ -659,12 +675,20 @@ void lvDCOMInterface::getLabviewValue(const char* param, T* value)
 	{
 		throw std::runtime_error("getLabviewValue failed (NULL)");
 	}
+	if (param == NULL || *param == '\0')
+	{
+		throw std::runtime_error("getLabviewValue: param is NULL");
+	}
 	CComVariant v;
 	char vi_name_xpath[MAX_PATH_LEN], control_name_xpath[MAX_PATH_LEN];
 	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
+	if (vi_name.Length() == 0 || control_name.Length() == 0)
+	{
+		throw std::runtime_error("getLabviewValue: vi or control is NULL");
+	}
 	getLabviewValue(vi_name, control_name, &v);
 	if ( v.ChangeType(CVarTypeInfo<T>::VT) == S_OK )
 	{
@@ -728,11 +752,19 @@ template <>
 void lvDCOMInterface::setLabviewValue(const char* param, const std::string& value)
 {
 	CComVariant v(value.c_str()), results;
+	if (param == NULL || *param == '\0')
+	{
+		throw std::runtime_error("setLabviewValue: param is NULL");
+	}
 	StringItem vi_name(this, "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str(), "", true);
 	StringItem control_name(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@target", m_configSection.c_str(), param);
 	StringItem post_button(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@post_button", m_configSection.c_str(), param);
 	BoolItem post_button_wait(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@post_button_wait", m_configSection.c_str(), param);
 	BoolItem use_ext(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@extint", m_configSection.c_str(), param);
+	if (vi_name.size() == 0 || control_name.size() == 0)
+	{
+		throw std::runtime_error("setLabviewValue: vi or control is NULL");
+	}
 	if (use_ext)
 	{
 		setLabviewValueExt(vi_name, control_name, v, &results);	
@@ -775,11 +807,19 @@ template <typename T>
 void lvDCOMInterface::setLabviewValue(const char* param, const T& value)
 {
 	CComVariant v(value), results;
+	if (param == NULL || *param == '\0')
+	{
+		throw std::runtime_error("setLabviewValue: param is NULL");
+	}
 	StringItem vi_name(this, "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str(), "", true);
 	StringItem control_name(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@target", m_configSection.c_str(), param);
 	StringItem post_button(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@post_button", m_configSection.c_str(), param);
 	BoolItem post_button_wait(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@post_button_wait", m_configSection.c_str(), param);
 	BoolItem use_ext(this, "/lvinput/section[@name='%s']/vi/param[@name='%s']/set/@extint", m_configSection.c_str(), param);
+	if (vi_name.size() == 0 || control_name.size() == 0)
+	{
+		throw std::runtime_error("setLabviewValue: vi or control is NULL");
+	}
 	if (use_ext)
 	{
 		setLabviewValueExt(vi_name, control_name, v, &results);	

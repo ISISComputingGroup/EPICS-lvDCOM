@@ -34,6 +34,7 @@ public:
 
 private:
 	lvDCOMInterface* m_lvdcom;
+	std::map<std::string,std::string> m_params;
 
 	template<typename T> asynStatus writeValue(asynUser *pasynUser, const char* functionName, T value);
 	template<typename T> asynStatus readValue(asynUser *pasynUser, const char* functionName, T* value);

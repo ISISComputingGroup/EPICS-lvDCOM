@@ -15,6 +15,7 @@
 #include <math.h>
 #include <exception>
 #include <iostream>
+#include <map>
 
 #include <epicsTypes.h>
 #include <epicsTime.h>
@@ -250,6 +251,10 @@ asynStatus lvDCOMDriver::writeOctet(asynUser *pasynUser, const char *value, size
 void lvDCOMDriver::report(FILE* fp, int details)
 {
 //	fprintf(fp, "lvDCOM report\n");
+	for(std::map<std::string,std::string>::const_iterator it=m_params.begin(); it != m_params.end(); ++it)
+	{
+		fprintf(fp, "Asyn param \"%s\" lvdcom type \"%s\"\n", it->first.c_str(), it->second.c_str());
+	}
 	if (m_lvdcom != NULL)
 	{
 		m_lvdcom->report(fp, details);
@@ -281,9 +286,8 @@ lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* dcomint, const char *portName)
 {
 	int i;
 	const char *functionName = "lvDCOMDriver";
-	std::map<std::string,std::string> res;
-	m_lvdcom->getParams(res);
-	for(std::map<std::string,std::string>::const_iterator it=res.begin(); it != res.end(); ++it)
+	m_lvdcom->getParams(m_params);
+	for(std::map<std::string,std::string>::const_iterator it=m_params.begin(); it != m_params.end(); ++it)
 	{
 		if (it->second == "float64")
 		{
