@@ -186,10 +186,16 @@ here as it might not be appropriate for all cases and modifying the Windows regi
 undertaken with care.
 
 <H2>Note on LabVIEW projects</H2>
-If the Vi you are using is part of a LabVIEW project, then you may need to be aware of "Application Instances".
-If you open the Vi via project explorer and then run lvDCOM, you will find that you
+If the VI you are using is part of a LabVIEW project, then you may need to be aware of "Application Instances".
+If you open the Vi via project explorer and then run the lvDCOM IOC, you will find that you
 can read values OK but writes seem to be "ignored". The write will actually have gone to a separate "instance".
-See the National Instruments "Working with Application Instances" documentation for further details.   
+
+This is something that you will probably only come across if you are developing and testing code on the same computer.
+In the bottom left of the Vi opened via "project explorer" you will see the name of the application instance,
+if you right click on this you can change it to "main application instance" which is the instance used by VIs not
+opened via project explorer (such as those opened via lvDCOM).  
+
+See the National Instruments "Working with Application Instances" documentation for further details. 
 
 <H2>Support</H2>
 
