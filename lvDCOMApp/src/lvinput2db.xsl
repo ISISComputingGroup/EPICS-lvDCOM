@@ -86,7 +86,7 @@ record(stringout, "$(P)<xsl:value-of select="$asyn_param"/>")
 record(longin, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
 	field(DESC, "LabVIEW '<xsl:value-of select="$lv_read"/>'")
-    field(DTYP, "<xsl:value-of select="$asyn_type"/>Read")
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>")
     field(INP,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
     field(SCAN, ".1 second")
 }
@@ -95,7 +95,7 @@ record(longin, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 record(longout, "$(P)<xsl:value-of select="$asyn_param"/>")
 {
 	field(DESC, "LabVIEW '<xsl:value-of select="$lv_set"/>'")
-    field(DTYP, "<xsl:value-of select="$asyn_type"/>Write")
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>")
     field(OUT,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
 }
 
