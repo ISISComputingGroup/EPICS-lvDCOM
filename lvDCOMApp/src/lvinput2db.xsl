@@ -63,6 +63,10 @@
 
 <xsl:choose>
 <xsl:when test="@type = 'string'">
+## Creating both stringout/stringin and waveform records for "<xsl:value-of select="$lv_read"/>" on "<xsl:value-of select="$vi_path"/>"
+## EPICS strings are restricted to 40 characters in length, if your strings are
+## longer than this choose the character waveform records and adjust NELM if necessary
+
 # Read LabVIEW control/indicator "<xsl:value-of select="$lv_read"/>" on "<xsl:value-of select="$vi_path"/>"
 record(stringin, "$(P)<xsl:value-of select="$asyn_param"/>_RBV")
 {
@@ -78,6 +82,27 @@ record(stringout, "$(P)<xsl:value-of select="$asyn_param"/>")
 	field(DESC, "LabVIEW '<xsl:value-of select="$lv_set"/>'")
     field(DTYP, "<xsl:value-of select="$asyn_type"/>Write")
     field(OUT,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
+}
+
+# Read LabVIEW control/indicator "<xsl:value-of select="$lv_read"/>" on "<xsl:value-of select="$vi_path"/>"
+record(waveform, "$(P)<xsl:value-of select="$asyn_param"/>WF_RBV")
+{
+	field(DESC, "LabVIEW '<xsl:value-of select="$lv_read"/>'")
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>Read")
+	field(FTVL, "CHAR")
+	field(NELM, 256)
+    field(INP,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
+    field(SCAN, ".1 second")
+}
+
+# Write to LabVIEW control "<xsl:value-of select="$lv_set"/>" on "<xsl:value-of select="$vi_path"/>"
+record(waveform, "$(P)<xsl:value-of select="$asyn_param"/>WF")
+{
+	field(DESC, "LabVIEW '<xsl:value-of select="$lv_set"/>'")
+    field(DTYP, "<xsl:value-of select="$asyn_type"/>Write")
+	field(FTVL, "CHAR")
+	field(NELM, 256)
+    field(INP,  "@asyn(lvfp,0,0)<xsl:value-of select="$asyn_param"/>")
 }
 
 </xsl:when>	
