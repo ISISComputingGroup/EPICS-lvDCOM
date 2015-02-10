@@ -267,6 +267,11 @@ record(mbbo, "$(P)<xsl:value-of select="$asyn_param"/>")
         <xsl:when test="$vartype = 'boolean'">asynInt32</xsl:when>
         <xsl:when test="$vartype = 'float64'">asynFloat64</xsl:when>
         <xsl:when test="$vartype = 'string'">asynOctet</xsl:when>
+        <xsl:when test="$vartype = 'float64array'">asynFloat64Array</xsl:when>
+        <xsl:when test="$vartype = 'float32array'">asynFloat32Array</xsl:when>
+        <xsl:when test="$vartype = 'int32array'">asynInt32Array</xsl:when>
+        <xsl:when test="$vartype = 'int16array'">asynInt16Array</xsl:when>
+        <xsl:when test="$vartype = 'int8array'">asynInt8Array</xsl:when>
 		<xsl:otherwise>invalid</xsl:otherwise>
 	</xsl:choose>
 	
