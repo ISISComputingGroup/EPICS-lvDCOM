@@ -189,7 +189,7 @@ with care and you may wish to check with your local Windows operating system exp
 <UL>
 <LI> Find the CLSID of %LabVIEW - you can use the windows <I>dcomcnfg</I> command for this, or search the registry. 
 <LI> Under HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\AppID, find LabVIEW.exe and copy the AppId value 
-<LI> Under HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\CLSID\\{LabVIEW CLSID from step 1}, add a new string value called AppId and set its value to the AppId recorded previously. 
+<LI> Under HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\CLSID\\{%LabVIEW CLSID from step 1}, add a new string value called AppId and set its value to the AppId recorded previously. 
 </UL>
 
 <H2>Note on %LabVIEW projects</H2>
@@ -252,7 +252,7 @@ performed by Cosylab).
 
 </P>
 
-LabVIEW is a trademark of National Instruments. Neither STFC, nor any software programs or other 
+%LabVIEW is a trademark of National Instruments. Neither STFC, nor any software programs or other 
 goods or services offered by STFC, are affiliated with, endorsed by, or sponsored by National Instruments. 
 
 
