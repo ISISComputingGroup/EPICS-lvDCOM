@@ -92,7 +92,7 @@ multiple VI config section and so can also be shared between IOCs.
 The sed and xsltproc programs are required to generate an initial configuration 
 file from the "exported strings" of a %LabVIEW front panel. Windows binaries for these are 
 available from http://gnuwin32.sourceforge.net/packages/sed.htm 
-and http://gnuwin32.sourceforge.net/packages/libxslt.htm, alternatively these
+and http://gnuwin32.sourceforge.net/packages/libxslt.htm alternatively these
 steps could be carried out on a Linux computer and the results transferred back to Windows.
 A Linux specific @link fix_xml.sh @endlink is provided to help with this, but you may 
 need to adjust line endings (&lt;CR&gt; &lt;-&gt; &lt;CR&gt;&lt;LF&gt;) on some of the input/output files. For this you
