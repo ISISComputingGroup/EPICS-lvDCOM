@@ -76,7 +76,7 @@ See the doc directory of the distribution for further information.
 
 <H2>Download</H2>
 
-Source code and a pre-build Windows binary of lvDCOM can be downloaded from the
+Source code is hosted on <A HERF="https://github.com/ISISComputingGroup/EPICS-lvDCOM">Github</A> and a pre-build Windows binary of lvDCOM can be downloaded from the
 <A HREF="http://epics.isis.stfc.ac.uk/">ISIS EPICS homepage</A>.
 
 <P>
