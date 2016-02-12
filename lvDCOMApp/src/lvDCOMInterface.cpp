@@ -551,6 +551,7 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 		setIdentity(m_pidentity, mq[ 0 ].pItf);
 		m_lv.Release();
 		m_lv.Attach( reinterpret_cast< LabVIEW::_Application* >( mq[ 0 ].pItf ) ); 
+		std::cerr << "Successfully connected to LabVIEW on " << m_host << std::endl;
 	}
 	else
 	{
@@ -562,6 +563,7 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 		{
 			throw COMexception("CoCreateInstance (LabVIEW) ", hr);
 		} 
+		std::cerr << "Successfully connected to local LabVIEW" << std::endl;
 	}
 	if (reentrant)
 	{
