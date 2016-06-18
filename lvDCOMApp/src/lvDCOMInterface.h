@@ -41,6 +41,7 @@
 #include <epicsMutex.h>
 #include <epicsThread.h>
 #include <epicsExit.h>
+#include <macLib.h>
 
 //#import "LabVIEW.tlb" named_guids
 // The above statement would generate labview.tlh and labview.tli from an installed copy of LabVIEW, but we include pre-built versions in the source
@@ -108,8 +109,10 @@ private:
 	COAUTHIDENTITY* m_pidentity;
 	std::map<std::string,std::string> m_xpath_map;
 	std::map<std::string,bool> m_xpath_bool_map;
+	MAC_HANDLE *m_mac_env;
 
 	void DomFromCOM();
+	char* envExpand(const char *str);
 	void getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr &vi);
 	void createViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr &vi);
 	void getLabviewValue(BSTR vi_name, BSTR control_name, VARIANT* value);

@@ -77,6 +77,7 @@
 
 #include <macLib.h>
 #include <epicsGuard.h>
+#include <cantProceed.h>
 
 #define MAX_PATH_LEN 256
 
@@ -96,6 +97,35 @@ static void initCOM(void*)
 {
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 	_set_com_error_handler(my_com_raise_error);    // replace default _com_raise_error
+}
+
+/// expand epics environment strings using previously saved environment  
+/// based on EPICS macEnvExpand()
+char* lvDCOMInterface::envExpand(const char *str)
+{
+    long destCapacity = 128;
+    char *dest = NULL;
+    int n;
+    do {
+        destCapacity *= 2;
+        /*
+         * Use free/malloc rather than realloc since there's no need to
+         * keep the original contents.
+         */
+        free(dest);
+        dest = static_cast<char*>(mallocMustSucceed(destCapacity, "lvDCOMInterface::envExpand"));
+        n = macExpandString(m_mac_env, str, dest, destCapacity);
+    } while (n >= (destCapacity - 1));
+    if (n < 0) {
+        free(dest);
+        dest = NULL;
+    } else {
+        size_t unused = destCapacity - ++n;
+
+        if (unused >= 20)
+            dest = static_cast<char*>(realloc(dest, n));
+    }
+    return dest;
 }
 
 // return "" if no value at path
@@ -228,7 +258,7 @@ bool lvDCOMInterface::doXPATHbool_old(const std::string& xpath)
 std::string lvDCOMInterface::doPath(const std::string& xpath)
 {
 	std::string S_res = doXPATH(xpath);
-	char* exp_str = macEnvExpand(S_res.c_str());
+	char* exp_str = envExpand(S_res.c_str());
 	S_res = exp_str;
 	free(exp_str);
 	std::replace(S_res.begin(), S_res.end(), '/', '\\');
@@ -266,7 +296,8 @@ void lvDCOMInterface::DomFromCOM()
 /// \param[in] password @copydoc initArg7
 lvDCOMInterface::lvDCOMInterface(const char *configSection, const char* configFile, const char* host, int options, const char* progid, const char* username, const char* password) : 
 m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(options), 
-	m_progid(progid != NULL? progid : ""), m_username(username != NULL? username : ""), m_password(password != NULL ? password : "")
+	m_progid(progid != NULL? progid : ""), m_username(username != NULL? username : ""), m_password(password != NULL ? password : ""),
+	m_mac_env(NULL)
 	
 {
 	epicsThreadOnce(&onceId, initCOM, NULL);
@@ -288,6 +319,24 @@ m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(op
 		//		}			
 		m_host = "localhost";
 	}
+	if (macCreateHandle(&m_mac_env, NULL) != 0)
+	{
+		throw std::runtime_error("Cannot create mac handle");
+	}
+	// load current environment into m_mac_env, this is so we can create a macEnvExpand() equivalent 
+	// but tied to the environment at a specific time. It is useful if we want to load the same 
+	// XML file twice but with a macro defined differently in each case 
+	for(char** cp = environ; *cp != NULL; ++cp)
+	{
+		char* str_tmp = strdup(*cp);
+		char* equals_loc = strchr(str_tmp, '='); // split   name=value   string
+		if (equals_loc != NULL)
+		{
+		    *equals_loc = '\0';
+		    macPutValue(m_mac_env, str_tmp, equals_loc + 1);
+		}
+		free(str_tmp);
+	}
 	//	m_doc = new TiXmlDocument;
 	//	if ( !m_doc->LoadFile(configFile) )
 	//	{
@@ -298,7 +347,7 @@ m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(op
 	//	m_root = m_doc->RootElement();
 	DomFromCOM();
 	short sResult = FALSE;
-	char* configFile_expanded = macEnvExpand(configFile);
+	char* configFile_expanded = envExpand(configFile);
 	m_configFile = configFile_expanded;
 	HRESULT hr = m_pxmldom->load(_variant_t(configFile_expanded), &sResult);
 	free(configFile_expanded);
