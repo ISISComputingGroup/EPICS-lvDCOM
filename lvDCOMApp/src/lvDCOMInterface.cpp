@@ -150,7 +150,7 @@ std::string lvDCOMInterface::doXPATH(const std::string& xpath)
 		hr=pNode->get_text(&bstrValue);
 		if (SUCCEEDED(hr))
 		{
-			S_res = CW2CT(bstrValue);
+			S_res = envExpand(CW2CT(bstrValue));
 			SysFreeString(bstrValue);
 		}
 		pNode->Release();
@@ -185,7 +185,7 @@ bool lvDCOMInterface::doXPATHbool(const std::string& xpath)
 		hr=pNode->get_text(&bstrValue);
 		if (SUCCEEDED(hr))
 		{
-			bool_str = CW2CT(bstrValue);
+			bool_str = envExpand(CW2CT(bstrValue));
 			if (bool_str.size() == 0)
 			{
 				res = false;
@@ -258,9 +258,6 @@ bool lvDCOMInterface::doXPATHbool_old(const std::string& xpath)
 std::string lvDCOMInterface::doPath(const std::string& xpath)
 {
 	std::string S_res = doXPATH(xpath);
-	char* exp_str = envExpand(S_res.c_str());
-	S_res = exp_str;
-	free(exp_str);
 	std::replace(S_res.begin(), S_res.end(), '/', '\\');
 	return S_res;
 }
