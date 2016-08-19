@@ -799,7 +799,7 @@ public:
 template <>
 void lvDCOMInterface::setLabviewValue(const char* param, const std::string& value)
 {
-	CComVariant v(value.c_str()), results;
+	CComVariant v(value.c_str()), results, button_value(true);
 	if (param == NULL || *param == '\0')
 	{
 		throw std::runtime_error("setLabviewValue: param is NULL");
@@ -818,7 +818,7 @@ void lvDCOMInterface::setLabviewValue(const char* param, const std::string& valu
 		setLabviewValueExt(vi_name, control_name, v, &results);	
 		if (post_button.size() > 0)
 		{
-			setLabviewValueExt(vi_name, post_button, v, &results);	
+			setLabviewValueExt(vi_name, post_button, button_value, &results);
 		}
 	}
 	else
@@ -826,7 +826,7 @@ void lvDCOMInterface::setLabviewValue(const char* param, const std::string& valu
 		setLabviewValue(vi_name, control_name, v);	
 		if (post_button.size() > 0)
 		{
-			setLabviewValue(vi_name, post_button, v);	
+			setLabviewValue(vi_name, post_button, button_value);
 		}
 	}
 	if (post_button_wait && (post_button.size() > 0) )
@@ -854,7 +854,7 @@ void lvDCOMInterface::waitForLabviewBoolean(BSTR vi_name, BSTR control_name, boo
 template <typename T>
 void lvDCOMInterface::setLabviewValue(const char* param, const T& value)
 {
-	CComVariant v(value), results;
+	CComVariant v(value), results, button_value(true);
 	if (param == NULL || *param == '\0')
 	{
 		throw std::runtime_error("setLabviewValue: param is NULL");
@@ -873,7 +873,7 @@ void lvDCOMInterface::setLabviewValue(const char* param, const T& value)
 		setLabviewValueExt(vi_name, control_name, v, &results);	
 		if (post_button.size() > 0)
 		{
-			setLabviewValueExt(vi_name, post_button, v, &results);	
+			setLabviewValueExt(vi_name, post_button,button_value, &results);
 		}
 	}
 	else
@@ -881,7 +881,7 @@ void lvDCOMInterface::setLabviewValue(const char* param, const T& value)
 		setLabviewValue(vi_name, control_name, v);	
 		if (post_button.size() > 0)
 		{
-			setLabviewValue(vi_name, post_button, v);	
+			setLabviewValue(vi_name, post_button, button_value);
 		}
 	}
 	if (post_button_wait && (post_button.size() > 0) )
