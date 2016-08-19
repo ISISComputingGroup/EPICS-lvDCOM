@@ -17,9 +17,28 @@ example_DBD += base.dbd
 
 # Include dbd files from all support applications:
 example_DBD += lvDCOM.dbd
+# all of these are optional, just included for convenience
+example_DBD += devSequencer.dbd
+example_DBD += asSupport.dbd
+example_DBD += devIocStats.dbd
+example_DBD += caPutLog.dbd
+example_DBD += asyn.dbd
+example_DBD += drvAsynIPPort.dbd
+example_DBD += drvAsynSerialPort.dbd
+example_DBD += asubFunctions.dbd
+example_DBD += utilities.dbd
+example_DBD += busySupport.dbd
+example_DBD += calcSupport.dbd
+example_DBD += sscanSupport.dbd
+example_DBD += stdSupport.dbd
 
-# Add all the support libraries needed by this IOC
-example_LIBS += lvDCOM asyn autosave
+# Add all the support libraries needed by this IOC, lvDCOM itself just needs asyn
+example_LIBS += lvDCOM calc sscan busy asyn std
+example_LIBS += asubFunctions
+example_LIBS += seqDev seq pv
+example_LIBS += devIocStats
+example_LIBS += caPutLog autosave
+example_LIBS += utilities # pcre libjson zlib
 
 # example_registerRecordDeviceDriver.cpp derives from example.dbd
 example_SRCS += example_registerRecordDeviceDriver.cpp
@@ -42,4 +61,3 @@ example_SYS_LIBS_WIN32 += msxml2
 include $(TOP)/configure/RULES
 #----------------------------------------
 #  ADD RULES AFTER THIS LINE
-
