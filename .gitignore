@@ -12,4 +12,4 @@ runIOC.bat
 runIOC.sh
 relPaths.sh
 *.tags
-/doc/html/
+/doc/html/.project
