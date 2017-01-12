@@ -180,17 +180,29 @@ Typical LabVIEW.Application DCOM options to modify would be:
 <LI>On the Security tab, depending on the username you connect with
 <LI>On the Identity tab, depending on how the target machine is configured/used
 </UL> 
+If you are running a 32bit LabVIEW on a 64bit computer, then you will not see LabVIEW listed if you just type <b>dcomcnfg</b> as there are separate 32 bit and 64 bit com registries. Instead you need to type:
+<PRE>
+cd C:\WINDOWS\SysWOW64
+mmc comexp.msc /32
+</PRE>
+See https://msdn.microsoft.com/en-us/library/windows/desktop/ms678426(v=vs.85).aspx for more details
+
 If you find that your DCOM settings are being ignored (e.g. a second instance of %LabVIEW is started when
 one is already running locally despite "Interactive User" been specified in the "Identity" tab) then
 it may be that the %LabVIEW <b>AppId</b> is missing from one part of the Windows registry. You
-can attempt to check/fix this using the procedure below but <B>changes to the windows registry must be done
-with care and you may wish to check with your local Windows operating system expert first</B>.
+can attempt to check/fix this using the procedure below but <B>changes to the windows registry must be done with care and you may wish to check with your local Windows operating system expert first</B>.
 
 <UL>
 <LI> Find the CLSID of %LabVIEW - you can use the windows <I>dcomcnfg</I> command for this, or search the registry. 
 <LI> Under HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\AppID, find LabVIEW.exe and copy the AppId value 
 <LI> Under HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\CLSID\\{%LabVIEW CLSID from step 1}, add a new string value called AppId and set its value to the AppId recorded previously. 
 </UL>
+
+Note that there are separate 32bit and 64 bit registries, if you are running 32bit %LabVIEW on a 64 bit computer you will not find LabVIEW.exe if you just run <b>regedit</b> - instead you need to:
+<PRE>
+cd C:\WINDOWS\SysWOW64
+regedit
+</PRE>
 
 <H2>Note on %LabVIEW projects</H2>
 If the VI you are using is part of a %LabVIEW project, then you may need to be aware of "Application Instances".
