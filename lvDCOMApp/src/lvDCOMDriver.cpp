@@ -374,6 +374,36 @@ extern "C" {
 		}
 	}
 
+	/// @param[in] portName @copydoc initArg0
+	/// @param[in] host @copydoc initArg1
+	/// @param[in] options @copydoc initArg2
+	/// @param[in] progid @copydoc initArg3
+	/// @param[in] username @copydoc initArg4
+	/// @param[in] password @copydoc initArg5
+	int lvDCOMSECIConfigure(const char *portName, const char* macros, const char* configSection, const char *configFile,
+	      const char* dbSubFile,const char *host, int options, const char* progid, const char* username, const char* password)
+	{
+		registerStructuredExceptionHandler();
+		try
+		{
+			lvDCOMInterface* dcomint = new lvDCOMInterface("", "", host, 0x0, progid, username, password);
+			if (dcomint != NULL)
+			{
+			    dcomint->generateFilesFromSECI(portName, macros, configSection, configFile, dbSubFile);
+			    return lvDCOMConfigure(portName, configSection, configFile, host, options, progid, username, password);
+			}
+			else
+			{
+				errlogSevPrintf(errlogFatal, "lvDCOMSECIConfigure failed (NULL)\n");
+				return(asynError);
+			}
+		}
+		catch(const std::exception& ex)
+		{
+			errlogSevPrintf(errlogFatal, "lvDCOMSECIConfigure failed: %s\n", ex.what());
+			return(asynError);
+		}
+	}
 	// EPICS iocsh shell commands 
 
 	static const iocshArg initArg0 = { "portName", iocshArgString};			///< A name for the asyn driver instance we will create - used to refer to it from EPICS DB files
@@ -385,6 +415,17 @@ extern "C" {
 	static const iocshArg initArg6 = { "username", iocshArgString};			///< (optional) remote username for \a host
 	static const iocshArg initArg7 = { "password", iocshArgString};			///< (optional) remote password for \a username on \a host
 
+	static const iocshArg initArgSECI0 = { "portName", iocshArgString};			///< A name for the asyn driver instance we will create - used to refer to it from EPICS DB files
+	static const iocshArg initArgSECI1 = { "macros", iocshArgString};	///< section name of \a configFile we will load 
+	static const iocshArg initArgSECI2 = { "configSection", iocshArgString};	///< section name of \a configFile settings from
+	static const iocshArg initArgSECI3 = { "configFile", iocshArgString};		///< Path to the XML input file to load configuration information from
+	static const iocshArg initArgSECI4 = { "dbSubFile", iocshArgString};		///< Path to the XML input file to load configuration information from
+	static const iocshArg initArgSECI5 = { "host", iocshArgString};				///< host name where LabVIEW is running ("" for localhost) 
+	static const iocshArg initArgSECI6 = { "options", iocshArgInt};			    ///< options as per #lvDCOMOptions enum
+	static const iocshArg initArgSECI7 = { "progid", iocshArgString};			///< (optional) DCOM ProgID (required if connecting to a compiled LabVIEW application)
+	static const iocshArg initArgSECI8 = { "username", iocshArgString};			///< (optional) remote username for \a host
+	static const iocshArg initArgSECI9 = { "password", iocshArgString};			///< (optional) remote password for \a username on \a host
+
 	static const iocshArg * const initArgs[] = { &initArg0,
 		&initArg1,
 		&initArg2,
@@ -394,17 +435,35 @@ extern "C" {
 		&initArg6,
 		&initArg7 };
 
-	static const iocshFuncDef initFuncDef = {"lvDCOMConfigure", sizeof(initArgs) / sizeof(iocshArg*), initArgs};
+	static const iocshArg * const initArgsSECI[] = { &initArgSECI0,
+		&initArgSECI1,
+		&initArgSECI2,
+		&initArgSECI3,
+		&initArgSECI4,
+		&initArgSECI5,
+		&initArgSECI6,
+		&initArgSECI7,
+		&initArgSECI8,
+		&initArgSECI9 };
+
+	static const iocshFuncDef initFuncDef = { "lvDCOMConfigure", sizeof(initArgs) / sizeof(iocshArg*), initArgs};
+	static const iocshFuncDef initFuncDefSECI = { "lvDCOMSECIConfigure", sizeof(initArgsSECI) / sizeof(iocshArg*), initArgsSECI};
 
 	static void initCallFunc(const iocshArgBuf *args)
 	{
 		lvDCOMConfigure(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].ival, args[5].sval, args[6].sval, args[7].sval);
 	}
 	
+	static void initCallFuncSECI(const iocshArgBuf *args)
+	{
+		lvDCOMSECIConfigure(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].sval, args[5].sval, args[6].ival, args[7].sval, args[8].sval, args[9].sval);
+	}
+
 	/// Register new commands with EPICS IOC shell
 	static void lvDCOMRegister(void)
 	{
 		iocshRegister(&initFuncDef, initCallFunc);
+		iocshRegister(&initFuncDefSECI, initCallFuncSECI);
 	}
 
 	epicsExportRegistrar(lvDCOMRegister);

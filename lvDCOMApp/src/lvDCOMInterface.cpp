@@ -61,6 +61,7 @@
 #include <atlconv.h>
 #include <atlsafe.h>
 #include <comdef.h>
+#include <tlhelp32.h>
 
 #include <string>
 #include <vector>
@@ -342,22 +343,25 @@ m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(op
 	//		throw std::runtime_error("Cannot load " + std::string(configFile) + ": load failure");
 	//	}
 	//	m_root = m_doc->RootElement();
-	DomFromCOM();
-	short sResult = FALSE;
-	char* configFile_expanded = envExpand(configFile);
-	m_configFile = configFile_expanded;
-	HRESULT hr = m_pxmldom->load(_variant_t(configFile_expanded), &sResult);
-	free(configFile_expanded);
-	if(FAILED(hr))
+	if (configFile != NULL && *configFile != '\0')
 	{
-		throw std::runtime_error("Cannot load XML \"" + m_configFile + "\" (expanded from \"" + std::string(configFile) + "\"): load failure");
+	    DomFromCOM();
+	    short sResult = FALSE;
+	    char* configFile_expanded = envExpand(configFile);
+	    m_configFile = configFile_expanded;
+	    HRESULT hr = m_pxmldom->load(_variant_t(configFile_expanded), &sResult);
+	    free(configFile_expanded);
+	    if(FAILED(hr))
+	    {
+		    throw std::runtime_error("Cannot load XML \"" + m_configFile + "\" (expanded from \"" + std::string(configFile) + "\"): load failure");
+	    }
+	    if (sResult != VARIANT_TRUE)
+	    {
+		    throw std::runtime_error("Cannot load XML \"" + m_configFile + "\" (expanded from \"" + std::string(configFile) + "\"): load failure");
+	    }
+	    std::cerr << "Loaded XML config file \"" << m_configFile << "\" (expanded from \"" << configFile << "\")" << std::endl;
+	    m_extint = doPath("/lvinput/extint/@path").c_str();
 	}
-	if (sResult != VARIANT_TRUE)
-	{
-		throw std::runtime_error("Cannot load XML \"" + m_configFile + "\" (expanded from \"" + std::string(configFile) + "\"): load failure");
-	}
-	std::cerr << "Loaded XML config file \"" << m_configFile << "\" (expanded from \"" << configFile << "\")" << std::endl;
-	m_extint = doPath("/lvinput/extint/@path").c_str();
 	epicsAtExit(epicsExitFunc, this);
 	if (m_progid.size() > 0)
 	{
@@ -407,6 +411,100 @@ void lvDCOMInterface::epicsExitFunc(void* arg)
 	{
 		dcomint->stopVis(true);
 	}
+}
+
+void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, const char* dbSubFile)
+{
+    while (getLabviewUptime() < m_minLVUptime)
+	{
+		std::cerr << "Waiting for labview..." << std::endl;
+		epicsThreadSleep(5.0);
+	}
+	CComBSTR vi_name("c:\\LabVIEW Modules\\dae\\monitor\\dae_monitor.vi");
+	CComBSTR control_name("Parameter details");
+	int n, nr, nc;
+	std::vector< std::vector<std::string> > values;
+	do {
+		epicsThreadSleep(5.0);
+		std::cerr << "Checking dae monitor" << std::endl;
+		CComVariant v;
+	    getLabviewValue(vi_name, control_name, &v);
+	    if ( v.vt != (VT_ARRAY | VT_BSTR) )
+	    {
+		    throw std::runtime_error("generateFilesFromSECI failed (type mismatch)");
+	    }
+		n = nr = nc = 0;
+		values.clear();
+	    CComSafeArray<BSTR> sa;
+	    sa.Attach(v.parray);
+		if (sa.GetDimensions() == 2)
+		{
+	        nr = sa.GetCount(0);
+	        nc = sa.GetCount(1);
+	        values.resize(nr);
+	        for(int i=0; i<nr; ++i)
+	        {
+				values[i].reserve(nc);
+	            for(int j=0; j<nc; ++j)
+				{
+					BSTR t = NULL;
+					LONG dims[2] = { i, j };
+					if (sa.MultiDimGetAt(dims, t) == S_OK)
+					{
+		                values[i].push_back(static_cast<const char*>(CW2CT(t)));
+						++n;
+					}
+				}
+			}
+	    }
+	    sa.Detach();
+	} while ( (nr * nc) == 0 || (nr * nc) != n || values[0][0].size() == 0 );
+	
+    char** pairs;
+	macPushScope(m_mac_env);
+	macParseDefns(m_mac_env, macros, &pairs);
+	macInstallMacros(m_mac_env, pairs);
+	
+	std::fstream fs, fsdb;
+	fs.open(configFile, std::ios::out);
+	fsdb.open(dbSubFile, std::ios::out);
+    fs << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    fs << "<lvinput xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://epics.isis.rl.ac.uk/lvDCOMinput/1.0\" xsi:schemaLocation=\"http://epics.isis.rl.ac.uk/lvDCOMinput/1.0 lvDCOMinput.xsd\">\n";
+	fs << "<extint path=\"$(LVDCOM)/lvDCOMApp/src/extint/Main/Library/External Interface - Set Value.vi\"/>\n";
+    fs << "<section name=\"" << configSection << "\">\n";
+	for(int i=0; i<nr; ++i)
+	{
+		std::string& name = values[i][0];
+		std::string& vi_path = values[i][1];
+        fs << "<vi path=\"" << vi_path << "\">\n";
+		std::string read_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][2].c_str()));
+		std::string set_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][3].c_str()));
+
+        fs << "<param name=\"" << name << "_set\" type=\"" << set_type << "\">\n";
+        fs << "<read method=\"GCV\" target=\"" << values[i][3] << "\">\n";
+        fs << "<set method=\"SCV\" extint=\"true\" target=\"" << values[i][3] << "\"";
+		if (values[i][4].size() > 0)
+		{
+			fs << " post_button=\"" << values[i][4] << "\"";
+		}
+		fs << ">\n";
+		fs << "</param>\n";
+
+        fs << "<param name=\"" << name << "_read\" type=\"" << read_type << "\">\n";
+        fs << "<read method=\"GCV\" target=\"" << values[i][2] << "\">\n";
+		fs << "</param>\n";
+		fs << "</vi>\n";
+		
+		fsdb  << "file \"$(LVDCOM)/db/lvDCOM_" << read_type << ".template\" {\n";
+		fsdb  << "    { P=" << envExpand("$(P=)") << ",PORT=" << portName << ",SCAN=" << envExpand("$(SCAN=.5 second)") 
+		      << ",PARAM=" << name << ",RPARAM=" << name << "_read,SPARAM=" << name << "_set }\n";
+		fsdb  << "}\n";
+	}
+	fs << "</section>\n";
+	fs << "</lvinput>\n";
+	fs.close();
+	fsdb.close();
+	macPopScope(m_mac_env);
 }
 
 void lvDCOMInterface::stopVis(bool only_ones_we_started)
@@ -551,6 +649,58 @@ void lvDCOMInterface::getViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualIns
 	}
 }
 
+/// returns -1.0 if labview not running, else labview uptime in seconds
+double lvDCOMInterface::getLabviewUptime()
+{
+  HANDLE hProcess;
+  double lvUptime = -1.0;
+  int lvCount = 0; // number of LabVIEW.exe processes found
+  PROCESSENTRY32 pe32;
+  FILETIME lvCreationTime, lvExitTime, lvKernelTime, lvUserTime, sysTime;
+  epicsGuard<epicsMutex> _lock(m_lock); // just to restrict number of simultaneous snapshots
+  HANDLE hProcessSnap = CreateToolhelp32Snapshot( TH32CS_SNAPPROCESS, 0 );
+  if( hProcessSnap == INVALID_HANDLE_VALUE )
+  {
+	return lvUptime;
+  }
+  pe32.dwSize = sizeof( PROCESSENTRY32 );
+  if( !Process32First( hProcessSnap, &pe32 ) )
+  {
+    CloseHandle( hProcessSnap );
+    return lvUptime;
+  }
+  do
+  {
+	if ( !stricmp(pe32.szExeFile, "LabVIEW.exe") )
+	{
+		++lvCount;
+        hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pe32.th32ProcessID);
+        if( hProcess != NULL )
+	    {
+		   if (GetProcessTimes(hProcess, &lvCreationTime, &lvExitTime, &lvKernelTime, &lvUserTime) != 0)
+		   {
+               GetSystemTimeAsFileTime(&sysTime);
+		       lvUptime = diffFileTimes(sysTime, lvCreationTime);
+		   }
+           CloseHandle( hProcess );
+	    }
+	}
+  } while( Process32Next( hProcessSnap, &pe32 ) );
+  CloseHandle( hProcessSnap );
+  std::cerr << "lvuptime=" << lvUptime << "s lvcount=" << lvCount << std::endl;
+  return lvUptime;
+}
+
+/// filetime uses 100ns units, returns difference in seconds
+double lvDCOMInterface::diffFileTimes(const FILETIME& f1, const FILETIME& f2)
+{
+	ULARGE_INTEGER u1, u2;
+	u1.LowPart = f1.dwLowDateTime;
+	u1.HighPart = f1.dwHighDateTime;
+	u2.LowPart = f2.dwLowDateTime;
+	u2.HighPart = f2.dwHighDateTime;
+	return static_cast<double>(u1.QuadPart - u2.QuadPart) / 1e7;
+}
 
 void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr& vi)
 {
@@ -563,6 +713,13 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 	}
 	else if (m_host.size() > 0)
 	{
+		if ( checkOption(lvNoStart) )
+		{
+			if (getLabviewUptime() < m_minLVUptime)
+			{
+				throw std::runtime_error("LabVIEW not yet running and \"lvNoStart\" requested");
+			}
+		}
 		std::cerr << "(Re)Making connection to LabVIEW on " << m_host << std::endl;
 		CComBSTR host(m_host.c_str());
 		m_pidentity = createIdentity(m_username, m_host, m_password);
@@ -601,6 +758,13 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 	}
 	else
 	{
+		if ( checkOption(lvNoStart) )
+		{
+			if (getLabviewUptime() < m_minLVUptime)
+			{
+				throw std::runtime_error("LabVIEW not yet running and \"lvNoStart\" requested");
+			}
+		}
 		std::cerr << "(Re)Making local connection to LabVIEW" << std::endl;
 		m_pidentity = NULL;
 		m_lv.Release();
@@ -759,6 +923,34 @@ void lvDCOMInterface::getLabviewValue(BSTR vi_name, BSTR control_name, VARIANT* 
 	{
 		throw std::runtime_error("getLabviewValue failed");
 	}
+}
+
+std::string lvDCOMInterface::getLabviewValueType(BSTR vi_name, BSTR control_name)
+{
+	CComVariant v;
+	getLabviewValue(vi_name, control_name, &v);
+	VARTYPE vt = (&v)->vt; 
+	if ( vt & VT_BOOL )
+	{
+		return "boolean";		
+	}
+	else if ( vt & VT_BSTR )
+	{
+		return "string";		
+	}
+	else if ( (vt & VT_I1) || (vt & VT_I2) || (vt & VT_I4) || (vt & VT_INT) || 
+	          (vt & VT_UI1) || (vt & VT_UI2) || (vt & VT_UI4) || (vt & VT_UINT) )
+	{
+		return "int32";		
+	}
+	else if ( v.ChangeType(VT_R8) == S_OK )
+	{
+		return "float64";
+	}
+	else 
+	{
+		return "unknown";
+	}	
 }
 
 class StringItem 
@@ -983,6 +1175,9 @@ void lvDCOMInterface::report(FILE* fp, int details)
 		}
 	}
 }
+
+/// in seconds
+double lvDCOMInterface::m_minLVUptime = 10.0;
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
