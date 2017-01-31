@@ -386,6 +386,9 @@ extern "C" {
 		registerStructuredExceptionHandler();
 		try
 		{
+			// need to specify both of these so we also get erstarted when labveie disppears (SECI restart / config change)
+			options |= static_cast<int>(lvDCOMOptions::lvNoStart);
+			options |= static_cast<int>(lvDCOMOptions::lvSECIConfig);
 			lvDCOMInterface* dcomint = new lvDCOMInterface("", "", host, 0x0, progid, username, password);
 			if (dcomint != NULL)
 			{

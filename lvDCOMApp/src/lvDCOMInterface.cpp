@@ -415,18 +415,20 @@ void lvDCOMInterface::epicsExitFunc(void* arg)
 
 void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, const char* dbSubFile)
 {
+    std::cerr << "Waiting for LabVIEW uptime of " << m_minLVUptime << " seconds..." << std::endl;
     while (getLabviewUptime() < m_minLVUptime)
 	{
-		std::cerr << "Waiting for labview..." << std::endl;
 		epicsThreadSleep(5.0);
 	}
+    std::cerr << "LabVIEW is now running" << std::endl;
 	CComBSTR vi_name("c:\\LabVIEW Modules\\dae\\monitor\\dae_monitor.vi");
 	CComBSTR control_name("Parameter details");
 	int n, nr, nc;
 	std::vector< std::vector<std::string> > values;
+	std::cerr << "Waiting for block details to appear in dae_monitor.vi ..." << std::endl;
+    // wait until table populated i.e. non zero number of rows, also non-black first block name
 	do {
 		epicsThreadSleep(5.0);
-		std::cerr << "Checking dae monitor" << std::endl;
 		CComVariant v;
 	    getLabviewValue(vi_name, control_name, &v);
 	    if ( v.vt != (VT_ARRAY | VT_BSTR) )
@@ -444,6 +446,7 @@ void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* ma
 	        values.resize(nr);
 	        for(int i=0; i<nr; ++i)
 	        {
+				values[i].clear();
 				values[i].reserve(nc);
 	            for(int j=0; j<nc; ++j)
 				{
@@ -459,8 +462,8 @@ void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* ma
 	    }
 	    sa.Detach();
 	} while ( (nr * nc) == 0 || (nr * nc) != n || values[0][0].size() == 0 );
-	
-    char** pairs;
+	std::cerr << "Found " << nr << " SECI blocks" << std::endl;
+    char** pairs = NULL;
 	macPushScope(m_mac_env);
 	macParseDefns(m_mac_env, macros, &pairs);
 	macInstallMacros(m_mac_env, pairs);
@@ -470,37 +473,38 @@ void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* ma
 	fsdb.open(dbSubFile, std::ios::out);
     fs << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     fs << "<lvinput xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://epics.isis.rl.ac.uk/lvDCOMinput/1.0\" xsi:schemaLocation=\"http://epics.isis.rl.ac.uk/lvDCOMinput/1.0 lvDCOMinput.xsd\">\n";
-	fs << "<extint path=\"$(LVDCOM)/lvDCOMApp/src/extint/Main/Library/External Interface - Set Value.vi\"/>\n";
-    fs << "<section name=\"" << configSection << "\">\n";
+	fs << "  <extint path=\"$(LVDCOM)/lvDCOMApp/src/extint/Main/Library/External Interface - Set Value.vi\"/>\n";
+    fs << "  <section name=\"" << configSection << "\">\n";
 	for(int i=0; i<nr; ++i)
 	{
 		std::string& name = values[i][0];
-		std::string& vi_path = values[i][1];
-        fs << "<vi path=\"" << vi_path << "\">\n";
+		std::string vi_path = values[i][1];
 		std::string read_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][2].c_str()));
 		std::string set_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][3].c_str()));
-
-        fs << "<param name=\"" << name << "_set\" type=\"" << set_type << "\">\n";
-        fs << "<read method=\"GCV\" target=\"" << values[i][3] << "\">\n";
-        fs << "<set method=\"SCV\" extint=\"true\" target=\"" << values[i][3] << "\"";
+		std::replace(vi_path.begin(), vi_path.end(), '\\', '/');
+        fs << "    <vi path=\"" << vi_path << "\">\n";
+        fs << "      <param name=\"" << name << "_set\" type=\"" << set_type << "\">\n";
+        fs << "        <read method=\"GCV\" target=\"" << values[i][3] << "\"/>\n";
+        fs << "        <set method=\"SCV\" extint=\"true\" target=\"" << values[i][3] << "\"";
 		if (values[i][4].size() > 0)
 		{
 			fs << " post_button=\"" << values[i][4] << "\"";
 		}
-		fs << ">\n";
-		fs << "</param>\n";
+		fs << "/>\n";
+		fs << "      </param>\n";
 
-        fs << "<param name=\"" << name << "_read\" type=\"" << read_type << "\">\n";
-        fs << "<read method=\"GCV\" target=\"" << values[i][2] << "\">\n";
-		fs << "</param>\n";
-		fs << "</vi>\n";
+        fs << "      <param name=\"" << name << "_read\" type=\"" << read_type << "\">\n";
+        fs << "        <read method=\"GCV\" target=\"" << values[i][2] << "\"/>\n";
+		fs << "      </param>\n";
+		fs << "    </vi>\n";
 		
-		fsdb  << "file \"$(LVDCOM)/db/lvDCOM_" << read_type << ".template\" {\n";
-		fsdb  << "    { P=" << envExpand("$(P=)") << ",PORT=" << portName << ",SCAN=" << envExpand("$(SCAN=.5 second)") 
-		      << ",PARAM=" << name << ",RPARAM=" << name << "_read,SPARAM=" << name << "_set }\n";
-		fsdb  << "}\n";
+		fsdb  << "file \"${LVDCOM}/db/lvDCOM_" << read_type << ".template\" {\n";
+		fsdb  << "    { P=\"" << envExpand("$(P=)") << "\",PORT=\"" << portName << "\",SCAN=\"" 
+		      << envExpand("$(SCAN=1 second)") << "\",PARAM=\"" << name << "\",RPARAM=\"" << name 
+			  << "_read\",SPARAM=\"" << name << "_set\" }\n";
+		fsdb  << "}\n\n";
 	}
-	fs << "</section>\n";
+	fs << "  </section>\n";
 	fs << "</lvinput>\n";
 	fs.close();
 	fsdb.close();
@@ -687,7 +691,7 @@ double lvDCOMInterface::getLabviewUptime()
 	}
   } while( Process32Next( hProcessSnap, &pe32 ) );
   CloseHandle( hProcessSnap );
-  std::cerr << "lvuptime=" << lvUptime << "s lvcount=" << lvCount << std::endl;
+//  std::cerr << "lvuptime=" << lvUptime << "s lvcount=" << lvCount << std::endl;
   return lvUptime;
 }
 
@@ -702,12 +706,29 @@ double lvDCOMInterface::diffFileTimes(const FILETIME& f1, const FILETIME& f2)
 	return static_cast<double>(u1.QuadPart - u2.QuadPart) / 1e7;
 }
 
+// this is called with m_lock held
 void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr& vi)
 {
 	epicsThreadOnce(&onceId, initCOM, NULL);
 	std::wstring ws(vi_name, SysStringLen(vi_name));
 	HRESULT hr;
-	if ( (m_lv != NULL) && (m_lv->CheckConnection() == S_OK) )
+	hr = E_FAIL;
+	if (m_lv != NULL)
+	{
+		try
+		{
+			hr = m_lv->CheckConnection();
+		}
+		catch(const std::exception& ex)
+		{
+			hr = E_FAIL;
+		}
+		if ( FAILED(hr) )
+		{
+			epicsThreadSleep(5.0);
+		}
+	}
+	if (hr == S_OK)
 	{
 		;
 	}
@@ -717,7 +738,16 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 		{
 			if (getLabviewUptime() < m_minLVUptime)
 			{
-				throw std::runtime_error("LabVIEW not yet running and \"lvNoStart\" requested");
+				if ( checkOption(lvSECIConfig) )
+				{
+					// likely a seci restart, so exit and procServ will restart us ready for new config
+					std::cerr << "Terminating as in SECI mode" << std::endl;
+					epicsExit(0);
+				}
+				else
+				{
+					throw std::runtime_error("LabVIEW not yet running and \"lvNoStart\" requested");
+				}
 			}
 		}
 		std::cerr << "(Re)Making connection to LabVIEW on " << m_host << std::endl;
@@ -760,7 +790,13 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 	{
 		if ( checkOption(lvNoStart) )
 		{
-			if (getLabviewUptime() < m_minLVUptime)
+			if ( checkOption(lvSECIConfig) )
+			{
+				// likely a seci restart, so exit and procServ will restart us ready for new config
+				std::cerr << "Terminating as in SECI mode" << std::endl;
+				epicsExit(0);
+			}
+			else
 			{
 				throw std::runtime_error("LabVIEW not yet running and \"lvNoStart\" requested");
 			}
@@ -925,6 +961,8 @@ void lvDCOMInterface::getLabviewValue(BSTR vi_name, BSTR control_name, VARIANT* 
 	}
 }
 
+/// determine best epics type for a labvier variable, this will be used
+/// to choose the appropriate EPICS record template to use
 std::string lvDCOMInterface::getLabviewValueType(BSTR vi_name, BSTR control_name)
 {
 	CComVariant v;
@@ -1177,7 +1215,7 @@ void lvDCOMInterface::report(FILE* fp, int details)
 }
 
 /// in seconds
-double lvDCOMInterface::m_minLVUptime = 10.0;
+double lvDCOMInterface::m_minLVUptime = 20.0;
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
