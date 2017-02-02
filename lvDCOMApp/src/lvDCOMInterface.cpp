@@ -415,12 +415,13 @@ void lvDCOMInterface::epicsExitFunc(void* arg)
 
 void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, const char* dbSubFile)
 {
+	double lvuptime;
     std::cerr << "Waiting for LabVIEW uptime of " << m_minLVUptime << " seconds..." << std::endl;
-    while (getLabviewUptime() < m_minLVUptime)
+    while ( (lvuptime = getLabviewUptime()) < m_minLVUptime )
 	{
 		epicsThreadSleep(5.0);
 	}
-    std::cerr << "LabVIEW is now running" << std::endl;
+    std::cerr << "LabVIEW has been running for " << lvuptime << " seconds" << std::endl;
 	CComBSTR vi_name("c:\\LabVIEW Modules\\dae\\monitor\\dae_monitor.vi");
 	CComBSTR control_name("Parameter details");
 	int n, nr, nc;
@@ -479,30 +480,55 @@ void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* ma
 	{
 		std::string& name = values[i][0];
 		std::string vi_path = values[i][1];
+		std::cerr << "Processing block \"" << name << "\"" << std::endl;
 		std::string read_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][2].c_str()));
 		std::string set_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][3].c_str()));
 		std::replace(vi_path.begin(), vi_path.end(), '\\', '/');
         fs << "    <vi path=\"" << vi_path << "\">\n";
-        fs << "      <param name=\"" << name << "_set\" type=\"" << set_type << "\">\n";
-        fs << "        <read method=\"GCV\" target=\"" << values[i][3] << "\"/>\n";
-        fs << "        <set method=\"SCV\" extint=\"true\" target=\"" << values[i][3] << "\"";
-		if (values[i][4].size() > 0)
+		if (set_type != "unknown")
 		{
-			fs << " post_button=\"" << values[i][4] << "\"";
+            fs << "      <param name=\"" << name << "_set\" type=\"" << set_type << "\">\n";
+            fs << "        <read method=\"GCV\" target=\"" << values[i][3] << "\"/>\n";
+            fs << "        <set method=\"SCV\" extint=\"true\" target=\"" << values[i][3] << "\"";
+		    if (values[i][4].size() > 0)
+		    {
+			    fs << " post_button=\"" << values[i][4] << "\"";
+		    }
+		    fs << "/>\n";
+		    fs << "      </param>\n";
+        }
+		if (read_type != "unknown")
+		{
+            fs << "      <param name=\"" << name << "_read\" type=\"" << read_type << "\">\n";
+            fs << "        <read method=\"GCV\" target=\"" << values[i][2] << "\"/>\n";
+		    fs << "      </param>\n";
 		}
-		fs << "/>\n";
-		fs << "      </param>\n";
-
-        fs << "      <param name=\"" << name << "_read\" type=\"" << read_type << "\">\n";
-        fs << "        <read method=\"GCV\" target=\"" << values[i][2] << "\"/>\n";
-		fs << "      </param>\n";
 		fs << "    </vi>\n";
-		
-		fsdb  << "file \"${LVDCOM}/db/lvDCOM_" << read_type << ".template\" {\n";
-		fsdb  << "    { P=\"" << envExpand("$(P=)") << "\",PORT=\"" << portName << "\",SCAN=\"" 
-		      << envExpand("$(SCAN=1 second)") << "\",PARAM=\"" << name << "\",RPARAM=\"" << name 
-			  << "_read\",SPARAM=\"" << name << "_set\" }\n";
-		fsdb  << "}\n\n";
+		// if you define a read for the seci block but not a set, you will still get s SET pv but they will not point at anything
+		// if you define a set for the block but not a read, we will map the READ PV onto the specified set control
+		// a non working SET PV will not cause issues, but a non-working read PV would as it is likely scanned 
+		std::string rsuffix;
+		if (read_type != "unknown")
+		{
+			rsuffix = "_read";
+		}
+		else if (set_type != "unknown")
+		{
+			rsuffix = "_set";
+			read_type = set_type;
+		}
+		if (rsuffix.size() > 0)
+		{
+		    fsdb  << "file \"${LVDCOM}/db/lvDCOM_" << read_type << ".template\" {\n";
+		    fsdb  << "    { P=\"" << envExpand("$(P=)") << "\",PORT=\"" << portName << "\",SCAN=\"" 
+		          << envExpand("$(SCAN=1 second)") << "\",PARAM=\"" << name 
+				  << "\",RPARAM=\"" << name << rsuffix << "\",SPARAM=\"" << name << "_set\" }\n";
+		    fsdb  << "}\n\n";
+		}
+		else
+		{
+			std::cerr << "Skipping block \"" << name << "\" (unknown type for both read and set)" << std::endl;			
+		}
 	}
 	fs << "  </section>\n";
 	fs << "</lvinput>\n";
@@ -966,7 +992,15 @@ void lvDCOMInterface::getLabviewValue(BSTR vi_name, BSTR control_name, VARIANT* 
 std::string lvDCOMInterface::getLabviewValueType(BSTR vi_name, BSTR control_name)
 {
 	CComVariant v;
-	getLabviewValue(vi_name, control_name, &v);
+	try 
+	{
+	    getLabviewValue(vi_name, control_name, &v);
+	}
+	catch (const std::exception& ex)
+	{
+		std::cerr << "getLabviewValueType: Unable to read \"" << control_name << "\" on \"" << vi_name << "\": " << ex.what() << std::endl;
+		return "unknown";		
+	}
 	VARTYPE vt = (&v)->vt; 
 	if ( vt & VT_BOOL )
 	{
