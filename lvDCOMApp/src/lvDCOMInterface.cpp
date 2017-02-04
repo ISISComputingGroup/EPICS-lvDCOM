@@ -474,10 +474,13 @@ void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* ma
 	fsdb.open(dbSubFile, std::ios::out);
     fs << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     fs << "<lvinput xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://epics.isis.rl.ac.uk/lvDCOMinput/1.0\" xsi:schemaLocation=\"http://epics.isis.rl.ac.uk/lvDCOMinput/1.0 lvDCOMinput.xsd\">\n";
-	fs << "  <extint path=\"$(LVDCOM)/lvDCOMApp/src/extint/Main/Library/External Interface - Set Value.vi\"/>\n";
+//	fs << "  <extint path=\"$(LVDCOM)/lvDCOMApp/src/extint/Main/Library/External Interface - Set Value.vi\"/>\n";
+    // SECI instruments are already using this, but from a different source
+    fs << "  <extint path=\"c:/labview modules/Common/External Interface/External Interface.llb/External Interface - Set Value.vi\"/>\n";    
     fs << "  <section name=\"" << configSection << "\">\n";
 	for(int i=0; i<nr; ++i)
 	{
+		std::string rsuffix, ssuffix, pv_type;
 		std::string& name = values[i][0];
 		std::string vi_path = values[i][1];
 		std::cerr << "Processing block \"" << name << "\"" << std::endl;
@@ -490,44 +493,44 @@ void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* ma
             fs << "      <param name=\"" << name << "_set\" type=\"" << set_type << "\">\n";
             fs << "        <read method=\"GCV\" target=\"" << values[i][3] << "\"/>\n";
             fs << "        <set method=\"SCV\" extint=\"true\" target=\"" << values[i][3] << "\"";
-		    if (values[i][4].size() > 0)
+		    if (values[i][4].size() > 0 && values[i][4] != "none")
 		    {
 			    fs << " post_button=\"" << values[i][4] << "\"";
 		    }
 		    fs << "/>\n";
 		    fs << "      </param>\n";
+			rsuffix = "_set";
+			ssuffix = "_set";
+			pv_type = set_type;
         }
 		if (read_type != "unknown")
 		{
             fs << "      <param name=\"" << name << "_read\" type=\"" << read_type << "\">\n";
             fs << "        <read method=\"GCV\" target=\"" << values[i][2] << "\"/>\n";
 		    fs << "      </param>\n";
+			rsuffix = "_read";
+			pv_type = read_type;
+			if (ssuffix.size() == 0) // no set defined, generate a dummy one for PV template
+			{
+				ssuffix = "_read";
+			}
 		}
 		fs << "    </vi>\n";
-		// if you define a read for the seci block but not a set, you will still get s SET pv but they will not point at anything
-		// if you define a set for the block but not a read, we will map the READ PV onto the specified set control
-		// a non working SET PV will not cause issues, but a non-working read PV would as it is likely scanned 
-		std::string rsuffix;
-		if (read_type != "unknown")
+		// if you define a read for the seci block but not a set, map set -> read
+		// if you define a set for the block but not a read, we will map the READ -> set
+		// This is so scannng the read PV will always work 
+		if (rsuffix.size() > 0 && ssuffix.size() > 0)
 		{
-			rsuffix = "_read";
-		}
-		else if (set_type != "unknown")
-		{
-			rsuffix = "_set";
-			read_type = set_type;
-		}
-		if (rsuffix.size() > 0)
-		{
-		    fsdb  << "file \"${LVDCOM}/db/lvDCOM_" << read_type << ".template\" {\n";
+		    fsdb  << "file \"${LVDCOM}/db/lvDCOM_" << pv_type << ".template\" {\n";
 		    fsdb  << "    { P=\"" << envExpand("$(P=)") << "\",PORT=\"" << portName << "\",SCAN=\"" 
 		          << envExpand("$(SCAN=1 second)") << "\",PARAM=\"" << name 
-				  << "\",RPARAM=\"" << name << rsuffix << "\",SPARAM=\"" << name << "_set\" }\n";
+				  << "\",RPARAM=\"" << name << rsuffix << "\",SPARAM=\"" << name << ssuffix << "\" }\n";
 		    fsdb  << "}\n\n";
 		}
 		else
 		{
-			std::cerr << "Skipping block \"" << name << "\" (unknown type for both read and set)" << std::endl;			
+			std::cerr << "Skipping DB for block \"" << name << "\" (unknown type)" << std::endl;			
+			std::cerr << "Controls: \"" << values[i][2] << "\" \"" << values[i][3] << "\"" << std::endl;			
 		}
 	}
 	fs << "  </section>\n";
