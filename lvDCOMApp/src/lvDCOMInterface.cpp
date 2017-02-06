@@ -484,8 +484,15 @@ void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* ma
 		std::string& name = values[i][0];
 		std::string vi_path = values[i][1];
 		std::cerr << "Processing block \"" << name << "\"" << std::endl;
-		std::string read_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][2].c_str()));
-		std::string set_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][3].c_str()));
+		std::string read_type("unknown"), set_type("unknown");
+		if (values[i][2] != "none")
+		{
+		    read_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][2].c_str()));
+		}
+		if (values[i][3] != "none")
+		{
+		    set_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][3].c_str()));
+		}
 		std::replace(vi_path.begin(), vi_path.end(), '\\', '/');
         fs << "    <vi path=\"" << vi_path << "\">\n";
 		if (set_type != "unknown")
@@ -890,7 +897,7 @@ void lvDCOMInterface::getLabviewValue(const char* param, std::string* value)
 	}
 	CComVariant v;
 	char vi_name_xpath[MAX_PATH_LEN], control_name_xpath[MAX_PATH_LEN];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi[param[@name='%s']]/@path", m_configSection.c_str(), param);
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
@@ -922,7 +929,7 @@ void lvDCOMInterface::getLabviewValue(const char* param, T* value, size_t nEleme
 	}
 	CComVariant v;
 	char vi_name_xpath[MAX_PATH_LEN], control_name_xpath[MAX_PATH_LEN];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi[param[@name='%s']]/@path", m_configSection.c_str(), param);
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
@@ -958,7 +965,7 @@ void lvDCOMInterface::getLabviewValue(const char* param, T* value)
 	}
 	CComVariant v;
 	char vi_name_xpath[MAX_PATH_LEN], control_name_xpath[MAX_PATH_LEN];
-	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi/@path", m_configSection.c_str());
+	_snprintf(vi_name_xpath, sizeof(vi_name_xpath), "/lvinput/section[@name='%s']/vi[param[@name='%s']]/@path", m_configSection.c_str(), param);
 	_snprintf(control_name_xpath, sizeof(control_name_xpath), "/lvinput/section[@name='%s']/vi/param[@name='%s']/read/@target", m_configSection.c_str(), param);
 	CComBSTR vi_name(doPath(vi_name_xpath).c_str());
 	CComBSTR control_name(doXPATH(control_name_xpath).c_str());
@@ -1001,24 +1008,32 @@ std::string lvDCOMInterface::getLabviewValueType(BSTR vi_name, BSTR control_name
 	}
 	catch (const std::exception& ex)
 	{
-		std::cerr << "getLabviewValueType: Unable to read \"" << control_name << "\" on \"" << vi_name << "\": " << ex.what() << std::endl;
+		std::cerr << "getLabviewValueType: Unable to read \"" << COLE2CT(control_name) << "\" on \"" << COLE2CT(vi_name) << "\": " << ex.what() << std::endl;
 		return "unknown";		
 	}
-	VARTYPE vt = (&v)->vt; 
-	if ( vt & VT_BOOL )
+	VARTYPE vt = (&v)->vt;
+	switch(vt)
 	{
-		return "boolean";		
+	    case VT_BOOL:
+			return "boolean";		
+
+		case VT_BSTR:
+			return "string";		
+
+		case VT_I1:
+		case VT_I2:
+		case VT_I4:
+		case VT_INT:
+		case VT_UI1:
+		case VT_UI2:
+		case VT_UI4:
+		case VT_UINT:
+			return "int32";
+
+		default:
+		    break;
 	}
-	else if ( vt & VT_BSTR )
-	{
-		return "string";		
-	}
-	else if ( (vt & VT_I1) || (vt & VT_I2) || (vt & VT_I4) || (vt & VT_INT) || 
-	          (vt & VT_UI1) || (vt & VT_UI2) || (vt & VT_UI4) || (vt & VT_UINT) )
-	{
-		return "int32";		
-	}
-	else if ( v.ChangeType(VT_R8) == S_OK )
+	if ( v.ChangeType(VT_R8) == S_OK )
 	{
 		return "float64";
 	}
