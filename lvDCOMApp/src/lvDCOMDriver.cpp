@@ -43,7 +43,7 @@ static void seTransFunction(unsigned int u, EXCEPTION_POINTERS* pExp)
 	throw Win32StructuredException(u, pExp);
 }
 
-/// Register a handler for Win32 strcutured exceptions. This needs to be done on a per thread basis.
+/// Register a handler for Win32 structured exceptions. This needs to be done on a per thread basis.
 static void registerStructuredExceptionHandler()
 {
 	_set_se_translator(seTransFunction);
@@ -386,7 +386,7 @@ extern "C" {
 		registerStructuredExceptionHandler();
 		try
 		{
-			// need to specify both of these so we also get erstarted when labveie disppears (SECI restart / config change)
+			// need to specify both of these so we also get restarted when labview disappears (SECI restart / config change)
 			options |= static_cast<int>(lvDCOMOptions::lvNoStart);
 			options |= static_cast<int>(lvDCOMOptions::lvSECIConfig);
 			lvDCOMInterface* dcomint = new lvDCOMInterface("", "", host, 0x0, progid, username, password);
