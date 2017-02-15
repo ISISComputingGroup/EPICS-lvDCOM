@@ -132,6 +132,7 @@ private:
 	bool checkOption(lvDCOMOptions option) { return ( m_options & static_cast<int>(option) ) != 0; }
     double getLabviewUptime();
 	std::string getLabviewValueType(BSTR vi_name, BSTR control_name);
+	void waitForLabVIEW();
 };
 
 #endif /* LV_DCOM_INTERFACE_H */

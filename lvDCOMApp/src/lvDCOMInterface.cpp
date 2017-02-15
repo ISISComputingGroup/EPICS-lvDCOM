@@ -79,6 +79,7 @@
 #include <macLib.h>
 #include <epicsGuard.h>
 #include <cantProceed.h>
+#include <errlog.h>
 
 #define MAX_PATH_LEN 256
 
@@ -394,6 +395,10 @@ m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(op
 	{
 		std::cerr << "Using ProgID \"" << m_progid << "\" but StringFromCLSID() failed" << std::endl;
 	}
+	if ( checkOption(lvNoStart) )
+	{
+		waitForLabVIEW();
+	}
 }
 
 void lvDCOMInterface::epicsExitFunc(void* arg)
@@ -413,19 +418,30 @@ void lvDCOMInterface::epicsExitFunc(void* arg)
 	}
 }
 
+/// wait for LabVIEW to have been running for m_minLVUptime seconds
+void lvDCOMInterface::waitForLabVIEW()
+{
+	double lvuptime = getLabviewUptime();
+	if (lvuptime < m_minLVUptime)
+	{
+	    errlogSevPrintf(errlogMajor, "LabVIEW not currently running - waiting for LabVIEW uptime of %f seconds...\n", m_minLVUptime);
+        while ( (lvuptime = getLabviewUptime()) < m_minLVUptime )
+	    {
+		    epicsThreadSleep(5.0);
+	    }
+	}
+	errlogSevPrintf(errlogInfo, "LabVIEW has been running for %f seconds\n", lvuptime);
+}
+	
+/// generate XML and DB files for SECI blocks 
 void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, const char* dbSubFile)
 {
-	double lvuptime;
-    std::cerr << "Waiting for LabVIEW uptime of " << m_minLVUptime << " seconds..." << std::endl;
-    while ( (lvuptime = getLabviewUptime()) < m_minLVUptime )
-	{
-		epicsThreadSleep(5.0);
-	}
-    std::cerr << "LabVIEW has been running for " << lvuptime << " seconds" << std::endl;
 	CComBSTR vi_name("c:\\LabVIEW Modules\\dae\\monitor\\dae_monitor.vi");
 	CComBSTR control_name("Parameter details");
 	int n, nr, nc;
 	std::vector< std::vector<std::string> > values;
+
+	waitForLabVIEW();
 	std::cerr << "Waiting for block details to appear in dae_monitor.vi ..." << std::endl;
     // wait until table populated i.e. non zero number of rows, also non-black first block name
 	do {
