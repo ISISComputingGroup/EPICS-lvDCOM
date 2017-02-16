@@ -133,6 +133,7 @@ private:
     double getLabviewUptime();
 	std::string getLabviewValueType(BSTR vi_name, BSTR control_name);
 	void waitForLabVIEW();
+	void maybeWaitForLabVIEWOrExit();
 };
 
 #endif /* LV_DCOM_INTERFACE_H */

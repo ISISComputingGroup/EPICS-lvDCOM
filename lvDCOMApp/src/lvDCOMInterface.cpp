@@ -424,13 +424,13 @@ void lvDCOMInterface::waitForLabVIEW()
 	double lvuptime = getLabviewUptime();
 	if (lvuptime < m_minLVUptime)
 	{
-	    errlogSevPrintf(errlogMajor, "LabVIEW not currently running - waiting for LabVIEW uptime of %f seconds...\n", m_minLVUptime);
+	    errlogSevPrintf(errlogMajor, "LabVIEW not currently running - waiting for LabVIEW uptime of %.1f seconds...\n", m_minLVUptime);
         while ( (lvuptime = getLabviewUptime()) < m_minLVUptime )
 	    {
 		    epicsThreadSleep(5.0);
 	    }
 	}
-	errlogSevPrintf(errlogInfo, "LabVIEW has been running for %f seconds\n", lvuptime);
+	errlogSevPrintf(errlogInfo, "LabVIEW has been running for %.1f seconds\n", lvuptime);
 }
 	
 /// generate XML and DB files for SECI blocks 
@@ -758,20 +758,42 @@ double lvDCOMInterface::diffFileTimes(const FILETIME& f1, const FILETIME& f2)
 	return static_cast<double>(u1.QuadPart - u2.QuadPart) / 1e7;
 }
 
+void lvDCOMInterface::maybeWaitForLabVIEWOrExit()
+{
+	if ( checkOption(lvNoStart) )
+	{
+		if (getLabviewUptime() < m_minLVUptime)
+		{
+			if ( checkOption(lvSECIConfig) )
+			{
+				// likely a seci restart, so exit and procServ will restart us ready for new config
+				std::cerr << "Terminating as in SECI mode" << std::endl;
+				epicsExit(0);
+			}
+			else
+			{
+				waitForLabVIEW();
+				//throw std::runtime_error("LabVIEW not running and \"lvNoStart\" requested");
+			}
+		}
+	}
+}
+
 // this is called with m_lock held
 void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::VirtualInstrumentPtr& vi)
 {
 	epicsThreadOnce(&onceId, initCOM, NULL);
 	std::wstring ws(vi_name, SysStringLen(vi_name));
-	HRESULT hr;
-	hr = E_FAIL;
+	HRESULT hr = E_FAIL;
+	// we do maybeWaitForLabVIEWOrExit() either side of this to try and avoid a race condition...
+	maybeWaitForLabVIEWOrExit();
 	if (m_lv != NULL)
 	{
 		try
 		{
 			hr = m_lv->CheckConnection();
 		}
-		catch(const std::exception& ex)
+		catch(const std::exception&)
 		{
 			hr = E_FAIL;
 		}
@@ -780,28 +802,13 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 			epicsThreadSleep(5.0);
 		}
 	}
+	maybeWaitForLabVIEWOrExit();
 	if (hr == S_OK)
 	{
 		;
 	}
 	else if (m_host.size() > 0)
 	{
-		if ( checkOption(lvNoStart) )
-		{
-			if (getLabviewUptime() < m_minLVUptime)
-			{
-				if ( checkOption(lvSECIConfig) )
-				{
-					// likely a seci restart, so exit and procServ will restart us ready for new config
-					std::cerr << "Terminating as in SECI mode" << std::endl;
-					epicsExit(0);
-				}
-				else
-				{
-					throw std::runtime_error("LabVIEW not yet running and \"lvNoStart\" requested");
-				}
-			}
-		}
 		std::cerr << "(Re)Making connection to LabVIEW on " << m_host << std::endl;
 		CComBSTR host(m_host.c_str());
 		m_pidentity = createIdentity(m_username, m_host, m_password);
@@ -840,19 +847,6 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 	}
 	else
 	{
-		if ( checkOption(lvNoStart) )
-		{
-			if ( checkOption(lvSECIConfig) )
-			{
-				// likely a seci restart, so exit and procServ will restart us ready for new config
-				std::cerr << "Terminating as in SECI mode" << std::endl;
-				epicsExit(0);
-			}
-			else
-			{
-				throw std::runtime_error("LabVIEW not yet running and \"lvNoStart\" requested");
-			}
-		}
 		std::cerr << "(Re)Making local connection to LabVIEW" << std::endl;
 		m_pidentity = NULL;
 		m_lv.Release();
