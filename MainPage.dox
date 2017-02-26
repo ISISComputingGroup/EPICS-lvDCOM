@@ -182,7 +182,7 @@ Typical LabVIEW.Application DCOM options to modify would be:
 </UL> 
 If you are running a 32bit LabVIEW on a 64bit computer, then you will not see LabVIEW listed if you just type <b>dcomcnfg</b> as there are separate 32 bit and 64 bit com registries. Instead you need to type:
 <PRE>
-cd C:\WINDOWS\SysWOW64
+cd C:\\WINDOWS\\SysWOW64
 mmc comexp.msc /32
 </PRE>
 See https://msdn.microsoft.com/en-us/library/windows/desktop/ms678426(v=vs.85).aspx for more details
@@ -200,7 +200,7 @@ can attempt to check/fix this using the procedure below but <B>changes to the wi
 
 Note that there are separate 32bit and 64 bit registries, if you are running 32bit %LabVIEW on a 64 bit computer you will not find LabVIEW.exe if you just run <b>regedit</b> - instead you need to:
 <PRE>
-cd C:\WINDOWS\SysWOW64
+cd C:\\WINDOWS\\SysWOW64
 regedit
 </PRE>
 
