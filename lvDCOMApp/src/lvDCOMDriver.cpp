@@ -379,7 +379,7 @@ extern "C" {
 	/// @param[in] configSection @copydoc initArgSECI2
 	/// @param[in] configFile @copydoc initArgSECI3
 	/// @param[in] dbSubFile @copydoc initArgSECI4
-	/// @param[in] host @copydoc initArgSECISECI5
+	/// @param[in] host @copydoc initArgSECI5
 	/// @param[in] options @copydoc initArgSECI6
 	/// @param[in] progid @copydoc initArgSECI7
 	/// @param[in] username @copydoc initArgSECI8

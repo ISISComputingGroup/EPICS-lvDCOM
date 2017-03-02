@@ -1,4 +1,7 @@
-## @file lvDCOM_int32.template Template for an int32 variable
+# % macro, P, device prefix
+# % macro, PORT, asyn port
+# % macro, RPARAM, asyn read param
+# % macro, SPARAM, asyn set param
 
 record(longin, "$(P)$(PARAM)")
 {

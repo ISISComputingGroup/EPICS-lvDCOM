@@ -212,8 +212,9 @@ other instruments. This is done using lvDCOMSECIConfigure() and then loading the
 file with dbLoadTemplate() 
 
 <PRE>
-lvDCOMSECIConfigure("lvfp", "P=$(MYPVPREFIX)CS:SBX:,PORT=lvfp", "frontpanel", "$(TOP)/db/seci.xml", "$(TOP)/db/seci.substitutions")
-dbLoadTemplate("$(TOP)/db/seci.substitutions")
+    lvDCOMSECIConfigure("lvfp", "P=$(MYPVPREFIX)CS:SBX:,PORT=lvfp", "frontpanel", "$(TOP)/db/seci.xml", "$(TOP)/db/seci.substitutions")
+
+    dbLoadTemplate("$(TOP)/db/seci.substitutions")
 </PRE> 
 
 <H2>Note on %LabVIEW projects</H2>
