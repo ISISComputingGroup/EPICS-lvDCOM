@@ -1,3 +1,5 @@
+## @file lvDCOM_int32.template Template for an int32 variable
+
 record(longin, "$(P)$(PARAM)")
 {
     field(DTYP, "asynInt32")

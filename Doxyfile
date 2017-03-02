@@ -54,6 +54,7 @@ INPUT                  = . \
 EXAMPLE_PATH           = . \
                          doc \
                          iocBoot/iocexample \
+                         lvDCOMApp/Db \
                          lvDCOMApp/src \
                          exampleApp/Db \
                          exampleApp/src

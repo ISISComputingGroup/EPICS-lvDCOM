@@ -374,12 +374,16 @@ extern "C" {
 		}
 	}
 
-	/// @param[in] portName @copydoc initArg0
-	/// @param[in] host @copydoc initArg1
-	/// @param[in] options @copydoc initArg2
-	/// @param[in] progid @copydoc initArg3
-	/// @param[in] username @copydoc initArg4
-	/// @param[in] password @copydoc initArg5
+	/// @param[in] portName @copydoc initArgSECI0
+	/// @param[in] macros @copydoc initArgSECI1
+	/// @param[in] configSection @copydoc initArgSECI2
+	/// @param[in] configFile @copydoc initArgSECI3
+	/// @param[in] dbSubFile @copydoc initArgSECI4
+	/// @param[in] host @copydoc initArgSECISECI5
+	/// @param[in] options @copydoc initArgSECI6
+	/// @param[in] progid @copydoc initArgSECI7
+	/// @param[in] username @copydoc initArgSECI8
+	/// @param[in] password @copydoc initArgSECI9
 	int lvDCOMSECIConfigure(const char *portName, const char* macros, const char* configSection, const char *configFile,
 	      const char* dbSubFile,const char *host, int options, const char* progid, const char* username, const char* password)
 	{
@@ -419,10 +423,10 @@ extern "C" {
 	static const iocshArg initArg7 = { "password", iocshArgString};			///< (optional) remote password for \a username on \a host
 
 	static const iocshArg initArgSECI0 = { "portName", iocshArgString};			///< A name for the asyn driver instance we will create - used to refer to it from EPICS DB files
-	static const iocshArg initArgSECI1 = { "macros", iocshArgString};	///< section name of \a configFile we will load 
-	static const iocshArg initArgSECI2 = { "configSection", iocshArgString};	///< section name of \a configFile settings from
-	static const iocshArg initArgSECI3 = { "configFile", iocshArgString};		///< Path to the XML input file to load configuration information from
-	static const iocshArg initArgSECI4 = { "dbSubFile", iocshArgString};		///< Path to the XML input file to load configuration information from
+	static const iocshArg initArgSECI1 = { "macros", iocshArgString};	///< macros to substitute when generating \a dbSubFile 
+	static const iocshArg initArgSECI2 = { "configSection", iocshArgString};	///< section name of \a configFile to write settings to
+	static const iocshArg initArgSECI3 = { "configFile", iocshArgString};		///< Path to the XML output file name to write configuration information to
+	static const iocshArg initArgSECI4 = { "dbSubFile", iocshArgString};		///< Path to the epics db substitution file to generate
 	static const iocshArg initArgSECI5 = { "host", iocshArgString};				///< host name where LabVIEW is running ("" for localhost) 
 	static const iocshArg initArgSECI6 = { "options", iocshArgInt};			    ///< options as per #lvDCOMOptions enum
 	static const iocshArg initArgSECI7 = { "progid", iocshArgString};			///< (optional) DCOM ProgID (required if connecting to a compiled LabVIEW application)

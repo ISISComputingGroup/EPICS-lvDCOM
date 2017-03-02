@@ -204,6 +204,18 @@ cd C:\\WINDOWS\\SysWOW64
 regedit
 </PRE>
 
+<H2>SECI option (ISIS only)</H2>
+
+lvDCOM can read information from a running instance of SECI and generate an appropriate lvinput.xml
+and an EPICS DB substitution file to load @link lvDCOM_int32.template @endlink etc. and provide PVs for reading on
+other instruments. This is done using lvDCOMSECIConfigure() and then loading the generated substitutions
+file with dbLoadTemplate() 
+
+<PRE>
+lvDCOMSECIConfigure("lvfp", "P=$(MYPVPREFIX)CS:SBX:,PORT=lvfp", "frontpanel", "$(TOP)/db/seci.xml", "$(TOP)/db/seci.substitutions")
+dbLoadTemplate("$(TOP)/db/seci.substitutions")
+</PRE> 
+
 <H2>Note on %LabVIEW projects</H2>
 If the VI you are using is part of a %LabVIEW project, then you may need to be aware of "Application Instances".
 If you open the VI via project explorer and then run the lvDCOM IOC, you will find that you
