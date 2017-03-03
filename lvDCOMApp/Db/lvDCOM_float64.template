@@ -1,3 +1,8 @@
+# % macro, P, device prefix
+# % macro, PORT, asyn port
+# % macro, RPARAM, asyn read param
+# % macro, SPARAM, asyn set param
+
 record(ai, "$(P)$(PARAM)")
 {
     field(DTYP, "asynFloat64")

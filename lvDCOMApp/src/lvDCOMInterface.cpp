@@ -45,6 +45,18 @@
 ///  @example lvstrings2input.xsl
 ///  XSLT stylesheet to generate an initial @link lvinput.xml @endlink file from a @link controls.xml @endlink file
 
+///  @example lvDCOM_int32.template
+///  template file used by substitutions file generated from lvDCOMSECIConfigure()
+
+///  @example lvDCOM_boolean.template
+///  template file used by substitutions file generated from lvDCOMSECIConfigure()
+
+///  @example lvDCOM_float64.template
+///  template file used by substitutions file generated from lvDCOMSECIConfigure()
+
+///  @example lvDCOM_string.template
+///  template file used by substitutions file generated from lvDCOMSECIConfigure()
+
 #include <stdio.h>
 
 //#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers

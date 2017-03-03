@@ -1,3 +1,7 @@
+# % macro, P, device prefix
+# % macro, PORT, asyn port
+# % macro, RPARAM, asyn read param
+# % macro, SPARAM, asyn set param
 record(bi, "$(P)$(PARAM)")
 {
     field(DTYP, "asynInt32")
