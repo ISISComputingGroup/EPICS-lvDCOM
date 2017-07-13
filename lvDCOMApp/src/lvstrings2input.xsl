@@ -63,7 +63,7 @@
 		
 		<xsl:variable name="control_id" select="@ID" />
 		<xsl:variable name="control_name" select="@name" />
-		<xsl:variable name="param_name" select="translate($control_name,' ', '_')" />
+		<xsl:variable name="param_name" select="translate($control_name,' ()[]${}#~@?<>!%', '________________')" />
 		<xsl:choose>
 			<xsl:when test="$control_type != 'invalid'">
 				<xsl:element name="param">
