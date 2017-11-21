@@ -174,12 +174,18 @@ error parsing the file.
 
 <H2>Remote Connection</H2>
 If you wish to run an lvDCOM IOC and %LabVIEW on different computers, then you will probably need to
-configure some additional DCOM options on the target (%LabVIEW) computer via the <b>dcomcnfg</b> command.
-Typical LabVIEW.Application DCOM options to modify would be:
+configure some additional DCOM options on the target (%LabVIEW) computer.
+
+First make sure LabVIEW is DCOM registered by running (as administrator):
+<PRE>
+LabVIEW.exe /RegServer
+</PRE>
+
+next run the <b>dcomcnfg</b> command, typical LabVIEW.Application DCOM options to modify would be:
 <UL>
-<LI>On the Security tab, depending on the username you connect with
-<LI>On the Identity tab, depending on how the target machine is configured/used
-</UL> 
+<LI>On the Security tab, depending on the username you connect with (add appropriate launch/activation permissions)
+<LI>On the Identity tab, depending on how the target machine is configured/used (e.g. as Interactive User)
+</UL>
 If you are running a 32bit LabVIEW on a 64bit computer, then you will not see LabVIEW listed if you just type <b>dcomcnfg</b> as there are separate 32 bit and 64 bit com registries. Instead you need to type:
 <PRE>
 cd C:\\WINDOWS\\SysWOW64
@@ -197,6 +203,7 @@ can attempt to check/fix this using the procedure below but <B>changes to the wi
 <LI> Under HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\AppID, find LabVIEW.exe and copy the AppId value 
 <LI> Under HKEY_LOCAL_MACHINE\\SOFTWARE\\Classes\\CLSID\\{%LabVIEW CLSID from step 1}, add a new string value called AppId and set its value to the AppId recorded previously. 
 </UL>
+If you don't see LabVIEW under CLSID, check you did run /RegServer above as an administrator.
 
 Note that there are separate 32bit and 64 bit registries, if you are running 32bit %LabVIEW on a 64 bit computer you will not find LabVIEW.exe if you just run <b>regedit</b> - instead you need to:
 <PRE>
