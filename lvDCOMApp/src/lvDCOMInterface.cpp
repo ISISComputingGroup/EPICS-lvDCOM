@@ -93,6 +93,20 @@
 #include <cantProceed.h>
 #include <errlog.h>
 
+#if WITH_PCRE
+#include <pcrecpp.h>
+#else
+/// dummy pcre implementation
+namespace pcrecpp
+{
+    struct RE
+	{
+		RE(const char*) { }
+		bool FullMatch(const char*) { return true; }
+	};
+}
+#endif
+
 #define MAX_PATH_LEN 256
 
 static epicsThreadOnceId onceId = EPICS_THREAD_ONCE_INIT;
@@ -446,7 +460,7 @@ void lvDCOMInterface::waitForLabVIEW()
 }
 	
 /// generate XML and DB files for SECI blocks 
-void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, const char* dbSubFile)
+void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, const char* dbSubFile, const char* blocks_match, bool no_setter)
 {
 	CComBSTR vi_name("c:\\LabVIEW Modules\\dae\\monitor\\dae_monitor.vi");
 	CComBSTR control_name("Parameter details");
@@ -506,18 +520,31 @@ void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* ma
     // SECI instruments are already using this, but from a different source
     fs << "  <extint path=\"c:/labview modules/Common/External Interface/External Interface.llb/External Interface - Set Value.vi\"/>\n";    
     fs << "  <section name=\"" << configSection << "\">\n";
+	if (blocks_match == NULL || *blocks_match == '\0')
+	{
+		blocks_match = ".*";
+	}
+    pcrecpp::RE blocks_re(blocks_match);
 	for(int i=0; i<nr; ++i)
 	{
 		std::string rsuffix, ssuffix, pv_type;
 		std::string& name = values[i][0];
 		std::string vi_path = values[i][1];
-		std::cerr << "Processing block \"" << name << "\"" << std::endl;
+	    if ( blocks_re.FullMatch(name.c_str()) )
+		{
+		    std::cerr << "Processing block \"" << name << "\"" << std::endl;
+		}
+		else
+		{
+		    std::cerr << "Skipping block \"" << name << "\" as not matched by regular expression" << std::endl;
+			continue;
+		}
 		std::string read_type("unknown"), set_type("unknown");
 		if (values[i][2] != "none")
 		{
 		    read_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][2].c_str()));
 		}
-		if (values[i][3] != "none")
+		if (!no_setter && values[i][3] != "none")
 		{
 		    set_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][3].c_str()));
 		}
@@ -558,7 +585,8 @@ void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* ma
 		{
 		    fsdb  << "file \"${LVDCOM}/db/lvDCOM_" << pv_type << ".template\" {\n";
 		    fsdb  << "    { P=\"" << envExpand("$(P=)") << "\",PORT=\"" << portName << "\",SCAN=\"" 
-		          << envExpand("$(SCAN=1 second)") << "\",PARAM=\"" << name 
+		          << envExpand("$(SCAN=1 second)") << "\",PARAM=\"" << name
+				  << "\",NOSET=\"" << (no_setter ? "#" : " ")
 				  << "\",RPARAM=\"" << name << rsuffix << "\",SPARAM=\"" << name << ssuffix << "\" }\n";
 		    fsdb  << "}\n\n";
 		}

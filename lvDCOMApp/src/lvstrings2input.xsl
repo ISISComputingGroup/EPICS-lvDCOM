@@ -42,7 +42,9 @@
 				<xsl:element name="vi">
 					<xsl:attribute name="path"><xsl:value-of select="$vi_name"/></xsl:attribute>
 					<xsl:comment>The &lt;param /&gt; maps an asyn driver parameter "name" (referenced in the EPICS .db) to the LabVIEW item "target" </xsl:comment>
-		            <xsl:comment>TODO: set extint="true" for controls that need LabVIEW events triggering when they are written to </xsl:comment>
+		            <xsl:comment>TODO: set extint="true" for controls that either need LabVIEW events triggering when they are written to 
+					                   or have limits specified on the labview control that need to be honoured. There is no harm
+									   other than a small performance penalty in setting it to true</xsl:comment>
 					<xsl:apply-templates select="CONTENT" />
 				</xsl:element>
 			</xsl:element>

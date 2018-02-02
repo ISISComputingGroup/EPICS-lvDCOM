@@ -2,19 +2,22 @@
 # % macro, PORT, asyn port
 # % macro, RPARAM, asyn read param
 # % macro, SPARAM, asyn set param
+# % macro, NOSET, whether to generate SP records
 
 record(longin, "$(P)$(PARAM)")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),0,0)$(RPARAM)")
     field(SCAN, "$(SCAN)")
+    info(autosaveFields, "EGU DESC HIGH LOW HIHI LOLO HSV LSV HHSV LLSV ADEL MDEL HYST HOPR LOPR")
 }
 
-record(longout, "$(P)$(PARAM):SP")
-{
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),0,0)$(SPARAM)")
-    field(SCAN, "Passive")
-}
+$(NOSET=) record(longout, "$(P)$(PARAM):SP")
+$(NOSET=) {
+$(NOSET=)     field(DTYP, "asynInt32")
+$(NOSET=)     field(OUT,  "@asyn($(PORT),0,0)$(SPARAM)")
+$(NOSET=)     field(SCAN, "Passive")
+$(NOSET=)     info(autosaveFields, "EGU DESC HIGH LOW HIHI LOLO HSV LSV HHSV LLSV ADEL MDEL HYST HOPR LOPR")
+$(NOSET=) }
 
 #

@@ -25,6 +25,10 @@ DBD += lvDCOM.dbd
 lvDCOM_SRCS += lvDCOMDriver.cpp lvDCOMInterface.cpp variant_utils.cpp convertToString.cpp
 
 lvDCOM_LIBS += asyn
+ifdef PCRE
+lvDCOM_LIBS += pcrecpp pcre
+USR_CXXFLAGS += /DWITH_PCRE=1
+endif
 lvDCOM_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 # msxml2 is used for parsing lvinput.xml

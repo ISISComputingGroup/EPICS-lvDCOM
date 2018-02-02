@@ -381,11 +381,12 @@ extern "C" {
 	/// @param[in] dbSubFile @copydoc initArgSECI4
 	/// @param[in] host @copydoc initArgSECI5
 	/// @param[in] options @copydoc initArgSECI6
-	/// @param[in] progid @copydoc initArgSECI7
-	/// @param[in] username @copydoc initArgSECI8
-	/// @param[in] password @copydoc initArgSECI9
+	/// @param[in] blocks_match @copydoc initArgSECI7
+	/// @param[in] progid @copydoc initArgSECI8
+	/// @param[in] username @copydoc initArgSECI9
+	/// @param[in] password @copydoc initArgSECI10
 	int lvDCOMSECIConfigure(const char *portName, const char* macros, const char* configSection, const char *configFile,
-	      const char* dbSubFile,const char *host, int options, const char* progid, const char* username, const char* password)
+	      const char* dbSubFile, const char *host, int options, const char* blocks_match, const char* progid, const char* username, const char* password)
 	{
 		registerStructuredExceptionHandler();
 		try
@@ -396,7 +397,7 @@ extern "C" {
 			lvDCOMInterface* dcomint = new lvDCOMInterface("", "", host, 0x0, progid, username, password);
 			if (dcomint != NULL)
 			{
-			    dcomint->generateFilesFromSECI(portName, macros, configSection, configFile, dbSubFile);
+			    dcomint->generateFilesFromSECI(portName, macros, configSection, configFile, dbSubFile, blocks_match, (options & static_cast<int>(lvDCOMOptions::lvSECINoSetter) != 0) );
 			    return lvDCOMConfigure(portName, configSection, configFile, host, options, progid, username, password);
 			}
 			else
@@ -429,9 +430,10 @@ extern "C" {
 	static const iocshArg initArgSECI4 = { "dbSubFile", iocshArgString};		///< Path to the epics db substitution file to generate
 	static const iocshArg initArgSECI5 = { "host", iocshArgString};				///< host name where LabVIEW is running ("" for localhost) 
 	static const iocshArg initArgSECI6 = { "options", iocshArgInt};			    ///< options as per #lvDCOMOptions enum
-	static const iocshArg initArgSECI7 = { "progid", iocshArgString};			///< (optional) DCOM ProgID (required if connecting to a compiled LabVIEW application)
-	static const iocshArg initArgSECI8 = { "username", iocshArgString};			///< (optional) remote username for \a host
-	static const iocshArg initArgSECI9 = { "password", iocshArgString};			///< (optional) remote password for \a username on \a host
+	static const iocshArg initArgSECI7 = { "blocks_match", iocshArgString};			///< (optional) PCRE expression for blocks to match, default: all
+	static const iocshArg initArgSECI8 = { "progid", iocshArgString};			///< (optional) DCOM ProgID (required if connecting to a compiled LabVIEW application)
+	static const iocshArg initArgSECI9 = { "username", iocshArgString};			///< (optional) remote username for \a host
+	static const iocshArg initArgSECI10 = { "password", iocshArgString};			///< (optional) remote password for \a username on \a host
 
 	static const iocshArg * const initArgs[] = { &initArg0,
 		&initArg1,
@@ -451,7 +453,8 @@ extern "C" {
 		&initArgSECI6,
 		&initArgSECI7,
 		&initArgSECI8,
-		&initArgSECI9 };
+		&initArgSECI9,
+		&initArgSECI10 };
 
 	static const iocshFuncDef initFuncDef = { "lvDCOMConfigure", sizeof(initArgs) / sizeof(iocshArg*), initArgs};
 	static const iocshFuncDef initFuncDefSECI = { "lvDCOMSECIConfigure", sizeof(initArgsSECI) / sizeof(iocshArg*), initArgsSECI};
@@ -463,7 +466,7 @@ extern "C" {
 	
 	static void initCallFuncSECI(const iocshArgBuf *args)
 	{
-		lvDCOMSECIConfigure(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].sval, args[5].sval, args[6].ival, args[7].sval, args[8].sval, args[9].sval);
+		lvDCOMSECIConfigure(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].sval, args[5].sval, args[6].ival, args[7].sval, args[8].sval, args[9].sval, args[10].sval);
 	}
 
 	/// Register new commands with EPICS IOC shell

@@ -71,8 +71,9 @@ enum lvDCOMOptions
 	viStartIfIdle = 2, 				///< (2)  If the LabVIEW VI is idle when we connect to it, attempt to start it
 	viStopOnExitIfStarted = 4, 		///< (4)  On IOC exit, stop any LabVIEW VIs that we started due to #viStartIfIdle being specified
 	viAlwaysStopOnExit = 8,			///< (8)  On IOC exit, stop any LabVIEW VIs that we have connected to
-	lvNoStart = 16,                  ///< (16) Do not start LabVIEW, connect to existing instance otherwise fail. As loading a Vi starts labview, vis will not be loaded or started until a labview instance is detected
-	lvSECIConfig = 32                  ///< (32) Automatically set if lvDCOMSECIConfigure() has been used
+	lvNoStart = 16,                  ///< (16) Do not start LabVIEW, connect to existing instance otherwise fail. As loading a Vi starts labview, vis will not be loaded or started until a labview instance is detected. Automatically set for lvDCOMSECIConfigure() 
+	lvSECIConfig = 32,                  ///< (32) Automatically set if lvDCOMSECIConfigure() has been used
+	lvSECINoSetter = 64                  ///< (64) Do not generate setter XML / :SP PVs in SECI mode
 };	
 
 /// Manager class for LabVIEW DCOM Interaction. Parses an @link lvinput.xml @endlink file and provides access to the LabVIEW VI controls/indicators described within. 
@@ -91,7 +92,8 @@ public:
 	bool doXPATHbool(const std::string& xpath);
 	void report(FILE* fp, int details);
 	static double diffFileTimes(const FILETIME& f1, const FILETIME& f2);
-	void generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, const char* dbSubFile);
+	void generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, 
+	    const char* dbSubFile, const char* blocks_match, bool no_setter);
 
 private:
 	std::string m_configSection;  ///< section of \a configFile to load information from
