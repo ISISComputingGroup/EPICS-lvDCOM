@@ -2,6 +2,7 @@
 # % macro, PORT, asyn port
 # % macro, RPARAM, asyn read param
 # % macro, SPARAM, asyn set param
+# % macro, NOSET, whether to generate SP records
 
 record(ai, "$(P)$(PARAM)")
 {
@@ -9,14 +10,16 @@ record(ai, "$(P)$(PARAM)")
     field(INP,  "@asyn($(PORT),0,0)$(RPARAM)")
     field(SCAN, "$(SCAN)")
     field(PREC, "3")
+    info(autosaveFields, "PREC EGU DESC HIGH LOW HIHI LOLO HSV LSV HHSV LLSV ADEL MDEL HYST HOPR LOPR")
 }
 
-record(ao, "$(P)$(PARAM):SP")
-{
-    field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),0,0)$(SPARAM)")
-    field(SCAN, "Passive")
-    field(PREC, "3")
-}
+$(NOSET=) record(ao, "$(P)$(PARAM):SP")
+$(NOSET=) {
+$(NOSET=)    field(DTYP, "asynFloat64")
+$(NOSET=)    field(OUT,  "@asyn($(PORT),0,0)$(SPARAM)")
+$(NOSET=)    field(SCAN, "Passive")
+$(NOSET=)    field(PREC, "3")
+$(NOSET=)    info(autosaveFields, "PREC EGU DESC HIGH LOW HIHI LOLO HSV LSV HHSV LLSV ADEL MDEL HYST HOPR LOPR")
+$(NOSET=) }
 
 #

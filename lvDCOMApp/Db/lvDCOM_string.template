@@ -2,20 +2,23 @@
 # % macro, PORT, asyn port
 # % macro, RPARAM, asyn read param
 # % macro, SPARAM, asyn set param
+# % macro, NOSET, whether to generate SP records
 
 record(stringin, "$(P)$(PARAM)")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),0,0)$(RPARAM)")
     field(SCAN, "$(SCAN)")
+    info(autosaveFields, "DESC")
 }
 
-record(stringout, "$(P)$(PARAM):SP")
-{
-    field(DTYP, "asynOctetWrite")
-    field(OUT,  "@asyn($(PORT),0,0)$(SPARAM)")
-    field(SCAN, "Passive")
-}
+$(NOSET=) record(stringout, "$(P)$(PARAM):SP")
+$(NOSET=) {
+$(NOSET=)     field(DTYP, "asynOctetWrite")
+$(NOSET=)     field(OUT,  "@asyn($(PORT),0,0)$(SPARAM)")
+$(NOSET=)     field(SCAN, "Passive")
+$(NOSET=)     info(autosaveFields, "DESC")
+$(NOSET=) }
 
 # read
 record(waveform, "$(P)$(PARAM)WF")
@@ -25,16 +28,18 @@ record(waveform, "$(P)$(PARAM)WF")
     field(SCAN, "$(SCAN)")
     field(FTVL, "CHAR")
     field(NELM, 256)
+    info(autosaveFields, "DESC")
 }
 
 # write
-record(waveform, "$(P)$(PARAM)WF:SP")
-{
-    field(DTYP, "asynOctetWrite")
-    field(INP,  "@asyn($(PORT),0,0)$(SPARAM)")
-    field(SCAN, "Passive")
-    field(FTVL, "CHAR")
-    field(NELM, 256)
-}
+$(NOSET=) record(waveform, "$(P)$(PARAM)WF:SP")
+$(NOSET=) {
+$(NOSET=)     field(DTYP, "asynOctetWrite")
+$(NOSET=)     field(INP,  "@asyn($(PORT),0,0)$(SPARAM)")
+$(NOSET=)     field(SCAN, "Passive")
+$(NOSET=)     field(FTVL, "CHAR")
+$(NOSET=)     field(NELM, 256)
+$(NOSET=)     info(autosaveFields, "DESC")
+$(NOSET=) }
 
 #

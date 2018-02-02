@@ -2,6 +2,8 @@
 # % macro, PORT, asyn port
 # % macro, RPARAM, asyn read param
 # % macro, SPARAM, asyn set param
+# % macro, NOSET, whether to generate SP records
+
 record(bi, "$(P)$(PARAM)")
 {
     field(DTYP, "asynInt32")
@@ -9,15 +11,17 @@ record(bi, "$(P)$(PARAM)")
     field(SCAN, "$(SCAN)")
     field(ZNAM, "$(ZNAME=0)")
     field(ONAM, "$(ONAME=1)")
+    info(autosaveFields, "ZNAM ONAM DESC ZSV OSV COSV")
 }
 
-record(bo, "$(P)$(PARAM):SP")
-{
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),0,0)$(SPARAM)")
-    field(SCAN, "Passive")
-    field(ZNAM, "$(ZNAME=0)")
-    field(ONAM, "$(ONAME=1)")
-}
+$(NOSET=) record(bo, "$(P)$(PARAM):SP")
+$(NOSET=) {
+$(NOSET=)     field(DTYP, "asynInt32")
+$(NOSET=)     field(OUT,  "@asyn($(PORT),0,0)$(SPARAM)")
+$(NOSET=)     field(SCAN, "Passive")
+$(NOSET=)     field(ZNAM, "$(ZNAME=0)")
+$(NOSET=)     field(ONAM, "$(ONAME=1)")
+$(NOSET=)     info(autosaveFields, "ZNAM ONAM DESC ZSV OSV COSV")
+$(NOSET=) }
 
 #
