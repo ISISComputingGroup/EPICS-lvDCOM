@@ -450,7 +450,7 @@ void lvDCOMInterface::waitForLabVIEW()
 	double lvuptime = getLabviewUptime();
 	if (lvuptime < m_minLVUptime)
 	{
-	    errlogSevPrintf(errlogMajor, "LabVIEW not currently running - waiting for LabVIEW uptime of %.1f seconds...\n", m_minLVUptime);
+	    errlogSevPrintf(errlogMinor, "LabVIEW not currently running - waiting for LabVIEW uptime of %.1f seconds...\n", m_minLVUptime);
         while ( (lvuptime = getLabviewUptime()) < m_minLVUptime )
 	    {
 		    epicsThreadSleep(5.0);
@@ -460,7 +460,7 @@ void lvDCOMInterface::waitForLabVIEW()
 }
 	
 /// generate XML and DB files for SECI blocks 
-void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, const char* dbSubFile, const char* blocks_match, bool no_setter)
+int lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, const char* dbSubFile, const char* blocks_match, bool no_setter)
 {
 	CComBSTR vi_name("c:\\LabVIEW Modules\\dae\\monitor\\dae_monitor.vi");
 	CComBSTR control_name("Parameter details");
@@ -525,6 +525,7 @@ void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* ma
 		blocks_match = ".*";
 	}
     pcrecpp::RE blocks_re(blocks_match);
+	int nblocks = 0;
 	for(int i=0; i<nr; ++i)
 	{
 		std::string rsuffix, ssuffix, pv_type;
@@ -533,6 +534,7 @@ void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* ma
 	    if ( blocks_re.FullMatch(name.c_str()) )
 		{
 		    std::cerr << "Processing block \"" << name << "\"" << std::endl;
+			++nblocks;
 		}
 		else
 		{
@@ -601,6 +603,7 @@ void lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* ma
 	fs.close();
 	fsdb.close();
 	macPopScope(m_mac_env);
+	return nblocks;
 }
 
 void lvDCOMInterface::stopVis(bool only_ones_we_started)
@@ -1317,7 +1320,7 @@ void lvDCOMInterface::report(FILE* fp, int details)
 }
 
 /// in seconds
-double lvDCOMInterface::m_minLVUptime = 20.0;
+double lvDCOMInterface::m_minLVUptime = 60.0;
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 

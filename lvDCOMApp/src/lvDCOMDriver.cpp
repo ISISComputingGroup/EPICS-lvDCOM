@@ -397,7 +397,11 @@ extern "C" {
 			lvDCOMInterface* dcomint = new lvDCOMInterface("", "", host, 0x0, progid, username, password);
 			if (dcomint != NULL)
 			{
-			    dcomint->generateFilesFromSECI(portName, macros, configSection, configFile, dbSubFile, blocks_match, (options & static_cast<int>(lvDCOMOptions::lvSECINoSetter) != 0) );
+			    while(dcomint->generateFilesFromSECI(portName, macros, configSection, configFile, dbSubFile, blocks_match, (options & static_cast<int>(lvDCOMOptions::lvSECINoSetter) != 0)) == 0)
+				{
+					std::cerr << "lvDCOMSECIConfigure found no blocks - retrying\n";
+					epicsThreadSleep(30);
+				}
 			    return lvDCOMConfigure(portName, configSection, configFile, host, options, progid, username, password);
 			}
 			else

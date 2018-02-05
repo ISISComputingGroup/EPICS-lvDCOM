@@ -92,7 +92,7 @@ public:
 	bool doXPATHbool(const std::string& xpath);
 	void report(FILE* fp, int details);
 	static double diffFileTimes(const FILETIME& f1, const FILETIME& f2);
-	void generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, 
+	int generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, 
 	    const char* dbSubFile, const char* blocks_match, bool no_setter);
 
 private:
