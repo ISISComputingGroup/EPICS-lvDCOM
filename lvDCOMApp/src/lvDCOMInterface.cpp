@@ -445,7 +445,7 @@ void lvDCOMInterface::epicsExitFunc(void* arg)
 }
 
 /// wait for LabVIEW to have been running for m_minLVUptime seconds
-void lvDCOMInterface::waitForLabVIEW()
+double lvDCOMInterface::waitForLabVIEW()
 {
 	double lvuptime = getLabviewUptime();
 	if (lvuptime < m_minLVUptime)
@@ -456,19 +456,16 @@ void lvDCOMInterface::waitForLabVIEW()
 		    epicsThreadSleep(5.0);
 	    }
 	}
-	errlogSevPrintf(errlogInfo, "LabVIEW has been running for %.1f seconds\n", lvuptime);
+	return lvuptime;
 }
 	
-/// generate XML and DB files for SECI blocks 
-int lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, const char* dbSubFile, const char* blocks_match, bool no_setter)
+void lvDCOMInterface::getBlockDetails(std::vector< std::vector<std::string> >& values)
 {
 	CComBSTR vi_name("c:\\LabVIEW Modules\\dae\\monitor\\dae_monitor.vi");
 	CComBSTR control_name("Parameter details");
 	int n, nr, nc;
-	std::vector< std::vector<std::string> > values;
 
 	waitForLabVIEW();
-	std::cerr << "Waiting for block details to appear in dae_monitor.vi ..." << std::endl;
     // wait until table populated i.e. non zero number of rows, also non-black first block name
 	do {
 		epicsThreadSleep(5.0);
@@ -476,7 +473,7 @@ int lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* mac
 	    getLabviewValue(vi_name, control_name, &v);
 	    if ( v.vt != (VT_ARRAY | VT_BSTR) )
 	    {
-		    throw std::runtime_error("generateFilesFromSECI failed (type mismatch)");
+		    throw std::runtime_error("GetBlockDetails failed (type mismatch)");
 	    }
 		n = nr = nc = 0;
 		values.clear();
@@ -486,6 +483,10 @@ int lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* mac
 		{
 	        nr = sa.GetCount(0);
 	        nc = sa.GetCount(1);
+			if (nc > 5)
+			{
+				nc = 5; // we only want (and use) the first 5 columns
+			}
 	        values.resize(nr);
 	        for(int i=0; i<nr; ++i)
 	        {
@@ -505,7 +506,28 @@ int lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* mac
 	    }
 	    sa.Detach();
 	} while ( (nr * nc) == 0 || (nr * nc) != n || values[0][0].size() == 0 );
-	std::cerr << "Found " << nr << " SECI blocks" << std::endl;
+}
+
+bool lvDCOMInterface::checkForNewBlockDetails()
+{
+	if ( !(m_options & static_cast<int>(lvDCOMOptions::lvSECIConfig)) )
+	{
+		return false;
+	}
+    std::vector< std::vector<std::string> > values;
+	getBlockDetails(values);
+	return (m_seci_values == values ? false : true);
+}
+
+/// generate XML and DB files for SECI blocks 
+int lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, const char* dbSubFile, const char* blocks_match, bool no_setter)
+{
+	double lvuptime = waitForLabVIEW();
+	errlogSevPrintf(errlogInfo, "LabVIEW has been running for %.1f seconds\n", lvuptime);
+	std::cerr << "Waiting for block details to appear in dae_monitor.vi ..." << std::endl;
+	getBlockDetails(m_seci_values);
+	int nr = m_seci_values.size();
+	std::cerr << "Found " << nr << " potential SECI blocks" << std::endl;
     char** pairs = NULL;
 	macPushScope(m_mac_env);
 	macParseDefns(m_mac_env, macros, &pairs);
@@ -529,8 +551,8 @@ int lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* mac
 	for(int i=0; i<nr; ++i)
 	{
 		std::string rsuffix, ssuffix, pv_type;
-		std::string& name = values[i][0];
-		std::string vi_path = values[i][1];
+		std::string& name = m_seci_values[i][0];
+		std::string vi_path = m_seci_values[i][1];
 	    if ( blocks_re.FullMatch(name.c_str()) )
 		{
 		    std::cerr << "Processing block \"" << name << "\"" << std::endl;
@@ -542,24 +564,24 @@ int lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* mac
 			continue;
 		}
 		std::string read_type("unknown"), set_type("unknown");
-		if (values[i][2] != "none")
+		if (m_seci_values[i][2] != "none")
 		{
-		    read_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][2].c_str()));
+		    read_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(m_seci_values[i][2].c_str()));
 		}
-		if (!no_setter && values[i][3] != "none")
+		if (!no_setter && m_seci_values[i][3] != "none")
 		{
-		    set_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(values[i][3].c_str()));
+		    set_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(m_seci_values[i][3].c_str()));
 		}
 		std::replace(vi_path.begin(), vi_path.end(), '\\', '/');
         fs << "    <vi path=\"" << vi_path << "\">\n";
 		if (set_type != "unknown")
 		{
             fs << "      <param name=\"" << name << "_set\" type=\"" << set_type << "\">\n";
-            fs << "        <read method=\"GCV\" target=\"" << values[i][3] << "\"/>\n";
-            fs << "        <set method=\"SCV\" extint=\"true\" target=\"" << values[i][3] << "\"";
-		    if (values[i][4].size() > 0 && values[i][4] != "none")
+            fs << "        <read method=\"GCV\" target=\"" << m_seci_values[i][3] << "\"/>\n";
+            fs << "        <set method=\"SCV\" extint=\"true\" target=\"" << m_seci_values[i][3] << "\"";
+		    if (m_seci_values[i][4].size() > 0 && m_seci_values[i][4] != "none")
 		    {
-			    fs << " post_button=\"" << values[i][4] << "\"";
+			    fs << " post_button=\"" << m_seci_values[i][4] << "\"";
 		    }
 		    fs << "/>\n";
 		    fs << "      </param>\n";
@@ -570,7 +592,7 @@ int lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* mac
 		if (read_type != "unknown")
 		{
             fs << "      <param name=\"" << name << "_read\" type=\"" << read_type << "\">\n";
-            fs << "        <read method=\"GCV\" target=\"" << values[i][2] << "\"/>\n";
+            fs << "        <read method=\"GCV\" target=\"" << m_seci_values[i][2] << "\"/>\n";
 		    fs << "      </param>\n";
 			rsuffix = "_read";
 			pv_type = read_type;
@@ -595,7 +617,7 @@ int lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* mac
 		else
 		{
 			std::cerr << "Skipping DB for block \"" << name << "\" (unknown type)" << std::endl;			
-			std::cerr << "Controls: \"" << values[i][2] << "\" \"" << values[i][3] << "\"" << std::endl;			
+			std::cerr << "Controls: \"" << m_seci_values[i][2] << "\" \"" << m_seci_values[i][3] << "\"" << std::endl;			
 		}
 	}
 	fs << "  </section>\n";
@@ -810,7 +832,7 @@ void lvDCOMInterface::maybeWaitForLabVIEWOrExit()
 			if ( checkOption(lvSECIConfig) )
 			{
 				// likely a seci restart, so exit and procServ will restart us ready for new config
-				std::cerr << "Terminating as in SECI mode" << std::endl;
+				std::cerr << "Terminating as in SECI mode and no LabVIEW" << std::endl;
 				epicsExit(0);
 			}
 			else

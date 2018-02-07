@@ -31,6 +31,7 @@ public:
 	virtual asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn);
 	virtual asynStatus readInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn);
 	virtual void report(FILE* fp, int details);
+	void lvDCOMTask();
 
 private:
 	lvDCOMInterface* m_lvdcom;
@@ -40,7 +41,7 @@ private:
 	template<typename T> asynStatus readValue(asynUser *pasynUser, const char* functionName, T* value);
 	template<typename T> asynStatus readArray(asynUser *pasynUser, const char* functionName, T *value, size_t nElements, size_t *nIn);
 
-	static void lvDCOMTask(void* arg);
+	static void lvDCOMTaskC(void* arg);
 };
 
 #endif /* LVDCOMDRIVER_H */

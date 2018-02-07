@@ -94,6 +94,7 @@ public:
 	static double diffFileTimes(const FILETIME& f1, const FILETIME& f2);
 	int generateFilesFromSECI(const char* portName, const char* macros, const char* configSection, const char* configFile, 
 	    const char* dbSubFile, const char* blocks_match, bool no_setter);
+	bool checkForNewBlockDetails();
 
 private:
 	std::string m_configSection;  ///< section of \a configFile to load information from
@@ -117,6 +118,7 @@ private:
 	std::map<std::string,std::string> m_xpath_map;
 	std::map<std::string,bool> m_xpath_bool_map;
 	MAC_HANDLE *m_mac_env;
+	std::vector< std::vector<std::string> > m_seci_values;
 
 	void DomFromCOM();
 	char* envExpand(const char *str);
@@ -134,8 +136,9 @@ private:
 	bool checkOption(lvDCOMOptions option) { return ( m_options & static_cast<int>(option) ) != 0; }
     double getLabviewUptime();
 	std::string getLabviewValueType(BSTR vi_name, BSTR control_name);
-	void waitForLabVIEW();
+	double waitForLabVIEW();
 	void maybeWaitForLabVIEWOrExit();
+	void getBlockDetails(std::vector< std::vector<std::string> >& values);
 };
 
 #endif /* LV_DCOM_INTERFACE_H */

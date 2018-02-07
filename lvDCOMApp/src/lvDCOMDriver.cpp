@@ -320,20 +320,33 @@ lvDCOMDriver::lvDCOMDriver(lvDCOMInterface* dcomint, const char *portName)
 	if (epicsThreadCreate("lvDCOMDriverTask",
 		epicsThreadPriorityMedium,
 		epicsThreadGetStackSize(epicsThreadStackMedium),
-		(EPICSTHREADFUNC)lvDCOMTask, this) == 0)
+		(EPICSTHREADFUNC)lvDCOMTaskC, this) == 0)
 	{
 		printf("%s:%s: epicsThreadCreate failure\n", driverName, functionName);
 		return;
 	}
 }
 
-/// @todo Might use this for background polling if implementing I/O Intr scanning
-void lvDCOMDriver::lvDCOMTask(void* arg) 
+void lvDCOMDriver::lvDCOMTaskC(void* arg) 
 { 
-	lvDCOMDriver* driver = (lvDCOMDriver*)arg; 	
-	registerStructuredExceptionHandler();
+	lvDCOMDriver* driver = (lvDCOMDriver*)arg;
+	driver->lvDCOMTask();
 }
 
+/// @todo Might use this for background polling if implementing I/O Intr scanning
+void lvDCOMDriver::lvDCOMTask() 
+{ 
+	registerStructuredExceptionHandler();
+	while(true)
+	{
+	    if (m_lvdcom->checkForNewBlockDetails())
+		{
+			std::cerr << "Terminating as in SECI mode and new blocks detected" << std::endl;
+			epicsExit(0);
+		}
+		epicsThreadSleep(30);
+	}
+}
 
 extern "C" {
 
