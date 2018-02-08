@@ -339,7 +339,10 @@ void lvDCOMDriver::lvDCOMTask()
 	registerStructuredExceptionHandler();
 	while(true)
 	{
-	    if (m_lvdcom->checkForNewBlockDetails())
+		lock();
+	    bool new_blocks = m_lvdcom->checkForNewBlockDetails();
+		unlock();
+		if (new_blocks)
 		{
 			std::cerr << "Terminating as in SECI mode and new blocks detected" << std::endl;
 			epicsExit(0);

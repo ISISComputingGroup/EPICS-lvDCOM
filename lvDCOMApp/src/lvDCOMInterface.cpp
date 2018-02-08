@@ -1344,6 +1344,8 @@ void lvDCOMInterface::report(FILE* fp, int details)
 /// in seconds
 double lvDCOMInterface::m_minLVUptime = 60.0;
 
+std::vector< std::vector<std::string> > lvDCOMInterface::m_seci_values;
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 template void lvDCOMInterface::setLabviewValue(const char* param, const double& value);

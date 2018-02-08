@@ -118,7 +118,7 @@ private:
 	std::map<std::string,std::string> m_xpath_map;
 	std::map<std::string,bool> m_xpath_bool_map;
 	MAC_HANDLE *m_mac_env;
-	std::vector< std::vector<std::string> > m_seci_values;
+	static std::vector< std::vector<std::string> > m_seci_values; ///< horrible - do properly some time
 
 	void DomFromCOM();
 	char* envExpand(const char *str);
