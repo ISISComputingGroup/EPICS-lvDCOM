@@ -1,0 +1,23 @@
+# read
+record(waveform, "$(P)$(PARAM)")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),0,0)$(RPARAM)")
+    field(SCAN, "$(SCAN)")
+    field(FTVL, "CHAR")
+    field(NELM, $(NELM))
+    info(autosaveFields, "DESC")
+}
+
+# write
+$(NOSET=) record(waveform, "$(P)$(PARAM):SP")
+$(NOSET=) {
+$(NOSET=)     field(DTYP, "asynOctetWrite")
+$(NOSET=)     field(INP,  "@asyn($(PORT),0,0)$(SPARAM)")
+$(NOSET=)     field(SCAN, "Passive")
+$(NOSET=)     field(FTVL, "CHAR")
+$(NOSET=)     field(NELM, $(NELM))
+$(NOSET=)     info(autosaveFields, "DESC")
+$(NOSET=) }
+
+#
