@@ -103,9 +103,22 @@ namespace pcrecpp
 	{
 		RE(const char*) { }
 		bool FullMatch(const char*) { return true; }
+		bool GlobalReplace(const std::string, std::string*) { return true; }
 	};
 }
 #endif
+
+// replace characters invalid in XML
+static std::string replaceWithEntities(const std::string& str)
+{
+	std::string res(str);
+    pcrecpp::RE("&").GlobalReplace("&amp;", &res);
+    pcrecpp::RE("<").GlobalReplace("&lt;", &res);
+    pcrecpp::RE(">").GlobalReplace("&gt;", &res);
+    pcrecpp::RE("\"").GlobalReplace("&quot;", &res);
+    pcrecpp::RE("'").GlobalReplace("&apos;", &res);
+    return res;
+}
 
 #define MAX_PATH_LEN 256
 
@@ -573,15 +586,15 @@ int lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* mac
 		    set_type = getLabviewValueType(CComBSTR(vi_path.c_str()), CComBSTR(m_seci_values[i][3].c_str()));
 		}
 		std::replace(vi_path.begin(), vi_path.end(), '\\', '/');
-        fs << "    <vi path=\"" << vi_path << "\">\n";
+        fs << "    <vi path=\"" << replaceWithEntities(vi_path) << "\">\n";
 		if (set_type != "unknown")
 		{
             fs << "      <param name=\"" << name << "_set\" type=\"" << set_type << "\">\n";
-            fs << "        <read method=\"GCV\" target=\"" << m_seci_values[i][3] << "\"/>\n";
-            fs << "        <set method=\"SCV\" extint=\"true\" target=\"" << m_seci_values[i][3] << "\"";
+            fs << "        <read method=\"GCV\" target=\"" << replaceWithEntities(m_seci_values[i][3]) << "\"/>\n";
+            fs << "        <set method=\"SCV\" extint=\"true\" target=\"" << replaceWithEntities(m_seci_values[i][3]) << "\"";
 		    if (m_seci_values[i][4].size() > 0 && m_seci_values[i][4] != "none")
 		    {
-			    fs << " post_button=\"" << m_seci_values[i][4] << "\"";
+			    fs << " post_button=\"" << replaceWithEntities(m_seci_values[i][4]) << "\"";
 		    }
 		    fs << "/>\n";
 		    fs << "      </param>\n";
@@ -592,7 +605,7 @@ int lvDCOMInterface::generateFilesFromSECI(const char* portName, const char* mac
 		if (read_type != "unknown")
 		{
             fs << "      <param name=\"" << name << "_read\" type=\"" << read_type << "\">\n";
-            fs << "        <read method=\"GCV\" target=\"" << m_seci_values[i][2] << "\"/>\n";
+            fs << "        <read method=\"GCV\" target=\"" << replaceWithEntities(m_seci_values[i][2]) << "\"/>\n";
 		    fs << "      </param>\n";
 			rsuffix = "_read";
 			pv_type = read_type;
