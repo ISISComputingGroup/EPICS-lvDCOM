@@ -512,6 +512,7 @@ void lvDCOMInterface::getBlockDetails(std::vector< std::vector<std::string> >& v
 					if (sa.MultiDimGetAt(dims, t) == S_OK)
 					{
 		                values[i].push_back(static_cast<const char*>(CW2CT(t)));
+						SysFreeString(t);
 						++n;
 					}
 				}
