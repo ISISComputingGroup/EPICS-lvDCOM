@@ -29,7 +29,7 @@
 				
 		The path is parsed using EPICS macEnvExpand() and so can contain EPICS environment variables
    -->
-   <extint path="$(TOP)/lvDCOMApp/src/extint/Main/Library/External Interface - Set Value.vi" />
+   <extint path="$(LVDCOM=$(TOP))/lvDCOMApp/src/extint/Main/Library/External Interface - Set Value.vi" />
    
    <!-- this name will be mapped (via lvDCOMConfigure()) to an asyn driver port name that can then be specified in an EPICS record -->
    <section name="frontpanel"> 

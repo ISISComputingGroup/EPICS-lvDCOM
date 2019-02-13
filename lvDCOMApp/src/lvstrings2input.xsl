@@ -33,12 +33,13 @@
 			<xsl:attribute name="xsi:schemaLocation">http://epics.isis.rl.ac.uk/lvDCOMinput/1.0 lvDCOMinput.xsd</xsl:attribute>
 		    <xsl:comment>Full path to external interface vi used for triggering LabVIEW events when extint="true" below </xsl:comment>
 			<xsl:element name="extint">
-				<xsl:attribute name="path">$(TOP)/lvDCOMApp/src/extint/Main/Library/External Interface - Set Value.vi</xsl:attribute> 
+				<xsl:comment>Look for extint in LVDCOM directory or TOP if not defined</xsl:comment>
+				<xsl:attribute name="path">$(LVDCOM=$(TOP))/lvDCOMApp/src/extint/Main/Library/External Interface - Set Value.vi</xsl:attribute> 
 			</xsl:element>
 		    <xsl:comment>Definition of a configSection, the second argument of the IOC lvDCOMConfigure() command </xsl:comment>
 			<xsl:element name="section" >
 				<xsl:attribute name="name">frontpanel</xsl:attribute> 
-		        <xsl:comment>TODO: edit path attribute in &lt;vi /&gt; to contain a full absolute path, you can also use any EPICS macro known to the IOC e.g. $(TOP) </xsl:comment>
+		        <xsl:comment>TODO: edit path attribute in &lt;vi /&gt; to contain a full absolute path, you can also use any EPICS macro known to the IOC e.g. $(TOP) or $(LVDCOM)</xsl:comment>
 				<xsl:element name="vi">
 					<xsl:attribute name="path"><xsl:value-of select="$vi_name"/></xsl:attribute>
 					<xsl:comment>The &lt;param /&gt; maps an asyn driver parameter "name" (referenced in the EPICS .db) to the LabVIEW item "target" </xsl:comment>
