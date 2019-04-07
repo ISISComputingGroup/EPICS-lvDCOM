@@ -18,7 +18,6 @@ example_DBD += base.dbd
 # Include dbd files from all support applications:
 example_DBD += lvDCOM.dbd
 # all of these are optional, just included for convenience
-example_DBD += devSequencer.dbd
 example_DBD += asSupport.dbd
 example_DBD += devIocStats.dbd
 example_DBD += caPutLog.dbd
