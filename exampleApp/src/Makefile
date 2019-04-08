@@ -31,7 +31,7 @@ example_DBD += stdSupport.dbd
 
 # Add all the support libraries needed by this IOC, lvDCOM itself just needs asyn
 example_LIBS += lvDCOM calc sscan busy asyn std
-example_LIBS += seqDev seq pv
+example_LIBS += seq pv
 example_LIBS += devIocStats
 example_LIBS += caPutLog autosave
 ifdef PCRE
