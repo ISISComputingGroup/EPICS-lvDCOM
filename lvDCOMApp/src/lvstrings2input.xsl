@@ -33,8 +33,8 @@
 			<xsl:attribute name="xsi:schemaLocation">http://epics.isis.rl.ac.uk/lvDCOMinput/1.0 lvDCOMinput.xsd</xsl:attribute>
 		    <xsl:comment>Full path to external interface vi used for triggering LabVIEW events when extint="true" below </xsl:comment>
 			<xsl:element name="extint">
-				<xsl:comment>Look for extint in LVDCOM directory or TOP if not defined</xsl:comment>
 				<xsl:attribute name="path">$(LVDCOM=$(TOP))/lvDCOMApp/src/extint/Main/Library/External Interface - Set Value.vi</xsl:attribute> 
+                <xsl:comment>Look for extint in LVDCOM directory or TOP if not defined</xsl:comment>
 			</xsl:element>
 		    <xsl:comment>Definition of a configSection, the second argument of the IOC lvDCOMConfigure() command </xsl:comment>
 			<xsl:element name="section" >
