@@ -7,10 +7,11 @@ O.*/
 /templates
 envPaths
 cdCommands
-dllPath.bat
+dllPath*.bat
 runIOC.bat
 runIOC.sh
 relPaths.sh
 *.tags
 /doc/html/
 .project
+NULL
