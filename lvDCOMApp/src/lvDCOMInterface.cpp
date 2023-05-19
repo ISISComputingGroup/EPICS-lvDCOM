@@ -142,6 +142,8 @@ static void initCOM(void*)
 
 /// expand epics environment strings using previously saved environment  
 /// based on EPICS macEnvExpand()
+/// returns NULL if undefined macros
+/// need to use free() on resturned string
 char* lvDCOMInterface::envExpand(const char *str)
 {
     long destCapacity = 128;
@@ -191,7 +193,11 @@ std::string lvDCOMInterface::doXPATH(const std::string& xpath)
 		hr=pNode->get_text(&bstrValue);
 		if (SUCCEEDED(hr))
 		{
-			S_res = envExpand(CW2CT(bstrValue));
+            char* res = envExpand(CW2CT(bstrValue));
+            if (res != NULL) {
+			    S_res = res;
+            }
+            free(res);
 			SysFreeString(bstrValue);
 		}
 		pNode->Release();
@@ -226,7 +232,11 @@ bool lvDCOMInterface::doXPATHbool(const std::string& xpath)
 		hr=pNode->get_text(&bstrValue);
 		if (SUCCEEDED(hr))
 		{
-			bool_str = envExpand(CW2CT(bstrValue));
+            char* str = envExpand(CW2CT(bstrValue));
+            if (str != NULL) {
+			    bool_str = str;
+            }
+            free(str);
 			if (bool_str.size() == 0)
 			{
 				res = false;
@@ -388,7 +398,11 @@ m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(op
 	    DomFromCOM();
 	    short sResult = FALSE;
 	    char* configFile_expanded = envExpand(configFile);
+        if (configFile_expanded == NULL) {
+		    throw std::runtime_error("Cannot load XML \"" + m_configFile + "\" (expanded from \"" + std::string(configFile) + "\"): envExpand error");
+        }
 	    m_configFile = configFile_expanded;
+        free(configFile_expanded);
 	    HRESULT hr = m_pxmldom->load(_variant_t(configFile_expanded), &sResult);
 	    free(configFile_expanded);
 	    if(FAILED(hr))
