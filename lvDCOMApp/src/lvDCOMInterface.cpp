@@ -195,7 +195,7 @@ std::string lvDCOMInterface::doXPATH(const std::string& xpath)
 		{
             char* res = envExpand(CW2CT(bstrValue));
             if (res != NULL) {
-			    S_res = res;
+                S_res = res;
                 free(res);
             }
 			SysFreeString(bstrValue);
@@ -234,7 +234,7 @@ bool lvDCOMInterface::doXPATHbool(const std::string& xpath)
 		{
             char* str = envExpand(CW2CT(bstrValue));
             if (str != NULL) {
-			    bool_str = str;
+                bool_str = str;
                 free(str);
             }
 			if (bool_str.size() == 0)
@@ -399,7 +399,7 @@ m_configSection(configSection), m_pidentity(NULL), m_pxmldom(NULL), m_options(op
 	    short sResult = FALSE;
 	    char* configFile_expanded = envExpand(configFile);
         if (configFile_expanded == NULL) {
-		    throw std::runtime_error("Cannot load XML \"" + m_configFile + "\" (expanded from \"" + std::string(configFile) + "\"): envExpand error");
+            throw std::runtime_error("Cannot load XML \"" + m_configFile + "\" (expanded from \"" + std::string(configFile) + "\"): envExpand error");
         }
 	    m_configFile = configFile_expanded;
 	    HRESULT hr = m_pxmldom->load(_variant_t(configFile_expanded), &sResult);
