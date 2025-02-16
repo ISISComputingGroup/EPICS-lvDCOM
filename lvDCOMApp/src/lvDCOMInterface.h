@@ -73,7 +73,8 @@ enum lvDCOMOptions
 	viAlwaysStopOnExit = 8,			///< (8)  On IOC exit, stop any LabVIEW VIs that we have connected to
 	lvNoStart = 16,                  ///< (16) Do not start LabVIEW, connect to existing instance otherwise fail. As loading a Vi starts labview, vis will not be loaded or started until a labview instance is detected. Automatically set for lvDCOMSECIConfigure() 
 	lvSECIConfig = 32,                  ///< (32) Automatically set if lvDCOMSECIConfigure() has been used
-	lvSECINoSetter = 64                  ///< (64) Do not generate setter XML / :SP PVs in SECI mode
+	lvSECINoSetter = 64,                  ///< (64) Do not generate setter XML / :SP PVs in SECI mode
+	lvDCOMVerbose = 128                   ///< (128) print extra messages
 };	
 
 /// Manager class for LabVIEW DCOM Interaction. Parses an @link lvinput.xml @endlink file and provides access to the LabVIEW VI controls/indicators described within. 

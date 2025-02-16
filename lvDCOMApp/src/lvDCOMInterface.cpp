@@ -949,7 +949,10 @@ void lvDCOMInterface::createViRef(BSTR vi_name, bool reentrant, LabVIEW::Virtual
 		} 
 		std::cerr << "Successfully connected to local LabVIEW" << std::endl;
 	}
-	std::cerr << "Attemping to access \"" << CW2CT(vi_name) << "\" on " << (m_host.size() > 0 ? m_host : "localhost") << std::endl;
+        if (checkOption(lvDCOMVerbose))
+        {
+	    std::cerr << "Attempting to access \"" << CW2CT(vi_name) << "\" on " << (m_host.size() > 0 ? m_host : "localhost") << std::endl;
+        }
 	if (reentrant)
 	{
 		vi = m_lv->GetVIReference(vi_name, "", 1, 8);
